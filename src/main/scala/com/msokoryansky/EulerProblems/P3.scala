@@ -1,0 +1,37 @@
+package com.msokoryansky.EulerProblems
+
+import scala.annotation.tailrec
+
+class P3 extends EulerProblem {
+  /**
+    * @param i first integer in the stream
+    * @return stream of all integers starting with i
+    */
+  def ints(i: BigInt): Stream[BigInt] = i #:: ints(i + 1)
+
+  /**
+    * Generates stream of prime numbers
+    * @param ints stream of interegers
+    * @return stream of prime numbers
+    */
+  def primes(ints: Stream[BigInt]): Stream[BigInt] = {
+    ints.head #:: primes(ints.tail.filter{_ % ints.head != 0})
+  }
+
+  /**
+    * Finds list of all prime factors of a number. A prime factor may repeat multiple times.
+    * E.g. For 24 the answer is List(2, 2, 2, 3).
+    * @param i number to factor
+    * @param primesToCheck stream of primes
+    * @param factors accumulator list of factors
+    * @return complete list of all prime factors of a number so that product of all numbers in the list == i
+    */
+  @tailrec final def primeFactors(i: BigInt, primesToCheck: Stream[BigInt], factors: List[BigInt]): List[BigInt] = {
+    if (i < 2) factors
+    else if (i % primesToCheck.head == 0) primeFactors(i / primesToCheck.head, primes(ints(2)), primesToCheck.head :: factors)
+    else primeFactors(i, primesToCheck.tail, factors)
+  }
+
+  def run = primeFactors(BigInt("600851475143"), primes(ints(2)), Nil).reduceLeft{_ max _}.toString
+}
+
