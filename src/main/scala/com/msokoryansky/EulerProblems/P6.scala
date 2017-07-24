@@ -5,3 +5,7 @@ class P6 extends EulerProblem {
 
   def run = (sqr((1 to 100).sum) - (1 to 100).map((x) => x * x).sum).toString
 }
+
+object P6 extends App {
+  (new P6).printAnswer
+}

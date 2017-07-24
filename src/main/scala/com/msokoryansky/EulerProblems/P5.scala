@@ -33,3 +33,7 @@ class P5 extends EulerProblem {
 
   def run = primeFactorsOfRange(1, 20).reduceLeft{_ * _}.toString()
 }
+
+object P5 extends App {
+  (new P5).printAnswer
+}

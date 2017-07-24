@@ -28,3 +28,7 @@ class P2 extends EulerProblem {
 
   def run = fibsSum(0, 1, 4000000, (a) => a % 2 == 0).toString
 }
+
+object P2 extends App {
+  (new P2).printAnswer
+}

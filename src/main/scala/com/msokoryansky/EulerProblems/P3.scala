@@ -35,3 +35,6 @@ class P3 extends EulerProblem {
   def run = primeFactors(BigInt("600851475143"), primes(ints(2)), Nil).reduceLeft{_ max _}.toString
 }
 
+object P3 extends App {
+  (new P3).printAnswer
+}

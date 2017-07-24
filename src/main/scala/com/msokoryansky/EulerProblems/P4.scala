@@ -19,3 +19,7 @@ class P4 extends EulerProblem {
 
   def run = largestProductPalindrome(999, 100).toString
 }
+
+object P4 extends App {
+  (new P4).printAnswer
+}

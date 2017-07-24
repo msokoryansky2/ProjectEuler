@@ -31,3 +31,7 @@ class P1 extends EulerProblem {
     */
   def run2 = (1 to 999).filter{n: Int => n % 3 == 0 || n % 5 == 0}.sum.toString
 }
+
+object P1 extends App {
+  (new P1).printAnswer
+}
