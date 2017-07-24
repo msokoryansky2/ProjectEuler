@@ -31,9 +31,9 @@ class P5 extends EulerProblem {
     primeFactorsOfRangeAcc(lo, hi, Seq.empty)
   }
 
-  def run = primeFactorsOfRange(1, 20).reduceLeft{_ * _}.toString()
+  def run: String = primeFactorsOfRange(1, 20).product.toString()
 }
 
 object P5 extends App {
-  (new P5).printAnswer
+  (new P5).printAnswer()
 }

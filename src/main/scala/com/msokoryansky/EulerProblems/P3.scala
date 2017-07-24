@@ -32,9 +32,9 @@ class P3 extends EulerProblem {
     else primeFactors(i, primesToCheck.tail, factors)
   }
 
-  def run = primeFactors(BigInt("600851475143"), primes(ints(2)), Nil).reduceLeft{_ max _}.toString
+  def run: String = primeFactors(BigInt("600851475143"), primes(ints(2)), Nil).max.toString
 }
 
 object P3 extends App {
-  (new P3).printAnswer
+  (new P3).printAnswer()
 }

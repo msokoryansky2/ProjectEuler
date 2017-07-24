@@ -7,13 +7,13 @@ abstract class EulerProblem {
   /**
     * @return String value representing answer to the given problem, converted to String
     */
-  def run : String
+  def run: String
   /**
     * @return Int number of the problem in Project Euler assuming its class name has the number as suffix
     */
-  def number : Int =  new Scanner(this.getClass.getName.reverse).useDelimiter("[^0-9]+").nextInt.toString.reverse.toInt
+  def number: Int =  new Scanner(this.getClass.getName.reverse).useDelimiter("[^0-9]+").nextInt.toString.reverse.toInt
 
-  def printAnswer = println("%4s".format(number) + ": " + answer)
+  def printAnswer(): Unit = println("%4s".format(number) + ": " + answer)
 }
 
 object EulerProblem {
@@ -23,7 +23,7 @@ object EulerProblem {
     * @param i Int number of Project Euler problem
     * @return Option with either Some(EulerProblem) object or None if requested number isn't implemented
     */
-  def apply(i: Int) : Option[EulerProblem] = {
+  def apply(i: Int): Option[EulerProblem] = {
     try {
       Some(Class.forName("com.msokoryansky.EulerProblems.P" + i.toString).newInstance.asInstanceOf[EulerProblem])
     } catch {

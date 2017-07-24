@@ -12,7 +12,7 @@ class P7 extends EulerProblem {
   def isPrime(n: Int): Boolean = {
     n match {
       case x if x < 2 => false
-      case _ => !((2 to Math.sqrt(n.toDouble).ceil.toInt).exists{x => x != n && n % x == 0})
+      case _ => !(2 to Math.sqrt(n.toDouble).ceil.toInt).exists{x => x != n && n % x == 0}
     }
   }
 
@@ -33,10 +33,10 @@ class P7 extends EulerProblem {
     p3.primes(p3.ints(2)).drop(Math.max(0, n - 1)).head
   }
 
-  def run = primeNumber(10001).toString
+  def run: String = primeNumber(10001).toString
 }
 
 
 object P7 extends App {
-  (new P7).printAnswer
+  (new P7).printAnswer()
 }

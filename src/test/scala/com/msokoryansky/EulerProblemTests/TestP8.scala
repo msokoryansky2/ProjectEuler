@@ -10,5 +10,6 @@ class TestP8 extends FunSuite {
     assert(p8.greatestProduct("123456", 7) === 0)
     assert(p8.greatestProduct("123", 3) === 6)
     assert(p8.greatestProduct("9999022222", 5) === 32)
+    assert(p8.greatestProduct("949596", 3) === 405)
   }
 }

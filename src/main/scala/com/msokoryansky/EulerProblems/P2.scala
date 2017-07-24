@@ -8,7 +8,7 @@ class P2 extends EulerProblem {
     * @param b second number in Fibonacci stream
     * @return stream of Fibonacci numbers, starting with a, b
     */
-  def fibs(a: Int, b: Int) : Stream[Int] = a #:: fibs(b, a + b)
+  def fibs(a: Int, b: Int): Stream[Int] = a #:: fibs(b, a + b)
 
   /**
     * Sum of all Fibonacci numbers starting with a and b and not exceeding limit and subject to include
@@ -26,9 +26,9 @@ class P2 extends EulerProblem {
     fibsSumAcc(fibs(a, b), 0)
   }
 
-  def run = fibsSum(0, 1, 4000000, (a) => a % 2 == 0).toString
+  def run: String = fibsSum(0, 1, 4000000, (a) => a % 2 == 0).toString
 }
 
 object P2 extends App {
-  (new P2).printAnswer
+  (new P2).printAnswer()
 }

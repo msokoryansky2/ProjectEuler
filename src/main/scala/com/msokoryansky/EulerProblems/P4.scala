@@ -3,7 +3,7 @@ package com.msokoryansky.EulerProblems
 import scala.annotation.tailrec
 
 class P4 extends EulerProblem {
-  def isNumberPalindrome(i: BigInt) = i.toString == i.toString.reverse
+  def isNumberPalindrome(i: BigInt): Boolean = i.toString == i.toString.reverse
 
   def intsDesc(hi: BigInt, lo: BigInt): Stream[BigInt] = if (hi >= lo) hi #:: intsDesc(hi - 1, lo) else Stream.Empty
 
@@ -17,9 +17,9 @@ class P4 extends EulerProblem {
     largestProductPalindromeAcc(i, i, i, 0)
   }
 
-  def run = largestProductPalindrome(999, 100).toString
+  def run: String = largestProductPalindrome(999, 100).toString
 }
 
 object P4 extends App {
-  (new P4).printAnswer
+  (new P4).printAnswer()
 }
