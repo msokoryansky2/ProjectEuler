@@ -36,6 +36,7 @@ class P7 extends EulerProblem {
   def run = primeNumber(10001).toString
 }
 
+
 object P7 extends App {
   (new P7).printAnswer
 }
