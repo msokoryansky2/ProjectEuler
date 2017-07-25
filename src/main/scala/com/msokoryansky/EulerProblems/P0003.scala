@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P3 extends EulerProblem {
+class P0003 extends EulerProblem {
   /**
     * @param i first integer in the stream
     * @return stream of all integers starting with i
@@ -35,6 +35,6 @@ class P3 extends EulerProblem {
   def run: String = primeFactors(BigInt("600851475143"), primes(ints(2)), Nil).max.toString
 }
 
-object P3 extends App {
-  (new P3).printAnswer()
+object P0003 extends App {
+  (new P0003).printAnswer()
 }

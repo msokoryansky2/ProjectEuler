@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P1 extends EulerProblem {
+class P0001 extends EulerProblem {
   /**
     * @param i first integer in the stream
     * @return Stream of all integers starting with i
@@ -32,6 +32,6 @@ class P1 extends EulerProblem {
   def run2: String = (1 to 999).filter{n: Int => n % 3 == 0 || n % 5 == 0}.sum.toString
 }
 
-object P1 extends App {
-  (new P1).printAnswer()
+object P0001 extends App {
+  (new P0001).printAnswer()
 }

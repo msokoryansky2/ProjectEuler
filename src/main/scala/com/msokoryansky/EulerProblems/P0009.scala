@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P9 extends EulerProblem {
+class P0009 extends EulerProblem {
   def pythagoreanC(a: Int, b: Int, abcSum: Int): Option[Int] = {
     val cPossible = abcSum - (a + b)
     if (cPossible > 0 && cPossible * cPossible == a * a + b * b) Some(cPossible) else None
@@ -24,6 +24,6 @@ class P9 extends EulerProblem {
   def run: String = pythagoreanProduct(pythagoreanTripletBySum(1000))
 }
 
-object P9 extends App {
-  (new P9).printAnswer()
+object P0009 extends App {
+  (new P0009).printAnswer()
 }

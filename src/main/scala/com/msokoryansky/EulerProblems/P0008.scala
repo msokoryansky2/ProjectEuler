@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P8 extends EulerProblem {
+class P0008 extends EulerProblem {
   /**
     * Returns greatest product of numDigits consecutive digites in the number represented by a String
     *
@@ -44,6 +44,6 @@ class P8 extends EulerProblem {
     """.replaceAll("[^\\d.]", ""), 13).toString
 }
 
-object P8 extends App {
-  (new P8).printAnswer()
+object P0008 extends App {
+  (new P0008).printAnswer()
 }

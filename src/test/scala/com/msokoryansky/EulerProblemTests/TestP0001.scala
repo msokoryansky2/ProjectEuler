@@ -3,9 +3,9 @@ package com.msokoryansky.EulerProblemTests
 import com.msokoryansky.EulerProblems._
 import org.scalatest.FunSuite
 
-class TestP1 extends FunSuite {
+class TestP0001 extends FunSuite {
   test("P1.ints returns stream of ints") {
-    val p1 = new P1
+    val p1 = new P0001
     val ints = p1.ints(0)
     assert(ints.head === 0)
     assert(ints.tail.head === 1)
@@ -18,7 +18,7 @@ class TestP1 extends FunSuite {
   }
 
   test("P1.intsSum returns sum of stream of ints") {
-    val p1 = new P1
+    val p1 = new P0001
     val ints = p1.ints(0)
     assert(p1.intsSum(1, 6, _ => true) === 15)
     assert(p1.intsSum(1, 8, _ % 2 == 0) === 12)

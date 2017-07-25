@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P7 extends EulerProblem {
+class P0007 extends EulerProblem {
   /**
     * @param i first integer in the stream
     * @return Stream of all integers starting with i
@@ -29,7 +29,7 @@ class P7 extends EulerProblem {
   }
 
   def primeNumberNonTailRec(n: Int): BigInt = {
-    val p3 = new P3
+    val p3 = new P0003
     p3.primes(p3.ints(2)).drop(Math.max(0, n - 1)).head
   }
 
@@ -37,6 +37,6 @@ class P7 extends EulerProblem {
 }
 
 
-object P7 extends App {
-  (new P7).printAnswer()
+object P0007 extends App {
+  (new P0007).printAnswer()
 }

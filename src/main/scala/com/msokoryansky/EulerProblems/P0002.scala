@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P2 extends EulerProblem {
+class P0002 extends EulerProblem {
   /**
     * @param a first number in Fibonacci stream
     * @param b second number in Fibonacci stream
@@ -29,6 +29,6 @@ class P2 extends EulerProblem {
   def run: String = fibsSum(0, 1, 4000000, (a) => a % 2 == 0).toString
 }
 
-object P2 extends App {
-  (new P2).printAnswer()
+object P0002 extends App {
+  (new P0002).printAnswer()
 }

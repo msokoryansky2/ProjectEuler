@@ -3,9 +3,9 @@ package com.msokoryansky.EulerProblemTests
 import com.msokoryansky.EulerProblems._
 import org.scalatest.FunSuite
 
-class TestP2 extends FunSuite {
+class TestP0002 extends FunSuite {
   test("P2.fibs returns stream of Fibonacci numbers") {
-    val p2 = new P2
+    val p2 = new P0002
     val fibs = p2.fibs(0, 1)
     assert(fibs.head === 0)
     assert(fibs.tail.head === 1)
@@ -18,7 +18,7 @@ class TestP2 extends FunSuite {
   }
 
   test("P2.fibsSum returns sum of stream of fibs") {
-    val p2 = new P2
+    val p2 = new P0002
     assert(p2.fibsSum(0, 1, 10, _ => true) === 20)
     assert(p2.fibsSum(0, 1, 10, _ % 2 == 0) === 10)
     assert(p2.fibsSum(0, 1, 15, _ % 2 == 1) === 23)

@@ -2,7 +2,7 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
-class P5 extends EulerProblem {
+class P0005 extends EulerProblem {
   def dropFirstMatch[A](ls: Seq[A], value: A): Seq[A] = {
     val index = ls.indexOf(value)
     if (index < 0) ls
@@ -23,7 +23,7 @@ class P5 extends EulerProblem {
   }
 
   def primeFactorsOfRange(lo: BigInt, hi: BigInt): Seq[BigInt] = {
-    val p3 = new P3
+    val p3 = new P0003
     @tailrec def primeFactorsOfRangeAcc(lo: BigInt, hi: BigInt, acc: Seq[BigInt]): Seq[BigInt] = {
       if (lo > hi) acc
       else primeFactorsOfRangeAcc(lo + 1, hi, union2(acc, p3.primeFactors(lo, p3.primes(p3.ints(2)), Nil)))
@@ -34,6 +34,6 @@ class P5 extends EulerProblem {
   def run: String = primeFactorsOfRange(1, 20).product.toString()
 }
 
-object P5 extends App {
-  (new P5).printAnswer()
+object P0005 extends App {
+  (new P0005).printAnswer()
 }
