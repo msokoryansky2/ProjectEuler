@@ -2,6 +2,15 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
+
+/*
+
+2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+
+What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+*/
+
+
 class P0005 extends EulerProblem {
   def dropFirstMatch[A](ls: Seq[A], value: A): Seq[A] = {
     val index = ls.indexOf(value)

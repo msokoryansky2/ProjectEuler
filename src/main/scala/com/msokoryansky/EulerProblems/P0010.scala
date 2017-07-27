@@ -2,6 +2,14 @@ package com.msokoryansky.EulerProblems
 
 import scala.annotation.tailrec
 
+
+/*
+
+The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+
+Find the sum of all the primes below two million.
+*/
+
 class P0010 extends EulerProblem {
   /**
     * @param i first integer in the stream
