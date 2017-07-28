@@ -103,4 +103,11 @@ class TestP0011 extends FunSuite {
     assert(grid.bestCellResultInAllDirections(4, 0, 3, hat) === 968)
     assert(grid.bestCellResultInAllDirections(4, 0, 4, hat) === 3520)
   }
+
+  test("bestGridResultInAllDirections returns best available result across the grid") {
+    assert(grid.bestGridResultInAllDirections(1, hat) === 22)
+    assert(grid.bestGridResultInAllDirections(2, hat) === 242)
+    assert(grid.bestGridResultInAllDirections(3, hat) === 968)
+    assert(grid.bestGridResultInAllDirections(4, hat) === 4455)
+  }
 }

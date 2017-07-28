@@ -157,15 +157,16 @@ class NumberGrid private (longGrid: Array[Array[Long]]) {
     */
   def bestGridResultInAllDirections(length: Int, hat: SortingHat[Long]): Long = {
     def bestGridResultInAllDirectionsAcc(startX: Int, startY: Int, acc: Long): Long = {
-      val best = (bestCellResultInAllDirections(startX, startY, length, hat) :: acc :: Nil).foldLeft(hat.calcAcc)(hat.calc)
-      if (startY >= grid.length - 1 && startX >= grid(startY).length - 1) best
+      val best = (bestCellResultInAllDirections(startX, startY, length, hat) :: acc :: Nil)
+                    .foldLeft(hat.selectAcc)(hat.select)
+      if (startY >= lengthY - 1 && startX >= lengthX - 1) best
       else {
-        val nextX = if (startX <= grid(startY).length - 1) startX + 1 else 0
+        val nextX = if (startX < lengthX - 1) startX + 1 else 0
         val nextY = if (nextX == 0) startY + 1 else startY
         bestGridResultInAllDirectionsAcc(nextX, nextY, best)
       }
     }
-    bestGridResultInAllDirectionsAcc(0, 0, hat.calcAcc)
+    bestGridResultInAllDirectionsAcc(0, 0, hat.selectAcc)
   }
 }
 
