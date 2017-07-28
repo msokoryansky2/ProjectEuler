@@ -1,10 +1,20 @@
 package com.msokoryansky.EulerProblemTests
 
-import com.msokoryansky.EulerProblems.NumberGrid.SortingHat
 import com.msokoryansky.EulerProblems._
 import org.scalatest.FunSuite
 
 class TestP0011 extends FunSuite {
+  val gridBad1: String =
+    """
+    """.stripMargin
+
+  val gridBad2: String =
+    """
+      |44 55 66
+      |23 23
+      |05 66 22
+    """.stripMargin
+
   val grid1: String =
     """
       |01 08 04 05 22
@@ -19,7 +29,17 @@ class TestP0011 extends FunSuite {
   val selectAcc = 0
 
   val hat = new SortingHat[Long](calc, calcAcc, select, selectAcc)
-  val grid = NumberGrid(grid1, hat)
+  val grid = NumberGrid(grid1)
+
+  test("grid must be non-empty and rectangular") {
+    intercept[Exception] {
+      NumberGrid(gridBad1)
+    }
+
+    intercept[Exception] {
+      NumberGrid(gridBad2)
+    }
+  }
 
   test("value returns value of specified cell") {
     assert(grid.lengthX == 5)
@@ -67,8 +87,20 @@ class TestP0011 extends FunSuite {
   }
 
   test("nextValuesInDirection returns list of values in specified direction") {
+    assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 0) == List())
     assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 1) == List(11))
     assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 3) == List(11, 3, 9))
     assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 5) == List(11, 3, 9, 4))
+  }
+
+  test("bestCellResultInAllDirections returns best available result in all directions for specified cell") {
+    assert(grid.bestCellResultInAllDirections(2, 3, 1, hat) === 11)
+    assert(grid.bestCellResultInAllDirections(2, 3, 2, hat) === 110)
+    assert(grid.bestCellResultInAllDirections(2, 3, 3, hat) === 297)
+    assert(grid.bestCellResultInAllDirections(2, 3, 4, hat) === 1188)
+    assert(grid.bestCellResultInAllDirections(4, 0, 1, hat) === 22)
+    assert(grid.bestCellResultInAllDirections(4, 0, 2, hat) === 242)
+    assert(grid.bestCellResultInAllDirections(4, 0, 3, hat) === 968)
+    assert(grid.bestCellResultInAllDirections(4, 0, 4, hat) === 3520)
   }
 }
