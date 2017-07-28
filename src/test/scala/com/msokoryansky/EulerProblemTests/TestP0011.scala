@@ -37,6 +37,22 @@ class TestP0011 extends FunSuite {
     assert(grid.value(3, 2) == 1)
     assert(grid.value(1, 2) == 9)
 
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.N).contains(3))
     assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.NE).contains(1))
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.E).contains(10))
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.SE).isEmpty)
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.S).isEmpty)
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.SW).isEmpty)
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.W).contains(0))
+    assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.NW).contains(9))
+
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.N).contains(22))
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.NE).isEmpty)
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.E).isEmpty)
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.SE).isEmpty)
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.S).contains(4))
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.SW).contains(1))
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.W).contains(9))
+    assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.NW).contains(5))
   }
 }
