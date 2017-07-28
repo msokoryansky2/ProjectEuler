@@ -1,5 +1,7 @@
 package com.msokoryansky.EulerProblems
 
+import com.msokoryansky.EulerProblems.NumberGrid.{Direction, SortingHat}
+
 /*
 In the 20×20 grid below, four numbers along a diagonal line have been marked in red.
 
@@ -30,7 +32,7 @@ What is the greatest product of four adjacent numbers in the same direction (up,
   */
 
 class P0011 extends EulerProblem {
-  def run: String = "\n" + NumberGrid(
+  def run: String = NumberGrid(
     """
       |08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
       |49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00
@@ -52,18 +54,69 @@ class P0011 extends EulerProblem {
       |20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16
       |20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
       |01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48
-    """.stripMargin).toString
+    """.stripMargin, SortingHat[Long]((a: Long, b: Long) => a * b, 1
+                                  , (x: Long, y: Long) => Math.max(x, y), 0)).
+          bestGridResultInAllDirections(4).toString
 }
 
 object P0011 extends App {
   (new P0011).printAnswer()
 }
 
-class NumberGrid private (longGrid: Array[Array[Long]]) {
+class NumberGrid private (longGrid: Array[Array[Long]], sortingHat: NumberGrid.SortingHat[Long]) {
   NumberGrid.validate(longGrid)
   private val grid = longGrid
+  private val hat = sortingHat
 
   override def toString: String = NumberGrid.longGrid2stringGrid(grid)
+
+  def lengthY: Int = grid.length
+  def lengthX: Int = {
+    require(lengthY > 0, "The grid is empty")
+    grid(0).length
+  }
+  def value(x: Int, y: Int): Long = {
+    require(x >= 0 && y >= 0, "Negative coordinates are not allowed")
+    require(x < lengthX, "The X coordinate exceeds grid width")
+    require(x < lengthX, "The Y coordinate exceeds grid height")
+    grid(y)(x)
+  }
+
+  def nextValueInDirection(startX: Int, startY: Int, dir: Direction.Value): Option[Long] = {
+    val x = startX + Direction.dX(dir)
+    val y = startY + Direction.dY(dir)
+    if (x >= 0 && y >= 0 && y < grid.length && x < grid(y).length) Some(grid(y)(x)) else None
+  }
+
+  def nextValuesInDirection(startX: Int, startY: Int, dir: Direction.Value, length: Int): List[Long] = {
+    def nextValuesInDirectionAcc(startX: Int, startY: Int, length: Int, acc: List[Long]): List[Long] = {
+      if (length <= 0) acc
+      nextValueInDirection(startX, startY, dir) match {
+        case Some(value) => nextValuesInDirectionAcc(startX + Direction.dX(dir), startY + Direction.dY(dir),
+          length - 1, value :: acc)
+        case _ => acc
+      }
+    }
+    nextValuesInDirectionAcc(startX, startY, length, List[Long]())
+  }
+
+  def bestCellResultInAllDirections(startX: Int, startY: Int, length: Int): Long = {
+    Direction.values.map{(dir) => nextValuesInDirection(startX, startY, dir, length).foldLeft(hat.calcAcc)(hat.calc)}
+                                                    .foldLeft(hat.selectAcc)(hat.select)
+  }
+
+  def bestGridResultInAllDirections(length: Int): Long = {
+    def bestGridResultInAllDirectionsAcc(startX: Int, startY: Int, acc: Long): Long = {
+      val best = (bestCellResultInAllDirections(startX, startY, length) :: acc :: Nil).foldLeft(hat.calcAcc)(hat.calc)
+      if (startY >= grid.length - 1 && startX >= grid(startY).length - 1) best
+      else {
+        val nextX = if (startX <= grid(startY).length - 1) startX + 1 else 0
+        val nextY = if (nextX == 0) startY + 1 else startY
+        bestGridResultInAllDirectionsAcc(nextX, nextY, best)
+      }
+    }
+    bestGridResultInAllDirectionsAcc(0, 0, hat.calcAcc)
+  }
 }
 
 object NumberGrid {
@@ -83,6 +136,24 @@ object NumberGrid {
     longGrid.map{ (row) => row.map{(n) => ("%0" + maxDigits + "d").format(n)}.mkString(" ")}.mkString("\n")
   }
 
-  def apply(longGrid: Array[Array[Long]]) = new NumberGrid(longGrid)
-  def apply(stringGrid: String) =  new NumberGrid(stringGrid2longGrid(stringGrid))
+  case class SortingHat[A](calc: (A, A) => A, calcAcc: A, select: (A, A) => A, selectAcc: A)
+
+  def apply(longGrid: Array[Array[Long]], hat: SortingHat[Long]) = new NumberGrid(longGrid, hat)
+  def apply(stringGrid: String, hat: SortingHat[Long]) =  new NumberGrid(stringGrid2longGrid(stringGrid), hat)
+
+  object Direction extends Enumeration {
+    val N, NE, E, SE, S, SW, W, NW = Value
+
+    def dX(dir: Direction.Value): Int = dir match {
+      case N | S => 0
+      case NE | E | SE => 1
+      case NW | W | SW => -1
+    }
+
+    def dY(dir: Direction.Value): Int = dir match {
+      case E | W => 0
+      case NE | N | NW => -1
+      case SE | S | SW => 1
+    }
+  }
 }
