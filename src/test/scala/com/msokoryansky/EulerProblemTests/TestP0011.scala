@@ -21,13 +21,21 @@ class TestP0011 extends FunSuite {
   val hat = new SortingHat[Long](calc, calcAcc, select, selectAcc)
   val grid = NumberGrid(grid1, hat)
 
-  test("value returns value, nextValueInDirection returns value of specified neighbor from specified start") {
+  test("value returns value of specified cell") {
     assert(grid.lengthX == 5)
     assert(grid.lengthY == 4)
-    intercept[Exception] { grid.value(-1, 0) }
-    intercept[Exception] { grid.value(0, -1) }
-    intercept[Exception] { grid.value(0, 4) }
-    intercept[Exception] { grid.value(5, 0) }
+    intercept[Exception] {
+      grid.value(-1, 0)
+    }
+    intercept[Exception] {
+      grid.value(0, -1)
+    }
+    intercept[Exception] {
+      grid.value(0, 4)
+    }
+    intercept[Exception] {
+      grid.value(5, 0)
+    }
     assert(grid.value(0, 0) == 1)
     assert(grid.value(2, 0) == 4)
     assert(grid.value(0, 2) == 0)
@@ -36,7 +44,9 @@ class TestP0011 extends FunSuite {
     assert(grid.value(0, 3) == 9)
     assert(grid.value(3, 2) == 1)
     assert(grid.value(1, 2) == 9)
+  }
 
+  test("nextValueInDirection returns value of specified neighbor from specified start") {
     assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.N).contains(3))
     assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.NE).contains(1))
     assert(grid.nextValueInDirection(2, 3, NumberGrid.Direction.E).contains(10))
@@ -54,5 +64,11 @@ class TestP0011 extends FunSuite {
     assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.SW).contains(1))
     assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.W).contains(9))
     assert(grid.nextValueInDirection(4, 1, NumberGrid.Direction.NW).contains(5))
+  }
+
+  test("nextValuesInDirection returns list of values in specified direction") {
+    assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 1) == List(11))
+    assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 3) == List(11, 3, 9))
+    assert(grid.nextValuesInDirection(2, 3, NumberGrid.Direction.N, 5) == List(11, 3, 9, 4))
   }
 }

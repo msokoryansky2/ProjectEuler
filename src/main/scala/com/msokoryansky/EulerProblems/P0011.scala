@@ -85,10 +85,11 @@ class NumberGrid private (longGrid: Array[Array[Long]], sortingHat: NumberGrid.S
   def nextValueInDirection(startX: Int, startY: Int, dir: Direction.Value): Option[Long] = {
     val x = startX + Direction.dX(dir)
     val y = startY + Direction.dY(dir)
-    if (x >= 0 && y >= 0 && y < grid.length && x < grid(y).length) Some(grid(y)(x)) else None
+    if (x >= 0 && y >= 0 && y < lengthY && x < lengthX) Some(value(x, y)) else None
   }
 
   def nextValuesInDirection(startX: Int, startY: Int, dir: Direction.Value, length: Int): List[Long] = {
+    require(length > 0, "Must specify positive number of cells")
     def nextValuesInDirectionAcc(startX: Int, startY: Int, length: Int, acc: List[Long]): List[Long] = {
       if (length <= 0) acc
       nextValueInDirection(startX, startY, dir) match {
@@ -97,7 +98,7 @@ class NumberGrid private (longGrid: Array[Array[Long]], sortingHat: NumberGrid.S
         case _ => acc
       }
     }
-    nextValuesInDirectionAcc(startX, startY, length, List[Long]())
+    nextValuesInDirectionAcc(startX, startY, length - 1, List(value(startX, startY))).reverse
   }
 
   def bestCellResultInAllDirections(startX: Int, startY: Int, length: Int): Long = {
