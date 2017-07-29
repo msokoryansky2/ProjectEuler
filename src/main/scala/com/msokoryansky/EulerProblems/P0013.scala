@@ -118,28 +118,30 @@ object P0013 extends App {
 
 class BiggieInt(stringNumber: String) {
   private val onlyDigits = stringNumber.replaceAll("^0+", "").replaceAll("[^0-9]", "")
-  val biggie: String = if (onlyDigits.isEmpty) "0" else onlyDigits
+  val biggieInt: String = if (onlyDigits.isEmpty) "0" else onlyDigits
 
   def numberOfDigits: Int =
-    biggie.length
+    biggieInt.length
 
-  def digit(i: Int): Option[Char] =
-    if (i < 1 || i > numberOfDigits) None else Some(biggie.substring(numberOfDigits - i, 1)(0))
+  def digit(i: Int): Option[Int] =
+    if (i < 1 || i > numberOfDigits || numberOfDigits == 0) None
+    else Some(biggieInt.substring(numberOfDigits - i, numberOfDigits - i + 1).toInt)
 
   def +(other: BiggieInt): BiggieInt = {
-    def plusAcc(i: Int, carry: Int, acc: String): String = {
-      (digit(i), other.digit(i)) match {
-        case (None, None) => acc
+    @tailrec def plusAcc(i: Int, carry: Int, acc: String): String = {
+      val blah = (digit(i), other.digit(i))
+      blah match {
+        case (None, None) =>
+          if (carry > 0) carry.toString + acc else acc
         case (Some(c), None) =>
-          if (c + carry < 10) plusAcc(i + 1, 0, (c + carry).toChar + acc)
-          else plusAcc(i + 1, 1, (c + carry - 10).toChar + acc)
+          val nextCarry = if (c + carry >= 10) 1 else 0
+          plusAcc(i + 1, nextCarry, (c + carry - 10 * nextCarry).toString + acc)
         case (None, Some(c)) =>
-          if (c + carry < 10) plusAcc(i + 1, 0, (c + carry).toChar + acc)
-          else plusAcc(i + 1, 1, (c + carry - 10).toChar + acc)
+          val nextCarry = if (c + carry >= 10) 1 else 0
+          plusAcc(i + 1, nextCarry, (c + carry - 10 * nextCarry).toString + acc)
         case (Some(c), Some(d)) =>
-          if (c + d + carry < 10) plusAcc(i + 1, 0, (c + d + carry).toChar + acc)
-          else if (c + d + carry < 20) plusAcc(i + 1, 1, (c + d + carry - 10).toChar + acc)
-          else plusAcc(i + 1, 2, (c + d + carry - 20).toChar + acc)
+          val nextCarry = if (c + d + carry >= 10) 1 else 0
+          plusAcc(i + 1, nextCarry, (c + d + carry - 10 * nextCarry).toString + acc)
       }
     }
     new BiggieInt(plusAcc(1, 0, ""))
