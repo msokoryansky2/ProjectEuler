@@ -1,6 +1,7 @@
 package com.msokoryansky.MathUtils
 
 import scala.annotation.tailrec
+import scala.collection.immutable.HashSet
 
 object Integers {
   /**
@@ -71,7 +72,8 @@ object Integers {
     */
   @tailrec final def primeFactors(i: BigInt, primesToCheck: Stream[BigInt], factors: List[BigInt]): List[BigInt] = {
     if (i < 2) factors
-    else if (i % primesToCheck.head == 0) primeFactors(i / primesToCheck.head, primes(ints(2)), primesToCheck.head :: factors)
+    else if (i % primesToCheck.head == 0)
+      primeFactors(i / primesToCheck.head, primes(ints(2)), primesToCheck.head :: factors)
     else primeFactors(i, primesToCheck.tail, factors)
   }
 
@@ -80,10 +82,13 @@ object Integers {
   def intsDesc(hi: BigInt, lo: BigInt): Stream[BigInt] = if (hi >= lo) hi #:: intsDesc(hi - 1, lo) else Stream.Empty
 
   def largestProductPalindrome(i: BigInt, j: BigInt): BigInt = {
-    @tailrec def largestProductPalindromeAcc(outerStart: BigInt, outer: BigInt, inner: BigInt, largest: BigInt): BigInt = {
+    @tailrec def largestProductPalindromeAcc(outerStart: BigInt,
+                                             outer: BigInt, inner: BigInt, largest: BigInt): BigInt = {
       if (outer < j) largest
-      else if (inner < j || outer * inner <= largest) largestProductPalindromeAcc(outerStart - 1,outerStart - 1, i, largest)
-      else if (outer * inner > largest && isNumberPalindrome(outer * inner)) largestProductPalindromeAcc(outerStart - 1,outerStart - 1, i, outer * inner)
+      else if (inner < j || outer * inner <= largest)
+        largestProductPalindromeAcc(outerStart - 1,outerStart - 1, i, largest)
+      else if (outer * inner > largest && isNumberPalindrome(outer * inner))
+        largestProductPalindromeAcc(outerStart - 1,outerStart - 1, i, outer * inner)
       else largestProductPalindromeAcc(outerStart, outer, inner - 1, largest)
     }
     largestProductPalindromeAcc(i, i, i, 0)
@@ -138,4 +143,109 @@ object Integers {
   def primeNumberNonTailRec(n: Int): BigInt = {
     Integers.primes(Integers.ints(2)).drop(Math.max(0, n - 1)).head
   }
+
+  /**
+    * Returns greatest product of numDigits consecutive digits in the number represented by a String
+    *
+    * @param number    a string representation of a arbitrarily large number
+    * @param numDigits number of consecutive digits to consider for a product
+    * @return greatest possible product of consecutive digits
+    */
+  def greatestProduct(number: String, numDigits: Int): Long = {
+    @tailrec def greatestProductAcc(remaining: String, acc: Long): Long = {
+      if (numDigits < 1 || remaining.length < numDigits) acc
+      else greatestProductAcc(remaining.substring(1),
+        Math.max(remaining.substring(0, numDigits).toList.map(_.toString.toLong).product, acc))
+    }
+    greatestProductAcc(number, 0)
+  }
+
+  def pythagoreanC(a: Int, b: Int, abcSum: Int): Option[Int] = {
+    val cPossible = abcSum - (a + b)
+    if (cPossible > 0 && cPossible * cPossible == a * a + b * b) Some(cPossible) else None
+  }
+
+  def pythagoreanTripletBySum(sum: Int): Option[(Int, Int, Int)] = {
+    {for {
+      a <- 1 until sum if sum > 1
+      b <- 1 until sum if sum > 1
+      c <- pythagoreanC(a, b, sum)
+    } yield (a, b, c)}.headOption
+  }
+
+  def pythagoreanProduct(opt: Option[(Int, Int, Int)]): String = opt match {
+    case Some((a, b, c)) => (a * b * c).toString
+    case _ => "None"
+  }
+
+  /**
+    * @param i first integer in the stream
+    * @return Stream of all integers starting with i
+    */
+  def ints(i: Long): Stream[Long] = i #:: ints(i + 1)
+
+  /**
+    * Test if number is a prime (compares to all 1..SQRT(n))
+    * @param n mumber to check if it's prime
+    * @return if number is prime then true, else false
+    */
+  def isPrime(n: Long): Boolean = {
+    n match {
+      case x if x < 2 => false
+      case _ => !(2 to Math.sqrt(n.toDouble).ceil.toInt).exists{x => x != n && n % x == 0}
+    }
+  }
+
+  /**
+    * Next prime number that's greater than lowerLimit
+    * @param lowerLimit lower cutoff (inclusive) for next prime
+    * @return
+    */
+  def nextPrime(lowerLimit: Long): Long = {
+    if (lowerLimit < 2) 2
+    else {
+      @tailrec def nextPrimeAcc(ints: Stream[Long]): Long = {
+        if (isPrime(ints.head)) ints.head else nextPrimeAcc(ints.tail)
+      }
+      nextPrimeAcc(ints(lowerLimit))
+    }
+  }
+
+  /**
+    * Returns sum of all primes that are less than limit
+    * @param limit cutoff at which we stop summing primes
+    * @return sum of all primes below cutoff
+    */
+  def primeNumberSum(limit: Int): Long = {
+    @tailrec def primeNumberSumAcc(n: Long, acc: Long): Long = {
+      val p = nextPrime(n + 1)
+      if (p >= limit) acc else primeNumberSumAcc(p, acc + p)
+    }
+    primeNumberSumAcc(0, 0)
+  }
+
+  def divisors(number: Long): HashSet[Long] = {
+    require(number > 0, "Must specify a positive integer")
+    @tailrec def divisorsAcc(next: Long, ceiling: Long, acc: HashSet[Long]): HashSet[Long] = {
+      if (next > ceiling) acc
+      else {
+        if (number % next > 0) divisorsAcc(next + 1, ceiling, acc)
+        else {
+          val factor1 = next
+          val factor2 = number / next
+          val acc1 = if (acc.contains(factor1)) acc else acc + factor1
+          val acc2 = if (acc1.contains(factor2)) acc1 else acc1 + factor2
+          divisorsAcc(factor1 + 1, factor2, acc2)
+        }
+      }
+    }
+    divisorsAcc(1, number, HashSet[Long]())
+  }
+
+  def triangleNumbers(lastTriangleIndex: Long, lastTriangleNumber: Long): Stream[Long] = {
+    val nextTriangleNumber = lastTriangleNumber + lastTriangleIndex + 1
+    nextTriangleNumber #:: triangleNumbers(lastTriangleIndex + 1, nextTriangleNumber)
+  }
 }
+
+

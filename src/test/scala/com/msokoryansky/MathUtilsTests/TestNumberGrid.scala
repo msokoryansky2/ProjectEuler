@@ -1,9 +1,9 @@
-package com.msokoryansky.EulerProblemTests
+package com.msokoryansky.MathUtilsTests
 
-import com.msokoryansky.EulerProblems._
+import com.msokoryansky.MathUtils._
 import org.scalatest.FunSuite
 
-class TestP0011 extends FunSuite {
+class TestNumberGrid extends FunSuite {
   val gridBad1: String =
     """
     """.stripMargin

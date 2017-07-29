@@ -1,11 +1,9 @@
-package com.msokoryansky.EulerProblemTests
+package com.msokoryansky.MathUtilsTests
 
-import com.msokoryansky.EulerProblems._
 import org.scalatest.FunSuite
+import com.msokoryansky.MathUtils.BiggieInt
 
-class TestP0013 extends FunSuite {
-  val p = new P0013
-
+class TestBiggieInt extends FunSuite {
   test("BiggieInt allows + operation on long integers represented as strings") {
     assert(new BiggieInt("abc1234dsfhdh335").biggieInt === "1234335")
     assert(new BiggieInt("asjewe").biggieInt === "0")

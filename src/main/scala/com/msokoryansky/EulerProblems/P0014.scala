@@ -1,9 +1,6 @@
 package com.msokoryansky.EulerProblems
 
 class P0014 extends EulerProblem {
-
-
-
   def run: String = "TODO"
 }
 
