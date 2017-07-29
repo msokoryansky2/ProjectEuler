@@ -1,4 +1,4 @@
-package com.msokoryansky.MathUtilsTests
+package com.msokoryansky.TestMathUtils
 
 import org.scalatest.FunSuite
 import com.msokoryansky.MathUtils.BiggieInt
