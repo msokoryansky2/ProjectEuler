@@ -58,15 +58,58 @@ class TestIntegers extends FunSuite {
     assert(!Integers.isNumberPalindrome(1234474321))
   }
 
-  test("P4.intsDesc produces stream of descending integers") {
+  test("intsDesc produces stream of descending integers") {
     assert(Integers.intsDesc(12, 10).toList === List(12, 11, 10))
     assert(Integers.intsDesc(2, 10).toList === List())
   }
 
-  test("P4.largestProductPalindrome produces largest palindrome that's product of two numbers in integer range") {
+  test("largestProductPalindrome produces largest palindrome that's product of two numbers in integer range") {
     assert(Integers.largestProductPalindrome(10, 1) === 9)
     assert(Integers.largestProductPalindrome(12, 11) === 121)
     assert(Integers.largestProductPalindrome(12, 0) === 121)
     assert(Integers.largestProductPalindrome(4, 0) === 9)
+  }
+
+  test("dropFirstMatch drops first occurrence of element from sequence") {
+    assert(Integers.dropFirstMatch(List("blah", "bleh", "blah"), "blah") === List("bleh", "blah"))
+    assert(Integers.dropFirstMatch(Array(6, 7, 8, 7, 6, 0, 1, 6, 8), 6) === Array(7, 8, 7, 6, 0, 1, 6, 8))
+    assert(Integers.dropFirstMatch(Array(6, 7, 8, 7, 6, 0, 1, 6, 8), 16) === Array(6, 7, 8, 7, 6, 0, 1, 6, 8))
+    assert(Integers.dropFirstMatch(Array[Int](), 6) === Array[Int]())
+    assert(Integers.dropFirstMatch(Array(10), 10) === Array())
+    assert(Integers.dropFirstMatch(Array(6, 7, 8, 7, 6, 0, 1, 6, 8), 0) === Array(6, 7, 8, 7, 6, 1, 6, 8))
+  }
+
+  test("union2 drops creates union of two sequences with possible repeating elements") {
+    assert(Integers.union2(List("blah", "bleh", "blah"), List("blah")).sortWith(_ > _) === List("blah", "bleh", "blah").sortWith(_ > _))
+    assert(Integers.union2(Array(6, 6, 8), Array(6, 7, 6, 6, 9)).sortWith(_ > _) === Array(6, 6, 8, 6, 7, 9).sortWith(_ > _))
+    assert(Integers.union2(Array(6, 6, 8), Array[Int]()).sortWith(_ > _) === Array(6, 6, 8).sortWith(_ > _))
+    assert(Integers.union2(Array[BigInt](), Array[BigInt]()).sortWith(_ > _) === Array[BigInt]().sortWith(_ > _))
+  }
+
+  test("primeFactorsOfRange returns sequence of prime factors that jointly factor any number in specified range ") {
+    assert(Integers.primeFactorsOfRange(1, 4).sortWith(_ > _) === Seq(2, 2, 3).sortWith(_ > _))
+    assert(Integers.primeFactorsOfRange(2, 8).sortWith(_ > _) === Seq(2, 3, 2, 5, 7, 2).sortWith(_ > _))
+  }
+
+  test("ints creates integer sequence starting with specified number") {
+    assert(Integers.ints(2).head === 2)
+    assert(Integers.ints(3).tail.head === 4)
+    assert(Integers.ints(3).tail.tail.tail.head === 6)
+  }
+
+  test("isPrime tests if number is prime") {
+    assert(Integers.isPrime(2) === true)
+    assert(Integers.isPrime(-1) === false)
+    assert(Integers.isPrime(1) === false)
+    assert(Integers.isPrime(12) === false)
+    assert(Integers.isPrime(29) === true)
+  }
+
+  test("primeNumber returns nth number in primes sequence") {
+    assert(Integers.primeNumber(-1) === 2)
+    assert(Integers.primeNumber(0) === 2)
+    assert(Integers.primeNumber(1) === 2)
+    assert(Integers.primeNumber(2) === 3)
+    assert(Integers.primeNumber(5) === 11)
   }
 }
