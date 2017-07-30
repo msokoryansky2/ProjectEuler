@@ -11,5 +11,6 @@ class TestLatticePath extends FunSuite {
     assert(LatticePath.numPaths(100, 0) === 1)
     assert(LatticePath.numPaths(0, 100) === 1)
     assert(LatticePath.numPaths(2, 2) === 6)
+    assert(LatticePath.numPaths(3, 3) === 20)
   }
 }
