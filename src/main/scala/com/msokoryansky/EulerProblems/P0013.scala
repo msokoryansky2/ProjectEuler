@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.BiggieInt
+import com.msokoryansky.MathUtils.HugeInt
 
 /*
 Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
@@ -211,7 +211,7 @@ class P0013 extends EulerProblem {
       |20849603980134001723930671666823555245252804609722
       |53503534226472524250874054075591789781264330331690
     """.stripMargin.split("\\r\\n|\\n|\\r").filterNot{(s) => s.trim.isEmpty}
-      .map((str) => new BiggieInt(str)).foldLeft(new BiggieInt("0"))(_ + _).biggieInt.take(10)
+      .map((str) => new HugeInt(str)).foldLeft(new HugeInt("0"))(_ + _).hugeInt.take(10)
 }
 
 object P0013 extends App {
