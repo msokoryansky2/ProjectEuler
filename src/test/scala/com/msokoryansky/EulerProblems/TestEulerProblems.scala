@@ -1,6 +1,5 @@
-package com.msokoryansky.TestEulerProblems
+package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.EulerProblems._
 import org.scalatest.FunSuite
 
 class TestEulerProblems extends FunSuite {

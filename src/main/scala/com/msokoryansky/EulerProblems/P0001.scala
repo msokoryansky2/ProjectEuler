@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Integer
 import scala.annotation.tailrec
 
 
@@ -13,7 +13,7 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 
 
 class P0001 extends EulerProblem {
-  def run: String = Integers.intsSum(0, 1000, (n) => n % 3 == 0 || n % 5 == 0).toString
+  def run: String = Integer.intsSum(0, 1000, (n) => n % 3 == 0 || n % 5 == 0).toString
 
   /**
     * One-liner alternative to run

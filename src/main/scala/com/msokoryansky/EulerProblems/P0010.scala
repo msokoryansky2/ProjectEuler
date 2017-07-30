@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Prime
 
 /*
 
@@ -10,7 +10,7 @@ Find the sum of all the primes below two million.
 */
 
 class P0010 extends EulerProblem {
-  def run: String = Integers.primeNumberSum(2000000).toString
+  def run: String = Prime.primeNumberSum(2000000).toString
 }
 
 object P0010 extends App {

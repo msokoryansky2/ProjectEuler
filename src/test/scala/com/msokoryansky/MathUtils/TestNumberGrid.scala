@@ -1,4 +1,4 @@
-package com.msokoryansky.TestMathUtils
+package com.msokoryansky.MathUtils
 
 import com.msokoryansky.MathUtils._
 import org.scalatest.FunSuite

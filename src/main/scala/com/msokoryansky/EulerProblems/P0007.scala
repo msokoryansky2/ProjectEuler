@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Prime
 
 /*
 
@@ -10,7 +10,7 @@ What is the 10 001st prime number?
 */
 
 class P0007 extends EulerProblem {
-  def run: String = Integers.primeNumber(10001).toString
+  def run: String = Prime.primeNumber(10001).toString
 }
 
 

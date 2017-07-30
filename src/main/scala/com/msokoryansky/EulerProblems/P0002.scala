@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Fibonacci
 
 
 /*
@@ -14,7 +14,7 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
 
 
 class P0002 extends EulerProblem {
-  def run: String = Integers.fibsSum(0, 1, 4000000, (a) => a % 2 == 0).toString
+  def run: String = Fibonacci.fibsSum(0, 1, 4000000, (a) => a % 2 == 0).toString
 }
 
 object P0002 extends App {

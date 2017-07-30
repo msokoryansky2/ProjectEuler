@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Palindrome
 
 /*
 
@@ -11,7 +11,7 @@ Find the largest palindrome made from the product of two 3-digit numbers.
 
 
 class P0004 extends EulerProblem {
-  def run: String = Integers.largestProductPalindrome(999, 100).toString
+  def run: String = Palindrome.largestProductPalindrome(999, 100).toString
 }
 
 object P0004 extends App {

@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Pythagorean
 
 /*
 
@@ -14,7 +14,7 @@ Find the product abc.
 */
 
 class P0009 extends EulerProblem {
-  def run: String = Integers.pythagoreanProduct(Integers.pythagoreanTripletBySum(1000))
+  def run: String = Pythagorean.pythagoreanProduct(Pythagorean.pythagoreanTripletBySum(1000))
 }
 
 object P0009 extends App {

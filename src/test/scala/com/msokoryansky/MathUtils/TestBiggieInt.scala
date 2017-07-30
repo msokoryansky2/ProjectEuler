@@ -1,7 +1,6 @@
-package com.msokoryansky.TestMathUtils
+package com.msokoryansky.MathUtils
 
 import org.scalatest.FunSuite
-import com.msokoryansky.MathUtils.BiggieInt
 
 class TestBiggieInt extends FunSuite {
   test("BiggieInt allows + operation on long integers represented as strings") {

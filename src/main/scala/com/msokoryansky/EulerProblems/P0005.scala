@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Integers
+import com.msokoryansky.MathUtils.Prime
 
 /*
 
@@ -10,7 +10,7 @@ What is the smallest positive number that is evenly divisible by all of the numb
 */
 
 class P0005 extends EulerProblem {
-  def run: String = Integers.primeFactorsOfRange(1, 20).product.toString()
+  def run: String = Prime.primeFactorsOfRange(1, 20).product.toString()
 }
 
 object P0005 extends App {
