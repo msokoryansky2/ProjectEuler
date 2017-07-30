@@ -20,6 +20,13 @@ class TestCollatz extends FunSuite {
     assert(Collatz.collatz(1) === List(1))
     assert(Collatz.collatz(2) === List(2, 1))
     assert(Collatz.collatz(3) === List(3, 10, 5, 16, 8, 4, 2, 1))
+    assert(Collatz.collatz(4) === List(4, 2, 1))
+    assert(Collatz.collatz(5) === List(5, 16, 8, 4, 2, 1))
     assert(Collatz.collatz(13) === List(13, 40, 20, 10, 5, 16, 8, 4, 2, 1))
+  }
+
+  test("longestCollatz returns number in specified range that has longest collatz sequence") {
+    assert(Collatz.longestCollatz(1, 6) === 3)
+    assert(Collatz.longestCollatz(4, 6) === 5)
   }
 }

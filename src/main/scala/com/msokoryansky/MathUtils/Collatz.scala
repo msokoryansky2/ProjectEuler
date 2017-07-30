@@ -11,4 +11,15 @@ object Collatz {
       else collatzAcc(3 * acc.head + 1 :: acc)
     collatzAcc(List(i)).reverse
   }
+
+  def longestCollatz(start: Long, stop: Long): Long = {
+    def longestCollatzAcc(start: Long, acc: List[Long]): List[Long] = {
+      if (start >= stop) acc
+      else {
+        val thisCollatz = collatz(start)
+        longestCollatzAcc(start + 1, if (thisCollatz.length > acc.length) thisCollatz else acc)
+      }
+    }
+    longestCollatzAcc(start, List[Long]()).head
+  }
 }
