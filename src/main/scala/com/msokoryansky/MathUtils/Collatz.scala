@@ -13,7 +13,7 @@ object Collatz {
   }
 
   def longestCollatz(start: Long, stop: Long): Long = {
-    def longestCollatzAcc(start: Long, acc: List[Long]): List[Long] = {
+    @tailrec def longestCollatzAcc(start: Long, acc: List[Long]): List[Long] = {
       if (start >= stop) acc
       else {
         val thisCollatz = collatz(start)
