@@ -3,45 +3,64 @@ package com.msokoryansky.MathUtils
 /**
   * Array-of-Array representation of a pyramid. 0th element of outer array should have array of 1 element,
   * 1st outer element => array of 2 elements, Nth element of outer array => inner array of N+1 elements
-  * @param longPyramid
+  * @param longPyramid array-of-array of longs representing the pyramid
   */
 class NumberPyramid private (longPyramid: Array[Array[Long]]) {
   NumberPyramid.validate(longPyramid)
-  val pyramid = longPyramid
+  val pyramid: Array[Array[Long]] = longPyramid
+  val height: Int  = pyramid.length
+  /**
+    * Returns 1-indexed array in place y of row x
+    * @param x 1-indexed place number in row (e.g: 5, 6, 7, 8  has 7 in 3rd place)
+    * @param y 1-indexed row number
+    * @return option of long number that's element of the pyramid, provided x and y are valid
+    */
+  def element(x: Int, y: Int): Long = {
+    require(isElement(x, y), s"($x, $y) is not a valid element position in this pyramid")
+    pyramid(y - 1)(x - 1)
+  }
+  def isElement(x: Int, y: Int): Boolean = x >= 1 && y >= 1 && y <= height && x > pyramid(y - 1).length
 
-  def bestPath(row: Int, element: Int, hat: SortingHat[Long]): Unit = {
+  def bestPathFromPeak(hat: SortingHat[Long]): List[(Int, Int)] = allPaths(hat)(1, 1)
 
+  def allPaths(hat: SortingHat[Long]): Map[(Int, Int), List[(Int, Int)]] = {
+    def allPathsAcc(x: Int, y: Int, acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] = {
+      (x, y) match {
+        case (x1, y1) if !isElement(x1, y1) && (y1 > 1 && y1 <= height) => allPathsAcc(1, y - 1, acc)
+        case (x1, y1) if !isElement(x1, y1) => acc        // covers both reaching pyramid peak and invalid (x, y)
+        case (x1, y1) =>
+          val left: List[(Int, Int)] = (x1, y1) :: (if (acc.contains(x, y + 1)) acc(x, y + 1) else Nil)
+          val right: List[(Int, Int)] = (x1, y1) :: (if (acc.contains(x + 1, y + 1)) acc(x + 1, y + 1) else Nil)
+          (left.map(el => element(el._1, el._2)).foldLeft(hat.calcAcc)(hat.calc),
+            right.map(el => element(el._1, el._2)).foldLeft(hat.calcAcc)(hat.calc)) match {
+            case (l, r) if List(l, r).foldLeft(hat.selectAcc)(hat.select) =>
+              allPathsAcc(x + 1, y, Map((x, y) -> left) ++ acc)
+            case (l, r) =>
+              allPathsAcc(x + 1, y, Map((x, y) -> right) ++ acc)
+          }
+      }
+    }
+    allPathsAcc(1, pyramid.length, Map[(Int, Int), List[(Int, Int)]]())
   }
 
-  override def toString(): String = NumberPyramid.toString(pyramid)
+  override def toString: String = NumberPyramid.toString(pyramid)
 }
 
+/**
+  * Judge of bestness of list of lists of values
+  * @param calc folder of inner list. E.g. add all values
+  * @param calcAcc accumulator for for folder of inner list
+  * @param select folder of outer list. E.g. find max of values
+  * @param selectAcc accumulator for folder of outer list
+  * @tparam A e.g. Long
+  */
+case class SortingHat[A](calc: (A, A) => A, calcAcc: A, select: (A, A) => A, selectAcc: A)
+
 object NumberPyramid extends App {
-
-  println(NumberPyramid(
-    """
-      |75
-      |95 64
-      |17 47 82
-      |18 35 87 10
-      |20 04 82 47 65
-      |19 01 23 75 03 34
-      |88 02 77 73 07 63 67
-      |99 65 04 28 06 16 70 92
-      |41 41 26 56 83 40 80 70 33
-      |41 48 72 33 47 32 37 16 94 29
-      |53 71 44 65 25 43 91 52 97 51 14
-      |70 11 33 28 77 73 17 78 39 68 17 57
-      |91 71 52 38 17 14 91 43 58 50 27 29 48
-      |63 66 04 68 89 53 67 30 73 16 69 87 40 31
-      |04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
-    """.stripMargin))
-
-
   def validate(longPyramid: Array[Array[Long]]): Unit = {
     require(longPyramid.length > 0, "Empty pyramid")
     for {
-      n <- 0 to longPyramid.length - 1
+      n <- longPyramid.indices
     } yield require(longPyramid(n).length == n + 1, "Row " + (n + 1) + " does not have expected length of " + (n + 2))
   }
 
@@ -70,13 +89,3 @@ object NumberPyramid extends App {
   def apply(str: String) = new NumberPyramid(fromString(str))
   def apply(longPyramid: Array[Array[Long]]) = new NumberPyramid(longPyramid)
 }
-
-/**
-  * Judge of bestness of list of lists of values
-  * @param calc folder of inner list. E.g. add all values
-  * @param calcAcc accumulator for for folder of inner list
-  * @param select folder of outer list. E.g. find max of values
-  * @param selectAcc accumulator for folder of outer list
-  * @tparam A e.g. Long
-  */
-case class SortingHat[A](calc: (A, A) => A, calcAcc: A, select: (A, A) => A, selectAcc: A)
