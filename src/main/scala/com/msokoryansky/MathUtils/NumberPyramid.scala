@@ -33,7 +33,7 @@ class NumberPyramid private (longPyramid: Array[Array[Long]]) {
           val right: List[(Int, Int)] = (x1, y1) :: (if (acc.contains(x + 1, y + 1)) acc(x + 1, y + 1) else Nil)
           (left.map(el => element(el._1, el._2)).foldLeft(hat.calcAcc)(hat.calc),
             right.map(el => element(el._1, el._2)).foldLeft(hat.calcAcc)(hat.calc)) match {
-            case (l, r) if List(l, r).foldLeft(hat.selectAcc)(hat.select) =>
+            case (l, r) if List(l, r).foldLeft(hat.selectAcc)(hat.select) == l =>
               allPathsAcc(x + 1, y, Map((x, y) -> left) ++ acc)
             case (l, r) =>
               allPathsAcc(x + 1, y, Map((x, y) -> right) ++ acc)
@@ -45,16 +45,6 @@ class NumberPyramid private (longPyramid: Array[Array[Long]]) {
 
   override def toString: String = NumberPyramid.toString(pyramid)
 }
-
-/**
-  * Judge of bestness of list of lists of values
-  * @param calc folder of inner list. E.g. add all values
-  * @param calcAcc accumulator for for folder of inner list
-  * @param select folder of outer list. E.g. find max of values
-  * @param selectAcc accumulator for folder of outer list
-  * @tparam A e.g. Long
-  */
-case class SortingHat[A](calc: (A, A) => A, calcAcc: A, select: (A, A) => A, selectAcc: A)
 
 object NumberPyramid extends App {
   def validate(longPyramid: Array[Array[Long]]): Unit = {
