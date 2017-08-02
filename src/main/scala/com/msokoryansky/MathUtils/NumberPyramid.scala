@@ -19,7 +19,7 @@ class NumberPyramid private (longPyramid: Array[Array[Long]]) {
     require(isElement(x, y), s"($x, $y) is not a valid element position in this pyramid")
     pyramid(y - 1)(x - 1)
   }
-  def isElement(x: Int, y: Int): Boolean = x >= 1 && y >= 1 && y <= height && x > pyramid(y - 1).length
+  def isElement(x: Int, y: Int): Boolean = x >= 1 && y >= 1 && y <= height && x <= pyramid(y - 1).length
 
   def bestPathFromPeak(hat: SortingHat[Long]): List[(Int, Int)] = allPaths(hat)(1, 1)
 
