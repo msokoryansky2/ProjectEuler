@@ -2,14 +2,35 @@ package com.msokoryansky.MathUtils
 
 object Calendar {
   /**
-    * Return number of the specified day relative to 1 Jan 1900 which was a Monday with dayNumber of 0
+    * Return number of the specified day relative to 1 Jan 1900 which was a Monday with dayNumber of 1
     */
+  def dayNumber(d: (Int, Month.Value, Int)): Long = dayNumber(d._1, d._2, d._3)
   def dayNumber(year: Int, month: Month.Value, day: Int): Long = {
     require(isValidDay(year, month, day), "Date $year - $month - $day is invalid")
     require(year >= 1900, "Year has to be 1900 or later")
-    (1900 until year).toList.map(yearDays).sum                          // days in full preceding
-    + Month.values.filter(_ < month).map(monthDays(year, _)).sum        // days in full month of that year
-    + day
+    (1900 until year).toList.map(yearDays).sum  +                               // days in full preceding
+      Month.values.toList.filter(_ < month).map(monthDays(year, _)).sum +       // days in full month of that year
+      day
+  }
+
+  def day(number: Long): (Int, Month.Value, Int) = {
+    require(number >= 1, "Day number must be positive")
+    val yearsGuess = (number / 365).toInt
+    def yearsGuessAcc(year: Int, accDays: Long): Int =
+      if (accDays + yearDays(year) > number) year else yearsGuessAcc(year + 1, accDays + yearDays(year))
+    val year = yearsGuessAcc(1900 + yearsGuess, (1900 until yearsGuess).map(yearDays).sum)
+
+    val daysWithinYear = number - (1900 until yearsGuess).map(yearDays).sum
+    assert(daysWithinYear > 0, s"Number of days within guessed year $year is less than 1")
+
+    def monthGuessAcc(month: Month.Value, accDays: Int): Month.Value =
+      if (accDays + monthDays(year, month) > daysWithinYear) month
+      else monthGuessAcc(Month(month.id + 1), accDays + monthDays(year, month))
+    def month = monthGuessAcc(Month.Jan, 0)
+    def day = (number - dayNumber(year, month, 1) + 1).toInt
+
+    assert(isValidDay(year, month, day), s"Calculated day of $day/$month/$year is invalid")
+    (year, month, day)
   }
 
   def isValidDay(year: Int, month: Month.Value, day: Int): Boolean = day >= 1 && day <= monthDays(year, month)
@@ -20,17 +41,33 @@ object Calendar {
     case feb => if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) 29 else 28
   }
 
-  def yearDays(year: Int): Int = Month.values.map(monthDays(year, _)).sum
+  def yearDays(year: Int): Int = Month.values.toList.map(monthDays(year, _)).sum
+
+  def weekday(year: Int, month: Month.Value, day: Int): Weekday.Value = weekday(dayNumber(year, month, day))
+  def weekday(number: Long): Weekday.Value = Weekday(((number - 1) % 7).toInt)
+
+  /**
+    * Returns list of days between inclusive start and end dates that match specified filter
+    */
+  def matchingDays(dayFilter: (Int, Month.Value, Int) => Boolean,
+                  yearStart: Int, monthStart: Month.Value, dayStart: Int,
+                  yearEnd: Int, monthEnd: Month.Value, dayEnd: Int): List[(Int, Month.Value, Int)] =
+    matchingDays(dayFilter, dayNumber(yearStart, monthStart, dayStart), dayNumber(yearEnd, monthEnd, dayEnd)).map(day)
+  def matchingDays(dayFilter: (Int, Month.Value, Int) => Boolean, start: Long, end: Long): List[Long] =
+    (start to end).filter((n) => {
+                                val (y, m, d)= day(n)
+                                dayFilter(y, m, d)
+                              }).toList
 }
 
 object Weekday extends Enumeration {
-  val Mon = Value(1)
-  val Tue = Value(2)
-  val Wed = Value(3)
-  val Thu = Value(4)
-  val Fri = Value(5)
-  val Sat = Value(6)
-  val Sun = Value(7)
+  val Mon = Value(0, "Mon")
+  val Tue = Value(1, "Tue")
+  val Wed = Value(2, "Wed")
+  val Thu = Value(3, "Thu")
+  val Fri = Value(4, "Fri")
+  val Sat = Value(5, "Sat")
+  val Sun = Value(6, "Sun")
 }
 
 object Month extends Enumeration {
