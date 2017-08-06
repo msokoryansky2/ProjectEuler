@@ -61,4 +61,14 @@ class TestCalendar extends FunSuite {
     assert(Calendar.day(429) === (1901, Month.Mar, 5))
     (1 to 100000 by 1000).foreach(d => assert(Calendar.dayNumber(Calendar.day(d)) == d))
   }
+
+  test("matchingDays return list of threeples in specified range matching specified filter") {
+    assert(Calendar.matchingDays((y, m, d) => Calendar.weekday(y, m, d) == Weekday.Mon,
+      1900, Month.Jan, 1, 1900, Month.Jan, 31) ===
+      List((1900, Month.Jan, 1), (1900, Month.Jan, 8), (1900, Month.Jan, 15),
+        (1900, Month.Jan, 22), (1900, Month.Jan, 29)))
+    assert(Calendar.matchingDays((y, m, d) => y % 25 == 0 && m == Month.Jan && d == 5,
+      1901, Month.Jan, 1, 2015, Month.Jan, 31) ===
+      List((1925, Month.Jan, 5), (1950, Month.Jan, 5), (1975, Month.Jan, 5), (2000, Month.Jan, 5)))
+  }
 }
