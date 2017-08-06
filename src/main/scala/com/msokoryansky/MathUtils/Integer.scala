@@ -9,17 +9,7 @@ object Integer {
     * @return Stream of all integers starting with i
     */
   def ints(i: Int): Stream[Int] = i #:: ints(i + 1)
-
-  /**
-    * @param i first integer in the stream
-    * @return stream of all integers starting with i
-    */
   def ints(i: BigInt): Stream[BigInt] = i #:: ints(i + 1)
-
-  /**
-    * @param i first integer in the stream
-    * @return Stream of all integers starting with i
-    */
   def ints(i: Long): Stream[Long] = i #:: ints(i + 1)
 
   def intsDesc(hi: BigInt, lo: BigInt): Stream[BigInt] = if (hi >= lo) hi #:: intsDesc(hi - 1, lo) else Stream.Empty
