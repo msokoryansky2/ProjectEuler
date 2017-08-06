@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.Amicable
+import com.msokoryansky.MathUtils.Integer
 
 /*
 Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
@@ -15,9 +15,9 @@ Evaluate the sum of all the amicable numbers under 10000.
 class P0021 extends EulerProblem {
   def run: String = (for {
     i <- 1 to 10000
-    j <- (1 to 10000).filter(_ > i)
-    if Amicable.isAmicable(i, j)
-  } yield (i, j)).mkString(", ")
+    j = Integer.divisors(i).filter(_ != i).sum.toInt
+    if j > i && j <= 10000 && Integer.divisors(j).filter(_ != j).sum == i
+  } yield i + j).sum.toString
 }
 
 object P0021 extends App {

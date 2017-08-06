@@ -64,22 +64,26 @@ class TestEulerProblems extends FunSuite {
   }
 
   test("#16") {
-    assert((new P0016).run == "1366")
+    assert((new P0016).run === "1366")
   }
 
   test("#17") {
-    assert((new P0017).run == "21124")
+    assert((new P0017).run === "21124")
   }
 
   test("#18") {
-    assert((new P0018).run == "1074")
+    assert((new P0018).run === "1074")
   }
 
   test("#19") {
-    assert((new P0019).run == "171")
+    assert((new P0019).run === "171")
   }
 
   test("#20") {
-    assert((new P0020).run == "648")
+    assert((new P0020).run === "648")
+  }
+
+  test("#21") {
+    assert((new P0021).run === "31626")
   }
 }
