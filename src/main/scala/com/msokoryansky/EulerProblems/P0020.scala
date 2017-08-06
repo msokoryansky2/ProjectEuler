@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.HugeInt
+import com.msokoryansky.MathUtils.HugePositiveInt
 
 
 /*
@@ -13,7 +13,7 @@ Find the sum of the digits in the number 100!
 */
 
 class P0020 extends EulerProblem {
-  def run: String = new HugeInt("100").factorial.hugeInt.split("").toList.map(_.toInt).sum.toString
+  def run: String = new HugePositiveInt("100").factorial.hugePositiveInt.split("").toList.map(_.toInt).sum.toString
 }
 
 object P0020 extends App {
