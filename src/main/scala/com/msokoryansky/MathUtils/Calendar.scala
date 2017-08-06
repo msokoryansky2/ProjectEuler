@@ -1,6 +1,8 @@
 package com.msokoryansky.MathUtils
 
 object Calendar {
+  val Year1900 = 1900
+
   /**
     * Return number of the specified day relative to 1 Jan 1900 which was a Monday with dayNumber of 1
     */
@@ -15,19 +17,19 @@ object Calendar {
 
   def day(number: Long): (Int, Month.Value, Int) = {
     require(number >= 1, "Day number must be positive")
-    val yearsGuess = (number / 365).toInt
+    val yearGuess = Math.max(Year1900, Year1900 + (number / 365).toInt - 1)
     def yearsGuessAcc(year: Int, accDays: Long): Int =
-      if (accDays + yearDays(year) > number) year else yearsGuessAcc(year + 1, accDays + yearDays(year))
-    val year = yearsGuessAcc(1900 + yearsGuess, (1900 until yearsGuess).map(yearDays).sum)
+      if (accDays + yearDays(year) >= number) year else yearsGuessAcc(year + 1, accDays + yearDays(year))
+    val year = yearsGuessAcc(yearGuess, (Year1900 until yearGuess).map(yearDays).sum)
 
-    val daysWithinYear = number - (1900 until yearsGuess).map(yearDays).sum
+    val daysWithinYear = number - (Year1900 until year).map(yearDays).sum
     assert(daysWithinYear > 0, s"Number of days within guessed year $year is less than 1")
 
     def monthGuessAcc(month: Month.Value, accDays: Int): Month.Value =
-      if (accDays + monthDays(year, month) > daysWithinYear) month
+      if (accDays + monthDays(year, month) >= daysWithinYear) month
       else monthGuessAcc(Month(month.id + 1), accDays + monthDays(year, month))
-    def month = monthGuessAcc(Month.Jan, 0)
-    def day = (number - dayNumber(year, month, 1) + 1).toInt
+    val month = monthGuessAcc(Month.Jan, 0)
+    val day = (number - dayNumber(year, month, 1) + 1).toInt
 
     assert(isValidDay(year, month, day), s"Calculated day of $day/$month/$year is invalid")
     (year, month, day)

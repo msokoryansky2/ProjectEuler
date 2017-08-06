@@ -46,6 +46,18 @@ class TestCalendar extends FunSuite {
   }
 
   test("day return year/month/day of specified day number") {
+    assert(Calendar.day(1) === (1900, Month.Jan, 1))
+    assert(Calendar.day(2) === (1900, Month.Jan, 2))
+    assert(Calendar.day(20) === (1900, Month.Jan, 20))
+    assert(Calendar.day(30) === (1900, Month.Jan, 30))
+    assert(Calendar.day(31) === (1900, Month.Jan, 31))
+    assert(Calendar.day(32) === (1900, Month.Feb, 1))
+    assert(Calendar.day(59) === (1900, Month.Feb, 28))
+    assert(Calendar.day(60) === (1900, Month.Mar, 1))
+    assert(Calendar.day(65) === (1900, Month.Mar, 6))
+    assert(Calendar.day(364) === (1900, Month.Dec, 30))
+    assert(Calendar.day(365) === (1900, Month.Dec, 31))
+    assert(Calendar.day(366) === (1901, Month.Jan, 1))
     assert(Calendar.day(429) === (1901, Month.Mar, 5))
     (1 to 100000 by 1000).foreach(d => assert(Calendar.dayNumber(Calendar.day(d)) == d))
   }
