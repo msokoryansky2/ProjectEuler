@@ -43,7 +43,7 @@ object Calendar {
     case feb => if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) 29 else 28
   }
 
-  def yearDays(year: Int): Int = Month.values.toList.map(monthDays(year, _)).sum
+  def yearDays(year: Int): Int = if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 366 else 365
 
   def weekday(year: Int, month: Month.Value, day: Int): Weekday.Value = weekday(dayNumber(year, month, day))
   def weekday(number: Long): Weekday.Value = Weekday(((number - 1) % 7).toInt)
