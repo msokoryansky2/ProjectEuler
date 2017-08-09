@@ -60,6 +60,10 @@ object Integer {
     }
     divisorsAcc(1, number, HashSet[Long]())
   }
+
+  def isSumOf2Elements(number: Long, elements: Set[Long]): Boolean = {
+    elements.exists(e1 => elements.contains(number - e1))
+  }
 }
 
 

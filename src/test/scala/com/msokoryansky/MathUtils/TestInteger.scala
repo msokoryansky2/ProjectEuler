@@ -53,4 +53,12 @@ class TestInteger extends FunSuite {
     assert(Integer.divisors(27).toList.sortWith(_ < _) === List(1, 3, 9, 27))
     assert(Integer.divisors(31).toList.sortWith(_ < _) === List(1, 31))
   }
+
+  test("isSumOf2 checks if specified number is a sum of two elements in specified set") {
+    assert(Integer.isSumOf2Elements(12, Set(4, 5, 6, 7)))
+    assert(Integer.isSumOf2Elements(12, Set(4, 5, 6, 9)))
+    assert(!Integer.isSumOf2Elements(12, Set(4, 5, 10, 9)))
+    assert(Integer.isSumOf2Elements(55, Set(10, 30, 20, 40, 5, 25)))
+    assert(!Integer.isSumOf2Elements(55, Set(10, 30, 20, 40, 50, 60)))
+  }
 }
