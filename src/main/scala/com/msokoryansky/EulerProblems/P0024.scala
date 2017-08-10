@@ -1,5 +1,7 @@
 package com.msokoryansky.EulerProblems
 
+import com.msokoryansky.MathUtils.Permutation
+
 
 /*
 A permutation is an ordered arrangement of objects. For example, 3124 is one possible permutation of the digits
@@ -13,11 +15,15 @@ What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 
 
 
 class P0024 extends EulerProblem {
-  def run: String = {
-    // Brute force solution.
-    // An elegant algo would use the fact that we only need to find millionth element.
-    // The general approach is to see what number should go first lexigraphically in order to be millionth.
-    // Then recurse remaining characters with remaining number to get to million.
+
+  def run: String = Permutation.lexicographicPermutation(Set('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), 999999)
+                                  .toString
+
+  /**
+    * Brute force solution. Works but ugly
+    * @return
+    */
+  def run2: String = {
     val perms = List("0", "1", "2", "3", "4", "5", "6", "7", "8", "9").permutations.toArray.
       map(_.mkString).sortWith(_ < _)
     perms(999999)

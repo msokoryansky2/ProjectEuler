@@ -20,7 +20,7 @@ object Permutation {
       require(i < Integer.factorial(s.size), "Provided set has fewer permutations than the permutation number requested")
       s.size match {
         case 0 => acc
-        case n if n > 1 =>
+        case n =>
           val partition = Integer.factorial(n - 1)
           val headElementIndex = (i / partition).toInt
           val headElement = s.toArray.sortWith(_ < _)(headElementIndex)
