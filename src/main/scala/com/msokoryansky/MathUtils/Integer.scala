@@ -28,6 +28,12 @@ object Integer {
     intsSumAcc(ints(i), 0)
   }
 
+  def factorial(i: Int): Long = {
+    require(i >= 0, "Can only take factorials of positive integers")
+    @tailrec def factorialAcc(i: Int, acc: Long): Long = if (i <= 1) acc else factorialAcc(i - 1, i * acc)
+    factorialAcc(i, 1)
+  }
+
   /**
     * Returns greatest product of numDigits consecutive digits in the number represented by a String
     * @param number    a string representation of a arbitrarily large number
