@@ -15,6 +15,25 @@ class TestFibonacci extends FunSuite {
     assert(fibs.tail.tail.tail.tail.tail.tail.tail.head === 13)
   }
 
+  test("fibsWithIndex is a stream of tuples of Fibonacci HugePositiveInts with their element number") {
+    def fibsWithIndex = Fibonacci.fibsWithIndex(new HugePositiveInt("1"), new HugePositiveInt("1"), 1)
+    val el1 = fibsWithIndex.head
+    assert(el1._1.hugePositiveInt === "1")
+    assert(el1._2 === 1)
+    val el2 = fibsWithIndex.tail.head
+    assert(el2._1.hugePositiveInt === "1")
+    assert(el2._2 === 2)
+    val el3 = fibsWithIndex.tail.tail.head
+    assert(el3._1.hugePositiveInt === "2")
+    assert(el3._2 === 3)
+    val el4 = fibsWithIndex.tail.tail.tail.head
+    assert(el4._1.hugePositiveInt === "3")
+    assert(el4._2 === 4)
+    val el5 = fibsWithIndex.tail.tail.tail.tail.head
+    assert(el5._1.hugePositiveInt === "5")
+    assert(el5._2 === 5)
+  }
+
   test("fibsSum returns sum of stream of fibs") {
     assert(Fibonacci.fibsSum(0, 1, 10, _ => true) === 20)
     assert(Fibonacci.fibsSum(0, 1, 10, _ % 2 == 0) === 10)

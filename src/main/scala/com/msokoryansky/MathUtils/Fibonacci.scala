@@ -10,6 +10,9 @@ object Fibonacci {
     */
   def fibs(a: Int, b: Int): Stream[Int] = a #:: fibs(b, a + b)
 
+  def fibsWithIndex(a: HugePositiveInt, b: HugePositiveInt, index: Long): Stream[(HugePositiveInt, Long)] =
+    (a, index) #:: fibsWithIndex(b, a + b, index + 1)
+
   /**
     * Sum of all Fibonacci numbers starting with a and b and not exceeding limit and subject to include
     * @param a Int first Fib number
