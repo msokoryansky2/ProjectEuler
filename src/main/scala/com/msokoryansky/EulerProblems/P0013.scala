@@ -211,7 +211,7 @@ class P0013 extends EulerProblem {
       |20849603980134001723930671666823555245252804609722
       |53503534226472524250874054075591789781264330331690
     """.stripMargin.split("\\r\\n|\\n|\\r").filterNot{(s) => s.trim.isEmpty}
-      .map((str) => new HugePositiveInt(str)).foldLeft(new HugePositiveInt("0"))(_ + _).hugePositiveInt.take(10)
+      .map((str) => new HugePositiveInt(str)).foldLeft(new HugePositiveInt("0"))(_ + _).value.take(10)
 }
 
 object P0013 extends App {

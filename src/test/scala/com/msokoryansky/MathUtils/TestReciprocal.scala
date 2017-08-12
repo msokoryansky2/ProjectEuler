@@ -23,11 +23,13 @@ class TestReciprocal extends FunSuite {
     assert(Reciprocal.reciprocal(11).toString === "0.(09)")
     assert(Reciprocal.reciprocal(12).toString === "0.08(3)")
     assert(Reciprocal.reciprocal(13).toString === "0.(076923)")
-    assert(Reciprocal.reciprocal(13).toString === "0.0(714285)")
-    assert(Reciprocal.reciprocal(23).toString === "0.0(0434782608695652173913)")
+    assert(Reciprocal.reciprocal(23).toString === "0.(0434782608695652173913)")
     assert(Reciprocal.reciprocal(25).toString === "0.04")
     assert(Reciprocal.reciprocal(36).toString === "0.02(7)")
+    assert(Reciprocal.reciprocal(100).toString === "0.01")
     assert(Reciprocal.reciprocal(300).toString === "0.00(3)")
+    assert(Reciprocal.reciprocal(312).toString === "0.003(205128)")
     assert(Reciprocal.reciprocal(400).toString === "0.0025")
+    assert(Reciprocal.reciprocal(1000).toString === "0.001")
   }
 }

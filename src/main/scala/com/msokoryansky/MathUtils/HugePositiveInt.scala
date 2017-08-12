@@ -4,21 +4,21 @@ import scala.annotation.tailrec
 
 class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
   private val onlyDigits = stringNumber.replaceAll("^0+", "").replaceAll("[^0-9]", "")
-  val hugePositiveInt: String = if (onlyDigits.isEmpty) "0" else onlyDigits
+  val value: String = if (onlyDigits.isEmpty) "0" else onlyDigits
 
   def numberOfDigits: Int =
-    hugePositiveInt.length
+    value.length
 
   def digit(i: Int): Option[Int] =
     if (i < 1 || i > numberOfDigits || numberOfDigits == 0) None
-    else Some(hugePositiveInt.substring(numberOfDigits - i, numberOfDigits - i + 1).toInt)
+    else Some(value.substring(numberOfDigits - i, numberOfDigits - i + 1).toInt)
 
   def compare(other: HugePositiveInt): Int =
     if (this.numberOfDigits > other.numberOfDigits) 1
     else if (this.numberOfDigits < other.numberOfDigits) -1
     else {
-      if (hugePositiveInt > other.hugePositiveInt) 1
-      else if (hugePositiveInt < other.hugePositiveInt) -1
+      if (value > other.value) 1
+      else if (value < other.value) -1
       else 0
     }
 
@@ -45,8 +45,8 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
     @tailrec def multAcc(i: Int, acc: List[HugePositiveInt]): HugePositiveInt = {
       other.digit(i) match {
         case Some(digit) if digit > 0 =>
-          val multDigit = (1 to digit).map((d) => this).foldLeft(new HugePositiveInt("0"))(_ + _)
-          multAcc(i + 1, new HugePositiveInt(multDigit.hugePositiveInt + ("0" * (i - 1))) :: acc)
+          val multDigit = (1 to digit).map((d) => this).foldLeft(HugePositiveInt(0))(_ + _)
+          multAcc(i + 1, new HugePositiveInt(multDigit.value + ("0" * (i - 1))) :: acc)
         case Some(digit) if digit == 0 =>
           multAcc(i + 1, acc)
         case _ => acc.foldLeft(new HugePositiveInt("0"))(_ + _)
@@ -55,11 +55,24 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
     multAcc(1, List[HugePositiveInt]())
   }
 
+  def ^(other: HugePositiveInt): HugePositiveInt = {
+    @tailrec def powerAcc(n: HugePositiveInt, acc: HugePositiveInt): HugePositiveInt = {
+      if (n > other) acc
+      else powerAcc(n + HugePositiveInt(1), this * acc)
+    }
+    powerAcc(HugePositiveInt(1), HugePositiveInt(1))
+  }
+
   def factorial: HugePositiveInt = {
     @tailrec def factorialAcc(next: HugePositiveInt, acc: HugePositiveInt): HugePositiveInt = {
       if (next >= this) acc
-      else factorialAcc(next + new HugePositiveInt("1"), acc * (next + new HugePositiveInt("1")))
+      else factorialAcc(next + HugePositiveInt(1), acc * (next + HugePositiveInt(1)))
     }
-    factorialAcc(new HugePositiveInt("1"), new HugePositiveInt("1"))
+    factorialAcc(HugePositiveInt(1), HugePositiveInt(1))
   }
+}
+
+object HugePositiveInt {
+  def apply(stringNumber: String) = new HugePositiveInt(stringNumber)
+  def apply(int: Int) = new HugePositiveInt(int.toString)
 }

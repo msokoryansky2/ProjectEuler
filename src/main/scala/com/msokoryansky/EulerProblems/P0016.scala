@@ -10,7 +10,7 @@ What is the sum of the digits of the number 21000?
 */
 
 class P0016 extends EulerProblem {
-  def run: String = List.fill(1000)(new HugePositiveInt("2")).foldLeft(new HugePositiveInt("1"))(_ * _).hugePositiveInt
+  def run: String = List.fill(1000)(new HugePositiveInt("2")).foldLeft(new HugePositiveInt("1"))(_ * _).value
     .split("").map(_.toInt).sum.toString
 }
 

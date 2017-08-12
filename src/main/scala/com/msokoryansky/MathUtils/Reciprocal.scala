@@ -25,11 +25,13 @@ object Reciprocal {
           case nc if nc == 0 => Decimal(0, ((whole, 0) :: acc).map(n => n._1.toString).mkString.reverse, "")
           case _ =>
             // Check if nextCarry has already occurred in acc
-            val sameCarryIndex: Int = acc.indexWhere(n => n._2 == nextCarry)
+            val sameCarryIndex: Int = acc.indexWhere(_ == (whole, nextCarry))
             if (sameCarryIndex >= 0) {
               // If we are here that means it's a repeat of a carry which means we found the repeating sequence
-              val (accS, accR) = acc.splitAt(sameCarryIndex)
-              Decimal(0, accS.map(n => n._1.toString).mkString.reverse, accR.map(n => n._1.toString).mkString.reverse)
+              // Note that because acc is in reverse order of mathematical correct answer, the "repeats" come first
+              // and the "start" comes after them. So we reverse the list first
+              val (accS, accR) = acc.reverse.splitAt(acc.length - 1 - sameCarryIndex)
+              Decimal(0, accS.map(n => n._1.toString).mkString, accR.map(n => n._1.toString).mkString)
             } else {
               // If we are here it's a new carry, which means we continue factoring
               reciprocalAcc(nextCarry, (whole, nextCarry) :: acc)
