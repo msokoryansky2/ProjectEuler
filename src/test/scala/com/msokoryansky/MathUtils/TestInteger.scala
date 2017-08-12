@@ -62,10 +62,8 @@ class TestInteger extends FunSuite {
     assert(Integer.isSumOf2Elements(55, Set(10, 30, 20, 40, 5, 25)))
     assert(!Integer.isSumOf2Elements(55, Set(10, 30, 20, 40, 50, 60)))
   }
-}
 
-class TestIntegerIntegerOps extends FunSuite {
-  test("mapDigits applies specified function to every digit of a number and returns the resulting list") {
+  test("IntegerOps.DigitsOps.mapDigits applies specified function to every digit of a number and returns the resulting list") {
     assert(123.mapDigits(i => i).mkString === "123")
     assert(456.mapDigits(_ * 2) === List(8, 10, 12))
     assert(123.mapDigits(_.pow(2)) === List(1, 4, 9))
