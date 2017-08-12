@@ -44,11 +44,11 @@ object SumOfParts {
     * In this example, sum is 100 and parts are Set(1, 5, 10, 25, 50)
     */
   def waysToAddUpParts(sum: Int, parts: Set[Int]): Set[Map[Int, Int]] = {
-    def waysToAddUpPartsAcc(sum: Int, currentParts: Map[Int, Int], acc: Set[Map[Int, Int]]): Set[Map[Int, Int]] = {
-      parts.filter(p => p == sum).map(p => currentParts.updated(p, currentParts(p) + 1)) union
-       parts.filter(p => p < sum)
-         .flatMap(p => waysToAddUpPartsAcc(sum - p, currentParts.updated(p, currentParts(p) + 1), acc))
+    def waysToAddUpPartsAcc(sum: Int, lowerstPart: Int, currentParts: Map[Int, Int], acc: Set[Map[Int, Int]]): Set[Map[Int, Int]] = {
+      parts.filter(p => p >= lowerstPart && p == sum).map(p => currentParts.updated(p, currentParts(p) + 1)) union
+       parts.filter(p => p >= lowerstPart && p < sum)
+         .flatMap(p => waysToAddUpPartsAcc(sum - p, p, currentParts.updated(p, currentParts(p) + 1), acc))
     }
-    waysToAddUpPartsAcc(sum, parts.zip(List.fill(parts.size)(0)).toMap, Set[Map[Int, Int]]())
+    waysToAddUpPartsAcc(sum, 0, parts.zip(List.fill(parts.size)(0)).toMap, Set[Map[Int, Int]]())
   }
 }
