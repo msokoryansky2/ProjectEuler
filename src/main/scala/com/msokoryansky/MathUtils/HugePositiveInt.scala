@@ -55,12 +55,22 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
     multAcc(1, List[HugePositiveInt]())
   }
 
-  def ^(other: HugePositiveInt): HugePositiveInt = {
-    @tailrec def powerAcc(n: HugePositiveInt, acc: HugePositiveInt): HugePositiveInt = {
-      if (n > other) acc
-      else powerAcc(n + HugePositiveInt(1), this * acc)
+  def ^(power: Int): HugePositiveInt = {
+    require(power >= 0, "Negative powers are not supported")
+    @tailrec def powerAcc(n: Int, acc: HugePositiveInt): HugePositiveInt = {
+      if (n > power) acc
+      else powerAcc(n + 1, this * acc)
     }
-    powerAcc(HugePositiveInt(1), HugePositiveInt(1))
+    powerAcc(1, HugePositiveInt(1))
+  }
+
+  def ^(powerFrom: Int, powerTo: Int): Map[Int, HugePositiveInt] = {
+    require(powerTo >= powerFrom, "Ceiling limit for power should be higher than the floor")
+    @tailrec def powerAcc(n: Int, acc: Map[Int, HugePositiveInt]): Map[Int, HugePositiveInt] = {
+      if (n > powerTo) acc
+      else powerAcc(n + 1, acc + (n -> (this * acc(n - 1))))
+    }
+    powerAcc(powerFrom + 1, Map(powerFrom -> (this ^ powerFrom)))
   }
 
   def factorial: HugePositiveInt = {

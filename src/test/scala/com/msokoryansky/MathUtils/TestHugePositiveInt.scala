@@ -71,8 +71,20 @@ class TestHugePositiveInt extends FunSuite {
   }
 
   test("^ allows power operation") {
-    assert((HugePositiveInt(3) ^ HugePositiveInt(2)).value === "9")
-    assert((HugePositiveInt(5) ^ HugePositiveInt(4)).value === "625")
-    assert((HugePositiveInt(10) ^ HugePositiveInt(6)).value === "1000000")
+    intercept[Exception] {
+      HugePositiveInt(10) ^ -1
+    }
+    assert((HugePositiveInt(13) ^ 0).value === "1")
+    assert((HugePositiveInt(3) ^ 2).value === "9")
+    assert((HugePositiveInt(5) ^ 4).value === "625")
+    assert((HugePositiveInt(10) ^ 6).value === "1000000")
+  }
+
+  test("^ allows power operation to a consequtive list of powers ") {
+    intercept[Exception] {
+      HugePositiveInt(10) ^ (3, 2)
+    }
+    assert((HugePositiveInt(3) ^ (2, 4)).values.map(_.value) === List("9", "27", "81"))
+    assert((HugePositiveInt(10) ^ (3, 3)).values.map(_.value) === List("1000"))
   }
 }
