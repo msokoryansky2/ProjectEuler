@@ -1,6 +1,7 @@
 package com.msokoryansky.MathUtils
 
 import org.scalatest.FunSuite
+import  com.msokoryansky.MathUtils.IntegerOps.DigitOps
 
 class TestInteger extends FunSuite {
   test("ints returns stream of ints") {
@@ -60,5 +61,13 @@ class TestInteger extends FunSuite {
     assert(!Integer.isSumOf2Elements(12, Set(4, 5, 10, 9)))
     assert(Integer.isSumOf2Elements(55, Set(10, 30, 20, 40, 5, 25)))
     assert(!Integer.isSumOf2Elements(55, Set(10, 30, 20, 40, 50, 60)))
+  }
+}
+
+class TestIntegerIntegerOps extends FunSuite {
+  test("mapDigits applies specified function to every digit of a number and returns the resulting list") {
+    assert(123.mapDigits(i => i).mkString === "123")
+    assert(456.mapDigits(_ * 2) === List(8, 10, 12))
+    assert(123.mapDigits(_.pow(2)) === List(1, 4, 9))
   }
 }

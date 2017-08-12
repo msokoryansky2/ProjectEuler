@@ -1,6 +1,7 @@
 package com.msokoryansky.MathUtils
 
 import scala.annotation.tailrec
+import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable.HashSet
 
 object Integer {
@@ -72,4 +73,9 @@ object Integer {
   }
 }
 
-
+object IntegerOps {
+  implicit class DigitOps(n: Int) {
+    def mapDigits[B](f: (Int) ⇒ B): List[B] = n.toString.map(c => f(c.asDigit)).toList
+    def pow(power: Int): Long = Math.pow(n, power).toLong
+  }
+}
