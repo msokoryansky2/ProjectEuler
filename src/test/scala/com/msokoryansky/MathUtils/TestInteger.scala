@@ -68,4 +68,9 @@ class TestInteger extends FunSuite {
     assert(456.mapDigits(_ * 2) === List(8, 10, 12))
     assert(123.mapDigits(_.pow(2)) === List(1, 4, 9))
   }
+
+  test("isSumDigitFactorials checks if a number is equal to sum of its digits' factorials") {
+    assert(!Integer.isSumDigitFactorials(123))
+    assert(Integer.isSumDigitFactorials(145))
+  }
 }

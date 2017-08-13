@@ -71,6 +71,10 @@ object Integer {
   def isSumOf2Elements(number: Long, elements: Set[Long]): Boolean = {
     elements.exists(e1 => elements.contains(number - e1))
   }
+
+  def isSumDigitFactorials(number: Int): Boolean = {
+    number == number.toString.toList.map(_.asDigit).map(factorial).sum
+  }
 }
 
 object IntegerOps {
