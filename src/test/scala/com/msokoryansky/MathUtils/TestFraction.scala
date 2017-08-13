@@ -96,4 +96,25 @@ class TestFraction extends FunSuite {
     assert(Fraction(10, -20) == Fraction(-30, 60))
     assert(Fraction(-10, -20) == Fraction(-30, -60))
   }
+
+  test("simplifiable checks if Fraction can be simplified") {
+    assert(!Fraction(2, 3).simplifiable)
+    assert(Fraction(2, -3).simplifiable)
+    assert(Fraction(6, 39).simplifiable)
+  }
+
+  test("Fraction arithmetic ops") {
+    assert(Fraction(36, 24) + Fraction(12, 32) == Fraction(15, 8))
+    assert(Fraction(36, 24) - Fraction(12, 32) == Fraction(9, 8))
+    assert(Fraction(4, 7) * Fraction(7, 4) == Fraction(1, 1))
+    assert(Fraction(4, 7) / Fraction(7, 4) == Fraction(16, 49))
+  }
+
+  test("isCurious2Digit checks if there're 2 digits in num and denom and " +
+    "same digit can be struck from each with fraction value staying the same") {
+    assert(!Fraction(333, 222).isCurious2Digit)
+    assert(!Fraction(222, 333).isCurious2Digit)
+    assert(Fraction(49, 98).isCurious2Digit)
+    assert(Fraction(50, 30).isCurious2Digit)
+  }
 }

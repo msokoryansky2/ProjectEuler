@@ -5,8 +5,6 @@ import scala.annotation.tailrec
 class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
   require(denom != 0, "Cannot have denominator of 0")
 
-  import scala.math.Ordered.orderingToOrdered
-
   lazy val decimal: Float = num / denom
   lazy val isWhole: Boolean = simplify.denom == 1
 
@@ -27,7 +25,6 @@ class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
     }
   }
 
-  def canEqual(a: Any): Boolean = a.isInstanceOf[Fraction]
   override def equals(that: Any): Boolean =
     that match {
       case fraction: Fraction => compare(fraction) == 0
@@ -54,6 +51,26 @@ class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
                   this).simplifyPositiveDenom
     }
   }
+
+  def simplifiable: Boolean = this.num != simplify.num ||  this.denom != simplify.denom
+
+  def +(that: Fraction): Fraction =
+    Fraction(this.num * that.denom + that.num * this.denom, this.denom * that.denom).simplify
+  def -(that: Fraction): Fraction =
+    Fraction(this.num * that.denom - that.num * this.denom, this.denom * that.denom).simplify
+  def *(that: Fraction): Fraction =
+    Fraction(this.num * that.num, this.denom * that.denom).simplify
+  def /(that: Fraction): Fraction = {
+    require(that.num != 0, "Numerator of the divisor is zero. Cannot divide by zero")
+    Fraction(this.num * that.denom, this.denom * that.num).simplify
+  }
+
+  def isCurious2Digit: Boolean =
+    num >= 10 && num <= 99 && denom >= 10 && denom <= 99 &&
+    (denom % 10 != 0 && num / 10 == denom / 10 && this == Fraction(num % 10, denom % 10)) ||
+      (denom / 10 != 0 && num / 10 == denom % 10 && this == Fraction(num % 10, denom / 10)) ||
+      (denom % 10 != 0 && num % 10 == denom / 10 && this ==  Fraction(num / 10, denom % 10)) ||
+      (denom / 10 != 0 && num % 10 == denom % 10 && this == Fraction(num / 10, denom / 10))
 }
 
 object Fraction {
