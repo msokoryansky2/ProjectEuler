@@ -73,4 +73,10 @@ class TestInteger extends FunSuite {
     assert(!Integer.isSumDigitFactorials(123))
     assert(Integer.isSumDigitFactorials(145))
   }
+
+  test("circulars return all numbers created by rotating digits of a number") {
+    assert(Integer.circulars(7) == List(7))
+    assert(Integer.circulars(912) == List(912, 291, 129))
+    assert(Integer.circulars(902) == List(902, 290, 29))
+  }
 }

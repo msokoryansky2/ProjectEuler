@@ -2,6 +2,7 @@ package com.msokoryansky.MathUtils
 
 import scala.annotation.tailrec
 import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable
 import scala.collection.immutable.HashSet
 
 object Integer {
@@ -74,6 +75,12 @@ object Integer {
 
   def isSumDigitFactorials(number: Int): Boolean = {
     number == number.toString.toList.map(_.asDigit).map(factorial).sum
+  }
+
+  def circulars(number: Int): List[Int] = {
+    import com.msokoryansky.MathUtils.StringOps.StringUtilityOps
+    val numberString = number.toString
+    (0 until numberString.length).map(numberString.rotate).map(_.toInt).toList
   }
 }
 
