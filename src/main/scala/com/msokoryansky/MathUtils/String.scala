@@ -1,7 +1,7 @@
 package com.msokoryansky.MathUtils
 
 object String {
-  
+
 }
 
 object StringOps {
