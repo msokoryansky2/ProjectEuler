@@ -100,4 +100,30 @@ class TestInteger extends FunSuite {
     assert(Integer.base2(32) === "100000")
     assert(Integer.base2(33) === "100001")
   }
+
+  test("trims returns lists of integers formed by trimming off digits") {
+    intercept[Exception] {
+      Integer.trimsRight(-1)
+    }
+    intercept[Exception] {
+      Integer.trimsLeft(-1)
+    }
+    assert(Integer.trimsRight(0) === List(0))
+    assert(Integer.trimsRight(1) === List(1))
+    assert(Integer.trimsRight(10) === List(1, 10))
+    assert(Integer.trimsRight(1000) === List(1, 10, 100, 1000))
+    assert(Integer.trimsRight(13) === List(1, 13))
+    assert(Integer.trimsRight(123) === List(1, 12, 123))
+    assert(Integer.trimsRight(1234) === List(1, 12, 123, 1234))
+    assert(Integer.trimsRight(1020034) === List(1, 10, 102, 1020, 10200, 102003, 1020034))
+    assert(Integer.trimsLeft(0) === List(0))
+    assert(Integer.trimsLeft(1) === List(1))
+    assert(Integer.trimsLeft(10) === List(0, 10))
+    assert(Integer.trimsLeft(100) === List(0, 100))
+    assert(Integer.trimsLeft(1000) === List(0, 1000))
+    assert(Integer.trimsLeft(13) === List(3, 13))
+    assert(Integer.trimsLeft(123) === List(23, 3, 123))
+    assert(Integer.trimsLeft(1234) === List(234, 34, 4, 1234))
+    assert(Integer.trimsLeft(1020034) === List(20034, 34, 4, 1020034))
+  }
 }

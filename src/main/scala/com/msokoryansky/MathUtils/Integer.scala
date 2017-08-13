@@ -100,6 +100,23 @@ object Integer {
       base2Acc(number, numBits, "")
     }
   }
+
+  def trimsRight(number: Long): List[Long] = {
+    require(number >= 0, "Can only trim positive numbers")
+    @tailrec def trimsRightAcc(number: Long, acc: List[Long]): List[Long] =
+      if (number == 0) acc else trimsRightAcc(number / 10, number :: acc)
+    trimsRightAcc(number / 10, List(number))
+  }
+
+  def trimsLeft(number: Long): List[Long] = {
+    require(number >= 0, "Can only trim positive numbers")
+    @tailrec def trimsLeftAcc(power: Long, acc: List[Long]): List[Long] = {
+      val tenToPower = Math.pow(10, power).toLong
+      if (tenToPower > number) acc
+      else trimsLeftAcc(power + 1, if (acc.contains(number % tenToPower)) acc else (number % tenToPower) :: acc)
+    }
+    trimsLeftAcc(1, List(number))
+  }
 }
 
 object IntegerOps {
