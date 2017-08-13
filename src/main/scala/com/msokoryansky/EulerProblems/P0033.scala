@@ -23,7 +23,7 @@ class P0033 extends EulerProblem {
     if n < d && (n % 10 != 0 || d % 10 != 0)
     f = Fraction(n, d)
     if f.isCurious2Digit
-  } yield f).foldLeft(Fraction(1, 1))(_ *_).simplify.toString
+  } yield f).foldLeft(Fraction(1, 1))(_ *_).simplify.denom.toString
 }
 
 object P0033 extends App {
