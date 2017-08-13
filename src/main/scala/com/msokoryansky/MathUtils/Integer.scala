@@ -82,6 +82,24 @@ object Integer {
     val numberString = number.toString
     (0 until numberString.length).map(numberString.rotate).map(_.toInt).toList
   }
+
+  def base2(number: Long): String = {
+    require(number >= 0, "Cannot convert negative numbers to base 2")
+    if (number == 0) "0"               // 0 is easier to take care of separately
+    else {
+      val numBits = Math.ceil(Math.log(number) / Math.log(2) + 1).toInt
+      def base2Acc(number: Long, power: Int, acc: String): String = {
+        power match {
+          case neg if neg < 0 => acc
+          case _ =>
+            val bitValue = Math.pow(2, power).toInt
+            if (number >= bitValue) base2Acc(number - bitValue, power - 1, acc + "1")
+            else base2Acc(number, power - 1, if (acc.isEmpty) acc else acc + "0")
+        }
+      }
+      base2Acc(number, numBits, "")
+    }
+  }
 }
 
 object IntegerOps {

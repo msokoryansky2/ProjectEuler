@@ -79,4 +79,25 @@ class TestInteger extends FunSuite {
     assert(Integer.circulars(912) == List(912, 291, 129))
     assert(Integer.circulars(902) == List(902, 290, 29))
   }
+
+  test("base2 converts integer to base 2") {
+    intercept[Exception] {
+      Integer.base2(-1)
+    }
+    assert(Integer.base2(0) === "0")
+    assert(Integer.base2(1) === "1")
+    assert(Integer.base2(2) === "10")
+    assert(Integer.base2(3) === "11")
+    assert(Integer.base2(4) === "100")
+    assert(Integer.base2(5) === "101")
+    assert(Integer.base2(6) === "110")
+    assert(Integer.base2(7) === "111")
+    assert(Integer.base2(8) === "1000")
+    assert(Integer.base2(15) === "1111")
+    assert(Integer.base2(16) === "10000")
+    assert(Integer.base2(17) === "10001")
+    assert(Integer.base2(31) === "11111")
+    assert(Integer.base2(32) === "100000")
+    assert(Integer.base2(33) === "100001")
+  }
 }
