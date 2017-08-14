@@ -1,5 +1,7 @@
 package com.msokoryansky.MathUtils
 
+import scala.annotation.tailrec
+
 object Champernowne {
   /**
     * Returns starting place of N-digit numbers in Champernowne series 0.12345678910111213...
@@ -12,5 +14,31 @@ object Champernowne {
   def startOfNDigitNumbers(n: Int): Long = {
     require(n > 0, "Must specify positive number of digits")
     1 + 9 * (2 to n).map(i => Math.pow(10, i - 2).toLong * (i - 1)).sum
+  }
+
+  /**
+    * Returns into what range of digit numbers given nth digit of Champernowne falls into. I.e. if n is 20, 20th
+    * Champernowne digit falls into range of 2-digit numbers, so return value is 2.
+    */
+  def getNDigitNumber(n: Long): Int = {
+    require(n > 0, "Must specify positive digit number")
+    @tailrec def getNDigitNumberAcc(guess: Int): Int = {
+      val startOfGuessDigitNumbers = startOfNDigitNumbers(guess)
+      val startOfGuessP1DigitNumbers = startOfNDigitNumbers(guess + 1)
+      if (startOfGuessDigitNumbers <= n && startOfGuessP1DigitNumbers > n) guess
+      else if (startOfGuessDigitNumbers < n) getNDigitNumberAcc(guess + 1)
+      else getNDigitNumberAcc(guess - 1)
+    }
+    getNDigitNumberAcc(Math.max(1, Math.log10(n).toInt))
+  }
+
+  /**
+    * Returns nth digit after the decimal in Champernowne.
+    * Very, very roughly each additional digit in numbers making up expanded Champernowne increases the number
+    * of digits tenfold. So we approximate the digit-range we're in with
+    */
+  def digit(n: Long): Int = {
+    require(n > 0, "Must specify positive digit number")
+    ???
   }
 }
