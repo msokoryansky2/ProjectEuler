@@ -22,10 +22,17 @@ object Pandigital {
 
   def concatenatedMultiplePandigital1To9RangeFinder(i: Long): Option[Int] = {
     @tailrec def concatenatedMultiplePandigital1To9RangeFinderAcc(n: Int): Option[Int] = {
-      if (n > 8) None
+      if (n > 9) None
       else if (concatenatedMultiplePandigital1To9(i, 1 to n)) Some(n)
       else concatenatedMultiplePandigital1To9RangeFinderAcc(n + 1)
     }
     concatenatedMultiplePandigital1To9RangeFinderAcc(2)
+  }
+
+  def getConcatenatedMultiplePandigital1To9(i: Long): Option[Long] = {
+    concatenatedMultiplePandigital1To9RangeFinder(i) match {
+      case Some(n) => Some((1 to n).map(re => (i * re).toString).mkString.toLong)
+      case None => None
+    }
   }
 }

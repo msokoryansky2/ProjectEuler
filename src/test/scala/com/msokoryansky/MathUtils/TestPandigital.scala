@@ -27,4 +27,10 @@ class TestPandigital extends FunSuite {
     assert(Pandigital.concatenatedMultiplePandigital1To9RangeFinder(9) === Some(5))
     assert(Pandigital.concatenatedMultiplePandigital1To9RangeFinder(90) === None)
   }
+
+  test("getConcatenatedMultiplePandigital1To9 gets pandigital found by concatenatedMultiplePandigital1To9RangeFinder") {
+    assert(Pandigital.getConcatenatedMultiplePandigital1To9(192) === Some(192384576))
+    assert(Pandigital.getConcatenatedMultiplePandigital1To9(9) === Some(918273645))
+    assert(Pandigital.getConcatenatedMultiplePandigital1To9(90) === None)
+  }
 }
