@@ -39,6 +39,15 @@ object Champernowne {
     */
   def digit(n: Long): Int = {
     require(n > 0, "Must specify positive digit number")
-    ???
+    val digitLengthRange = getNDigitNumber(n)                           // I.e. n is within 4-digit number range
+    val digitWithinRange = n - startOfNDigitNumbers(digitLengthRange)   // I.e. how many digits into this 4-digit range
+    val numberWithinRange = digitWithinRange / digitLengthRange + 1     // I.e. what number within 4-digit range
+    val digitWithinNumber = digitWithinRange.toInt % digitLengthRange   // I.e. what number digit within the number
+    /*
+    At this point numberWithinRange might be 5327 which means 5327th 4-digit number (meaning 6326) and
+    digitWithinNumber might be 3 meaning 3rd digit from left of 6326. We construct formula to extract that "3"
+     */
+    val currentNumber = Math.pow(10, digitLengthRange - 1).toLong - 1 + numberWithinRange
+    currentNumber.toString.charAt(digitWithinNumber.toInt).asDigit
   }
 }
