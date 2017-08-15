@@ -37,10 +37,11 @@ object Pandigital {
   }
 
   /**
-    * All possible pandigits made of digits 1 to n
+    * All possible pandigits made of digits m to n
     */
-  def allPandigitals1ToN(n: Int): List[Long] = {
-    require(n > 0, "Must specify positive number of digits in a pandigital set")
-    Permutation.permutations((1 to n).map(_.toChar).toSet).map(_.toLong)
+  def allPandigitalsMToN(m: Int, n: Int): List[Long] = {
+    require(m >= 0 && n >= 0 && m <= 9 && n <= 9, "Must specify digits between 0 and 9")
+    require(n >= m, "Must specify starting digit same or less than ending digit")
+    Permutation.permutations((m to n).map(_.toString.charAt(0)).toSet).filter(s => s == "0" || s(0) != '0').map(_.toLong)
   }
 }
