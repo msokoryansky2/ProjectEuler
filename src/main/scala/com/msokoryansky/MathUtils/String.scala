@@ -1,7 +1,15 @@
 package com.msokoryansky.MathUtils
 
 object String {
+  /**
+    * Returns 1 for a/A, 2, for b/B, 3 for c/C, etc
+    */
+  def letterValue(c: Char): Int = c.toUpper - 'A'.toUpper + 1
 
+  /**
+    * Returns value of a word by adding up values of its letters
+    */
+  def wordValue(s: String): Int = s.map(letterValue).sum
 }
 
 object StringOps {

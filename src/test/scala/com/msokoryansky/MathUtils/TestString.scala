@@ -19,4 +19,22 @@ class TestString extends FunSuite {
     assert("blah".rotate(-5) === "lahb")
     assert("blah".rotate(-17) === "lahb")
   }
+
+  test("letterValue returns numeric value of letters relative to 'A' which is considered 1") {
+    assert(String.letterValue('A') === 1)
+    assert(String.letterValue('C') === 3)
+    assert(String.letterValue('Z') === 26)
+    assert(String.letterValue('a') === 1)
+    assert(String.letterValue('c') === 3)
+    assert(String.letterValue('z') === 26)
+  }
+
+  test("wordValue returns numeric value of a string by adding up values of all its letters") {
+    assert(String.wordValue("A") === 1)
+    assert(String.wordValue("CAB") === 6)
+    assert(String.wordValue("ZZZ") === 78)
+    assert(String.wordValue("a") === 1)
+    assert(String.wordValue("Cab") === 6)
+    assert(String.wordValue("zzZ") === 78)
+  }
 }
