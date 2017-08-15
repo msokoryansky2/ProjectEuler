@@ -19,15 +19,15 @@ class TestTriangleNumber extends FunSuite {
     assert(TriangleNumber.triangleNumber(10) === 55)
   }
 
-  test("getTriangleNumberNumber returns Some of specified number's in triangle number series or None") {
-    assert(TriangleNumber.getTriangleNumberNumber(0) === None)
-    assert(TriangleNumber.getTriangleNumberNumber(1) === Some(1))
-    assert(TriangleNumber.getTriangleNumberNumber(2) === None)
-    assert(TriangleNumber.getTriangleNumberNumber(3) === Some(2))
-    assert(TriangleNumber.getTriangleNumberNumber(4) === None)
-    assert(TriangleNumber.getTriangleNumberNumber(10) === Some(4))
-    assert(TriangleNumber.getTriangleNumberNumber(50) === None)
-    assert(TriangleNumber.getTriangleNumberNumber(55) === Some(10))
+  test("getTriangleNumberIndex returns Some of specified number's in triangle number series or None") {
+    assert(TriangleNumber.getTriangleNumberIndex(0) === None)
+    assert(TriangleNumber.getTriangleNumberIndex(1) === Some(1))
+    assert(TriangleNumber.getTriangleNumberIndex(2) === None)
+    assert(TriangleNumber.getTriangleNumberIndex(3) === Some(2))
+    assert(TriangleNumber.getTriangleNumberIndex(4) === None)
+    assert(TriangleNumber.getTriangleNumberIndex(10) === Some(4))
+    assert(TriangleNumber.getTriangleNumberIndex(50) === None)
+    assert(TriangleNumber.getTriangleNumberIndex(55) === Some(10))
   }
 
   test("isTriangleNumber returns if number is a triangle one") {

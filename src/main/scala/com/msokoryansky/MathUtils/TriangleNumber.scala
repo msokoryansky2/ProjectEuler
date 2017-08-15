@@ -20,7 +20,7 @@ object TriangleNumber {
     * n = (-1 + SQRT(-1 + 8tn) / 2)
     * If n is an integer, we know this number is a triangle one
     */
-  def getTriangleNumberNumber(tn: Long): Option[Int] = {
+  def getTriangleNumberIndex(tn: Long): Option[Int] = {
     if (8 * tn <= 1) None
     else {
       val sqrt = Math.sqrt(1 + 8 * tn).round.toInt
@@ -33,5 +33,5 @@ object TriangleNumber {
   /**
     * Checks is specified number is a triangle one
     */
-  def isTriangleNumber(tn: Long): Boolean = getTriangleNumberNumber(tn).getOrElse(0) > 0
+  def isTriangleNumber(tn: Long): Boolean = getTriangleNumberIndex(tn).getOrElse(0) > 0
 }
