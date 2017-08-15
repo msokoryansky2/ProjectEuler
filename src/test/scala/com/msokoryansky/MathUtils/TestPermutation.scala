@@ -53,4 +53,16 @@ class TestPermutation extends FunSuite {
           Map(2 -> 1, 3 -> 2, 5 -> 1),
           Map(2 -> 0, 3 -> 1, 5 -> 2)))
   }
+
+  test("permutations returns all permutations of a set of chars") {
+    assert(Permutation.permutations(Set('A', 'B')).sortWith(_ < _) ===
+      List("AB", "BA"))
+    assert(Permutation.permutations(Set('A', 'B', 'C')).sortWith(_ < _) ===
+      List("ABC", "ACB", "BAC", "BCA", "CAB", "CBA"))
+    assert(Permutation.permutations(Set('1', '2', '3', '4')).sortWith(_ < _) ===
+      List("1234", "1243", "1324", "1342", "1423", "1432",
+            "2134", "2143", "2314", "2341", "2413", "2431",
+            "3124", "3142", "3214", "3241", "3412", "3421",
+            "4123", "4132", "4213", "4231", "4312", "4321"))
+  }
 }

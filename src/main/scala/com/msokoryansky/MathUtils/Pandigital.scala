@@ -35,4 +35,12 @@ object Pandigital {
       case None => None
     }
   }
+
+  /**
+    * All possible pandigits made of digits 1 to n
+    */
+  def allPandigitals1ToN(n: Int): List[Long] = {
+    require(n > 0, "Must specify positive number of digits in a pandigital set")
+    Permutation.permutations((1 to n).map(_.toChar).toSet).map(_.toLong)
+  }
 }

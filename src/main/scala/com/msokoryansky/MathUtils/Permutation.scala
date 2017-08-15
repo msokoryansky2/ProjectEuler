@@ -31,6 +31,18 @@ object Permutation {
     }
     lexicographicPermutationAcc(s, i, "")
   }
+
+  /**
+    * Returns all permutations using all characters in specified list
+    */
+  def permutations(chars: Set[Char]): List[String] = {
+    def permutationsAcc(chars: List[Char], acc: List[String]): List[String] = chars match {
+      case none if none.isEmpty => acc
+      case _ => chars.flatMap(c => permutationsAcc(chars.filter(_ != c),
+                                                    if (acc.isEmpty) List(c.toString) else acc.map(s => s + c)))
+    }
+    permutationsAcc(chars.toList, List[String]())
+  }
 }
 
 object SumOfParts {
