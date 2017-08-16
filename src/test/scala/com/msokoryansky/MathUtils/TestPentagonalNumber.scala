@@ -83,7 +83,10 @@ class TestPentagonalNumber extends FunSuite {
 
   test("allPentagonalPairsWithinDistanceWithProperty returns all pentagonal pairs with specified property") {
     assert(PentagonalNumber.allPentagonalPairsWithinDistanceWithProperty(1, 4, 15,
-      (n1, n2) => n1 + n2 >= 15).sortWith(_._1 < _._1) ===
-      List((2, 3), (2, 4), (3, 4)))
+      (n1, n2) => PentagonalNumber.pentagonalNumber(n1) + PentagonalNumber.pentagonalNumber(n2) >= 15).
+      sortWith(_._1 < _._1) === List((2, 3), (3, 4)))
+    assert(PentagonalNumber.allPentagonalPairsWithinDistanceWithProperty(3, 6, 25,
+      (n1, n2) => PentagonalNumber.pentagonalNumber(n1) + PentagonalNumber.pentagonalNumber(n2) >= 47).
+      sortWith(_._1 < _._1) === List((3, 5), (4, 5), (5, 6)))
   }
 }
