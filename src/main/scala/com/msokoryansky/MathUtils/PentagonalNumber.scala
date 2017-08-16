@@ -8,7 +8,7 @@ object PentagonalNumber {
     */
   def pentagonalNumber(n: Int): Long = {
     require(n > 0, "Must specify positive index for pentagonal number")
-    n * (3 * n - 1) / 2
+    n.toLong * (3 * n - 1) / 2
   }
 
   /**
@@ -23,12 +23,11 @@ object PentagonalNumber {
     * If n is an integer, we know this number is a pentagonal one
     */
   def getPentagonalNumberIndex(pn: Long): Option[Int] = {
-    if (1 * 24 * pn < 0) None
+    if (pn < 1) None
     else {
-      val sqrt = Math.sqrt(1 + 24 * pn).round.toInt
-      // square root term must be exact sqrt of tn and odd to make (-1 + sqrt) be divisible by 2
-      if (sqrt * sqrt != (1 + 24 * pn) || (1 + sqrt) % 6 != 0) None
-      else Some((1 + sqrt) / 6)
+      val sqrt = Math.sqrt(1 + 24 * pn)
+      if (!sqrt.isWhole() || (1 + sqrt.toInt) % 6 != 0) None
+      else Some((1 + sqrt.toInt) / 6)
     }
   }
 

@@ -6,7 +6,7 @@ object HexagonalNumber {
     */
   def hexagonalNumber(n: Int): Long = {
     require(n > 0, "Must specify positive index for pentagonal number")
-    n * (2 * n - 1)
+    n.toLong * (2 * n - 1)
   }
 
   /**
@@ -20,12 +20,11 @@ object HexagonalNumber {
     * If n is an integer, we know this number is a hexagonal one
     */
   def getHexagonalNumberIndex(hn: Long): Option[Int] = {
-    if (1 * 8 * hn < 0) None
+    if (hn < 1) None
     else {
-      val sqrt = Math.sqrt(1 + 8 * hn).round.toInt
-      // square root term must be exact sqrt of hn and odd to make (-1 + sqrt) be divisible by 2
-      if (sqrt * sqrt != (1 + 8 * hn) || (1 + sqrt) % 4 != 0) None
-      else Some((1 + sqrt) / 4)
+      val sqrt = Math.sqrt(1 + 8 * hn)
+      if (!sqrt.isWhole() || (1 + sqrt.toInt) % 4 != 0) None
+      else Some((1 + sqrt.toInt) / 4)
     }
   }
 
@@ -33,4 +32,6 @@ object HexagonalNumber {
     * Checks is specified number is a hexagonal one
     */
   def isHexagonalNumber(hn: Long): Boolean = getHexagonalNumberIndex(hn).getOrElse(0) > 0
+
+  def hexagonalNumbers(n: Int = 1): Stream[Long] = hexagonalNumber(n) #:: hexagonalNumbers(n + 1)
 }

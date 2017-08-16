@@ -40,4 +40,13 @@ class TestTriangleNumber extends FunSuite {
     assert(!TriangleNumber.isTriangleNumber(50))
     assert(TriangleNumber.isTriangleNumber(55))
   }
+
+  test("triangleNumber and getTriangleNumberIndex should match") {
+    val mismatches = for {
+      i <- 1 to 10000000
+      index = TriangleNumber.getTriangleNumberIndex(TriangleNumber.triangleNumber(i)).getOrElse(0)
+      if i != index
+    } yield (i, index)
+    assert(mismatches.isEmpty)
+  }
 }

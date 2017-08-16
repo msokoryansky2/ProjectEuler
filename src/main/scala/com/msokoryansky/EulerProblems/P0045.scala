@@ -17,7 +17,7 @@ Find the next triangle number that is also pentagonal and hexagonal.
 
 class P0045 extends EulerProblem {
   def run: String = PentagonalNumber.pentagonalNumbers()
-    .find(n => TriangleNumber.isTriangleNumber(n) && HexagonalNumber.isHexagonalNumber(n) && n > 40755).get.toString
+    .find(n => HexagonalNumber.isHexagonalNumber(n) && TriangleNumber.isTriangleNumber(n) && n > 40755).get.toString
 }
 
 object P0045 extends App {

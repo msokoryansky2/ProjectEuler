@@ -89,4 +89,13 @@ class TestPentagonalNumber extends FunSuite {
       (n1, n2) => PentagonalNumber.pentagonalNumber(n1) + PentagonalNumber.pentagonalNumber(n2) >= 47).
       sortWith(_._1 < _._1) === List((3, 5), (4, 5), (5, 6)))
   }
+
+  test("pentagonalNumber and getPentagonalNumberIndex should match") {
+    val mismatches = for {
+      i <- 1 to 10000000
+      index = PentagonalNumber.getPentagonalNumberIndex(PentagonalNumber.pentagonalNumber(i)).getOrElse(0)
+      if i != index
+    } yield (i, index)
+    assert(mismatches.isEmpty)
+  }
 }

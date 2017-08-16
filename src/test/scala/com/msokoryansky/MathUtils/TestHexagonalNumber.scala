@@ -43,6 +43,14 @@ class TestHexagonalNumber extends FunSuite {
     assert(HexagonalNumber.getHexagonalNumberIndex(15) === Some(3))
     assert(HexagonalNumber.getHexagonalNumberIndex(20) === None)
     assert(HexagonalNumber.getHexagonalNumberIndex(45) === Some(5))
+  }
 
+  test("hexagonalNumber and getHexagonalNumberIndex should match") {
+    val mismatches = for {
+      i <- 1 to 10000000
+      index = HexagonalNumber.getHexagonalNumberIndex(HexagonalNumber.hexagonalNumber(i)).getOrElse(0)
+      if i != index
+    } yield (i, index)
+    assert(mismatches.isEmpty)
   }
 }
