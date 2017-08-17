@@ -12,12 +12,7 @@ object LatticePath {
     * @return number of possible paths
     */
   def numPaths (width: Int, height: Int): Long = (width, height) match {
-      case (x, y) if x <= 0 && y <= 0 => 0
-      case (x, y) if x == 0 && y > 0 => 1
-      case (x, y) if x > 0 && y == 0 => 1
-      case (x, y) if x == 1 && y > 0 => y + 1
-      case (x, y) if x > 0 && y == 1 => x + 1
-      case (x, y) if x > 1 && y > 1 && x == y => 2 * numPaths(x - 1, y)
-      case (x, y) if x > 1 && y > 1 && x != y => numPaths(x - 1, y) + numPaths(x, y - 1)
+      case (x, y) if x > 1 && y > 1 => if (x == y) 2 * numPaths(x - 1, y) else numPaths(x - 1, y) + numPaths(x, y - 1)
+      case (x, y) => Math.max(x, y) + 1
   }
 }
