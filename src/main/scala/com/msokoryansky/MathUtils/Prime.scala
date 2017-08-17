@@ -14,9 +14,6 @@ object Prime {
   def primes(ints: Stream[BigInt]): Stream[BigInt] = {
     ints.head #:: primes(ints.tail.filter{_ % ints.head != 0})
   }
-  def primes2(ints: Stream[Long]): Stream[Long] = {
-    ints.head #:: primes2(ints.tail.filter{_ % ints.head != 0})
-  }
 
   /**
     * Finds list of all prime factors of a number. A prime factor may repeat multiple times.
