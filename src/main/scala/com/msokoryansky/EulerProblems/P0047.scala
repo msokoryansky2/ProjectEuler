@@ -17,7 +17,7 @@ class P0047 extends EulerProblem {
                           primes.count((i + 3) % _ == 0) == 4)
       if (matches.isEmpty) tryChunk(chunkSize, chunkNumber + 1) else matches.head
     }
-    tryChunk(100000, 0).toString
+    tryChunk(10000, 0).toString
   }
 }
 
