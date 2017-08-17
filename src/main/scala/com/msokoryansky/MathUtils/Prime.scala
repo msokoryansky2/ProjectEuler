@@ -14,6 +14,9 @@ object Prime {
   def primes(ints: Stream[BigInt]): Stream[BigInt] = {
     ints.head #:: primes(ints.tail.filter{_ % ints.head != 0})
   }
+  def primes2(ints: Stream[Long]): Stream[Long] = {
+    ints.head #:: primes2(ints.tail.filter{_ % ints.head != 0})
+  }
 
   /**
     * Finds list of all prime factors of a number. A prime factor may repeat multiple times.
@@ -38,7 +41,6 @@ object Prime {
     primeFactorsOfRangeAcc(lo, hi, Seq.empty)
   }
 
-
   def isPrime(n: Int): Boolean = {
     n match {
       case x if x < 2 => false
@@ -58,7 +60,6 @@ object Prime {
     }
   }
 
-
   def primeNumber(n: Int): BigInt = {
     if (n < 1) 2
     else {
@@ -72,9 +73,8 @@ object Prime {
   }
 
   def primeNumberNonTailRec(n: Int): BigInt = {
-    primes(Integer.ints(2)).drop(Math.max(0, n - 1)).head
+    primes(Integer.ints(BigInt(2))).drop(Math.max(0, n - 1)).head
   }
-
 
   /**
     * Next prime number that's greater than lowerLimit
