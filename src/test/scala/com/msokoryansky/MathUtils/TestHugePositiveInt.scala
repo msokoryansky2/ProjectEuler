@@ -87,4 +87,21 @@ class TestHugePositiveInt extends FunSuite {
     assert((HugePositiveInt(3) ^ (2, 4)).values.map(_.value) === List("9", "27", "81"))
     assert((HugePositiveInt(10) ^ (3, 3)).values.map(_.value) === List("1000"))
   }
+
+  test("lastDigits returns last N digits for specified operation") {
+    intercept[Exception] {
+      HugePositiveInt(34).lastDigits(HugePositiveInt(988), 0, _ + _).value
+    }
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 5, _ + _).value === "1022")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 4, _ + _).value === "1022")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 3, _ + _).value === "22")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 2, _ + _).value === "22")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 1, _ + _).value === "2")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 5, _ * _).value === "33592")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 4, _ * _).value === "3592")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 3, _ * _).value === "592")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 2, _ * _).value === "92")
+    assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 1, _ * _).value === "2")
+  }
+
 }

@@ -11,8 +11,11 @@ object LatticePath {
     * @param height lattice height. Number of horizontal edges is, by definition, height + 1
     * @return number of possible paths
     */
-  def numPaths (width: Int, height: Int): Long = (width, height) match {
+  def numPaths (width: Int, height: Int): Long = {
+    require(width > 0 && height > 0, "Lattice must have positive width and height")
+    (width, height) match {
       case (x, y) if x > 1 && y > 1 => if (x == y) 2 * numPaths(x - 1, y) else numPaths(x - 1, y) + numPaths(x, y - 1)
       case (x, y) => Math.max(x, y) + 1
+    }
   }
 }

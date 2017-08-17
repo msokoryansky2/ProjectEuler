@@ -80,9 +80,23 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
     }
     factorialAcc(HugePositiveInt(1), HugePositiveInt(1))
   }
+
+  /**
+    * Returns specified number of last digits of performing n1 op n2.
+    * Operation is performed by taking only last digits of n1 and n2 as HugePositiveInt, performing op on them,
+    * and again taking last digits.
+    */
+  def lastDigits(other: HugePositiveInt, numDigits: Int,
+                 op: (HugePositiveInt, HugePositiveInt) => HugePositiveInt): HugePositiveInt = {
+    require(numDigits > 0, "Must specify positive number of digits")
+    HugePositiveInt(
+      op(HugePositiveInt(this.value.takeRight(numDigits)), HugePositiveInt(other.value.takeRight(numDigits)))
+        .value.takeRight(numDigits))
+  }
 }
 
 object HugePositiveInt {
   def apply(stringNumber: String) = new HugePositiveInt(stringNumber)
   def apply(int: Int) = new HugePositiveInt(int.toString)
+  def apply(huge: HugePositiveInt) = new HugePositiveInt(huge.value)
 }

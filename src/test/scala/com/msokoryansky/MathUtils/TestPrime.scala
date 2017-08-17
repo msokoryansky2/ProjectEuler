@@ -76,4 +76,10 @@ class TestPrime extends FunSuite {
     assert(Prime.primeNumberSum(21) === 77)
   }
 
+  test("longestPrimeSumOfConsecutivePrimes returns longest possible list of consecutive primes whose sum is prime") {
+    assert(Prime.longestPrimeSumOfConsecutivePrimes(10) === List(3, 2))
+    assert(Prime.longestPrimeSumOfConsecutivePrimes(100) === List(13, 11, 7, 5, 3, 2))
+    assert(Prime.longestPrimeSumOfConsecutivePrimes(1000).size === 21)
+    assert(Prime.longestPrimeSumOfConsecutivePrimes(1000).sum === 953)
+  }
 }

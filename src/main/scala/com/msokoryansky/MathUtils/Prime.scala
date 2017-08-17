@@ -14,6 +14,10 @@ object Prime {
   def primes(ints: Stream[BigInt]): Stream[BigInt] = {
     ints.head #:: primes(ints.tail.filter{_ % ints.head != 0})
   }
+  def primes(i: Long): Stream[Long] = {
+    val np = nextPrime(i)
+    np #:: primes(np + 1)
+  }
 
   /**
     * Finds list of all prime factors of a number. A prime factor may repeat multiple times.
@@ -69,10 +73,6 @@ object Prime {
     }
   }
 
-  def primeNumberNonTailRec(n: Int): BigInt = {
-    primes(Integer.ints(BigInt(2))).drop(Math.max(0, n - 1)).head
-  }
-
   /**
     * Next prime number that's greater than lowerLimit
     * @param lowerLimit lower cutoff (inclusive) for next prime
@@ -99,5 +99,18 @@ object Prime {
       if (p >= limit) acc else primeNumberSumAcc(p, acc + p)
     }
     primeNumberSumAcc(0, 0)
+  }
+
+  /**
+    * Returns longest possible list of consecutive primes whose sum is under cutoff and is itself prime
+    */
+  def longestPrimeSumOfConsecutivePrimes(cutoff: Long): List[Long] = {
+    val primes = Prime.primes(2).takeWhile(_ < cutoff).toList
+    @tailrec def primeSumAcc(curr: List[Long], accCurr: List[Long], acc: List[Long]): List[Long] = {
+      if (curr.isEmpty || curr.head + accCurr.sum >= cutoff) acc
+      else primeSumAcc(curr.tail, curr.head :: accCurr,
+          if (Prime.isPrime(curr.head + accCurr.sum) && accCurr.size >= acc.size) curr.head :: accCurr else acc)
+    }
+    primes.map(p => primeSumAcc(primes.dropWhile(_ < p), List(), List())).maxBy(_.size)
   }
 }
