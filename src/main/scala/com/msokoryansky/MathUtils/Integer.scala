@@ -1,8 +1,6 @@
 package com.msokoryansky.MathUtils
 
 import scala.annotation.tailrec
-import scala.collection.generic.CanBuildFrom
-import scala.collection.immutable
 import scala.collection.immutable.HashSet
 
 object Integer {
@@ -10,10 +8,11 @@ object Integer {
     * @param i first integer in the stream
     * @return Stream of all integers starting with i
     */
-  def ints(i: Int): Stream[Int] = i #:: ints(i + 1)
+  def ints[A: Integral](i: A): Stream[A] = i #:: ints(implicitly[Integral[A]].plus(i, implicitly[Integral[A]].one))
+  /*
   def ints(i: BigInt): Stream[BigInt] = i #:: ints(i + 1)
   def ints(i: Long): Stream[Long] = i #:: ints(i + 1)
-
+*/
   def intsDesc(hi: BigInt, lo: BigInt): Stream[BigInt] = if (hi >= lo) hi #:: intsDesc(hi - 1, lo) else Stream.Empty
 
   /**
