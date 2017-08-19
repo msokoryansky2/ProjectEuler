@@ -1,6 +1,8 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.{Prime, Subset, Integer}
+import com.msokoryansky.MathUtils.{Integer, Prime, Subset}
+
+import scala.annotation.tailrec
 
 
 /*
@@ -21,10 +23,15 @@ is part of an eight prime value family.
 
 class P0051 extends EulerProblem {
   def run: String = {
-    def tryNumDigits(n: Int): Option[Long] = {
-      ???
+    @tailrec def tryNumDigits(numDigits: Int): Long = {
+      val subset = Integer.subsetsWithFixedDigits(numDigits).filterNot(_.size >= numDigits)
+                    .find(s => Prime.primesFromDigitSubstitution(numDigits, s).size >= 8)
+      subset match {
+        case Some(s) => Prime.primesFromDigitSubstitution(numDigits, s).min
+        case None => tryNumDigits(numDigits + 1)
+      }
     }
-    tryNumDigits(1).get.toString
+    tryNumDigits(1).toString
   }
 }
 
