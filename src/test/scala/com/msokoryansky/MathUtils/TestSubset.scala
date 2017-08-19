@@ -16,4 +16,18 @@ class TestSubset extends FunSuite {
                                         Subset.subsets(Set(1, 2, 3, 4), 3) ++
                                         Subset.subsets(Set(1, 2, 3, 4), 4))
   }
+
+  test("waysToSelectRFromN returns number of ways to select specified number of elements from a set") {
+    intercept[Exception] {
+      Subset.waysToSelectRFromN(0, 1)
+    }
+    intercept[Exception] {
+      Subset.waysToSelectRFromN(1, 0)
+    }
+    intercept[Exception] {
+      Subset.waysToSelectRFromN(1, 2)
+    }
+    assert(Subset.waysToSelectRFromN(5, 3) === 10)
+    assert(Subset.waysToSelectRFromN(23, 10) === 1144066)
+  }
 }

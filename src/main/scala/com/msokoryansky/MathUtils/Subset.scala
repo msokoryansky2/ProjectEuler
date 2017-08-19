@@ -26,4 +26,11 @@ object Subset {
         set.flatMap(m => subsetsAcc(set.filterNot(_ == m), 1, Set(Set(m))))
     }
   }
+
+  def waysToSelectRFromN(n: Int, r: Int): BigInt = {
+    require(n > 0, "Number of elements must be positive")
+    require(r > 0, "Number of elements selected must be positive")
+    require(r <= n, "Number of elements selected must not exceed number of elements in the set")
+    (BigInt(1) to n).product / ((BigInt(1) to r).product * (BigInt(1) to (n - r)).product)
+  }
 }
