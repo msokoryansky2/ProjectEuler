@@ -87,6 +87,9 @@ class TestPrime extends FunSuite {
     intercept[Exception] {
       assert(Prime.primesFromDigitSubstitution(2, Map(1 -> 3, 0 -> 1)) === List(13))
     }
+    intercept[Exception] {
+      assert(Prime.primesFromDigitSubstitution(2, Map(0 -> 0)) === List(13))
+    }
     assert(Prime.primesFromDigitSubstitution(1, Map()) === List(2, 3, 5, 7))
     assert(Prime.primesFromDigitSubstitution(2, Map(0 -> 3)) === List(31, 37))
     assert(Prime.primesFromDigitSubstitution(2, Map(1 -> 3)) === List(13, 23, 43, 53, 73, 83))

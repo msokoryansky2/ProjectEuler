@@ -116,6 +116,21 @@ object Integer {
     }
     trimsLeftAcc(1, List(number))
   }
+
+  /**
+    * Returns all possible subsets of a numDigits-digit number where each subset specifies digit number and its value.
+    * E.g.  Map(0 -> 5, 1 -> 6, 4 -> 3) represents numbers 56xx3. We return all possible non-empty subsets with
+    * each subset having all possible digit permutations.
+    */
+  def subsetsWithFixedDigits(numDigits: Int): Set[Map[Int, Int]] = {
+    val fixedPlaces = Subset.subsets((0 to numDigits).toSet).filterNot(_.isEmpty)
+    fixedPlaces.flatMap(fps => {
+      val digitCombos = (("1" + "0" * fps.size).toLong until ("10" + "0" * fps.size).toLong)
+        .map(s => s.toString.substring(1))
+      digitCombos.map(digitCombo => fps.toList.zip(digitCombo).toMap.map(ic => ic._1 -> ic._2.asDigit)
+        .filterNot(ic => ic._1 == 0 && ic._2 == 0))
+    })
+  }
 }
 
 object IntegerOps {

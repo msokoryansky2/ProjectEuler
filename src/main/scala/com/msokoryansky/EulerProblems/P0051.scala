@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.{Prime, Subset}
+import com.msokoryansky.MathUtils.{Prime, Subset, Integer}
 
 
 /*
@@ -16,28 +16,18 @@ Consequently 56003, being the first member of this family, is the smallest prime
 Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit,
 is part of an eight prime value family.
 
+*/
 
 
 class P0051 extends EulerProblem {
   def run: String = {
     def tryNumDigits(n: Int): Option[Long] = {
-      val fixedPlaces = Subset.subsets((0 to n).toSet).filterNot(_.isEmpty)
-      val eightPrimePlaces = fixedPlaces.foreach(s => {
-        val numFixedDigits = fixedPlaces.size
-        val fixedDigitsCandidates =
-          (("1" + "0" * numFixedDigits).toLong until ("1" + "0" * (1 + numFixedDigits)).toLong by 2)
-            .map(digits => digits.toString.substring(1).toList.map(_.asDigit))
-        // At this point s is e.g. Set(0, 2, 5) and fixedDigits is e.g. List(6, 7, 6)
-        // We zip them up to form Map(0 -> 6, 2 -> 7, 5 -> 6)
-        fixedDigitsCandidates.map(fixedDigits => Prime.primesFromDigitSubstitution(n, s.zip(fixedDigits).toMap))
-      })
       ???
     }
+    tryNumDigits(1).get.toString
   }
 }
 
 object P0051 extends App {
   (new P0051).printAnswer()
 }
-
- */

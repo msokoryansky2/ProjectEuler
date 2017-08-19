@@ -126,4 +126,12 @@ class TestInteger extends FunSuite {
     assert(Integer.trimsLeft(1234) === List(234, 34, 4, 1234))
     assert(Integer.trimsLeft(1020034) === List(20034, 34, 4, 1020034))
   }
+
+  test("subsetsWithFixedDigits returns all possible non-empty fixed-digit permutations") {
+    assert(Integer.subsetsWithFixedDigits(1) ===
+      Set(0 -> 1, 0 -> 2, 0 -> 3, 0 -> 4, 0 -> 5, 0 -> 6, 0 -> 7, 0 -> 8, 0 -> 9))
+    assert(Integer.subsetsWithFixedDigits(2) ===
+      Set(0 -> 1, 0 -> 2, 0 -> 3, 0 -> 4, 0 -> 5, 0 -> 6, 0 -> 7, 0 -> 8, 0 -> 9,
+        1 -> 0, 1 -> 1, 0 -> 2, 0 -> 3, 0 -> 4, 0 -> 5, 0 -> 6, 0 -> 7, 0 -> 8, 0 -> 9))
+  }
 }
