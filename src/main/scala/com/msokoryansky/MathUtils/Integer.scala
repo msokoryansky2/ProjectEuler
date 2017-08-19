@@ -123,13 +123,11 @@ object Integer {
     * each subset having all possible digit permutations.
     */
   def subsetsWithFixedDigits(numDigits: Int): Set[Map[Int, Int]] = {
-    val fixedPlaces = Subset.subsets((0 to numDigits).toSet).filterNot(_.isEmpty)
-    fixedPlaces.flatMap(fps => {
-      val digitCombos = (("1" + "0" * fps.size).toLong until ("10" + "0" * fps.size).toLong)
-        .map(s => s.toString.substring(1))
-      digitCombos.map(digitCombo => fps.toList.zip(digitCombo).toMap.map(ic => ic._1 -> ic._2.asDigit)
-        .filterNot(ic => ic._1 == 0 && ic._2 == 0))
-    })
+    val digitSubsets = Subset.subsets((0 until numDigits).toSet)
+    digitSubsets.flatMap(ds => {
+      val combos = (("1" + "0" * ds.size).toLong until ("2" + "0" * ds.size).toLong).map(s => s.toString.substring(1))
+      combos.map(combo => ds.toList.zip(combo.map(_.asDigit)).filterNot(ic => ic._1 == 0 && ic._2 == 0).toMap)
+    }).filterNot(_.isEmpty)
   }
 }
 

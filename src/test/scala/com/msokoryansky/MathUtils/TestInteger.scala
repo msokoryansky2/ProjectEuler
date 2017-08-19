@@ -128,10 +128,11 @@ class TestInteger extends FunSuite {
   }
 
   test("subsetsWithFixedDigits returns all possible non-empty fixed-digit permutations") {
-    assert(Integer.subsetsWithFixedDigits(1) ===
-      Set(0 -> 1, 0 -> 2, 0 -> 3, 0 -> 4, 0 -> 5, 0 -> 6, 0 -> 7, 0 -> 8, 0 -> 9))
-    assert(Integer.subsetsWithFixedDigits(2) ===
-      Set(0 -> 1, 0 -> 2, 0 -> 3, 0 -> 4, 0 -> 5, 0 -> 6, 0 -> 7, 0 -> 8, 0 -> 9,
-        1 -> 0, 1 -> 1, 0 -> 2, 0 -> 3, 0 -> 4, 0 -> 5, 0 -> 6, 0 -> 7, 0 -> 8, 0 -> 9))
+    val set0 = (1 to 9).map(d => Map(0 -> d)).toSet
+    val set1 = (0 to 9).map(d => Map(1 -> d)).toSet
+    val set01 = (1 to 9).flatMap(d0 => (0 to 9).map(d1 => Map(0 -> d0, 1 -> d1))).toSet
+
+    assert(Integer.subsetsWithFixedDigits(1) === set0)
+    assert(Integer.subsetsWithFixedDigits(2) === set0 ++ set1 ++ set01)
   }
 }
