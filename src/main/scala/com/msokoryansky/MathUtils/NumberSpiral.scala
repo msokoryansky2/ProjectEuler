@@ -2,7 +2,8 @@ package com.msokoryansky.MathUtils
 
 import scala.annotation.tailrec
 
-class NumberSpiral(sideLength: Int, firstValue: Int = 1, direction: Direction.Value = Direction.R) {
+class NumberSpiral(sideLength: Int, firstValue: Int = 1,
+                   direction: NumberSpiral.Direction.Value = NumberSpiral.Direction.R) {
   require(sideLength > 0 && sideLength % 2 == 1, "Number spiral side length must be an odd positive number")
   val spiral: Vector[Vector[Long]] = NumberSpiral.fillSpiral(sideLength, firstValue)
 
@@ -78,9 +79,8 @@ object NumberSpiral {
       case _ => thisY
     }
   }
-}
 
-object Direction extends Enumeration {
-  val R, D, L, U = Value
-
+  object Direction extends Enumeration {
+    val R, D, L, U = Value
+  }
 }
