@@ -113,4 +113,22 @@ object Prime {
     }
     primes.map(p => primeSumAcc(primes.dropWhile(_ < p), List(), List())).maxBy(_.size)
   }
+
+  /**
+    * Builds a number with numDigits digits, with some of its digits specified as fixed, via a map of digit # -> digit
+    * The rest of the digits are flex and will be substituted with the same digit. So 10 new numbers will created.
+    * Then the subset of those 10 will be returned.
+    *
+    * E.g. if numDigits is 5, and fixed is (0 -> 4, 3 -> 9) then we have base of 4xx9x. We will replace "x" with 0 to 9,
+    * to form: 40090, 41191, 42292, 43393, 44494, 45595, 46696, 47797, 48898, 49999 and check each of those if it's
+    * prime and return a List of those that are prime
+    */
+  def primesFromDigitSubstitution(numDigits: Int, fixed: Map[Int, Int]): Seq[Long] = {
+    require(fixed.size < numDigits, "Must have at least one digit to be substituted")
+    // Can't have 0 in 0th (leading digit) position
+    require(!fixed.contains(0) || fixed(0) != 0, "Cannot have zero as leading digit")
+    ((if (fixed.contains(0)) 0 else 1) to 9)
+      .map(d => (0 until numDigits).map(dn => if (fixed.contains(dn)) fixed(dn) else d).mkString.toLong)
+      .filter(Prime.isPrime)
+  }
 }
