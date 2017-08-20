@@ -44,6 +44,9 @@ class TestHugePositiveInt extends FunSuite {
   }
 
   test("compare allows 1/0/-1 comaprison of two HugePositiveInt objects") {
+    assert(new HugePositiveInt("123") == new HugePositiveInt("123"))
+    assert(new HugePositiveInt("0123") == new HugePositiveInt("123"))
+    assert(new HugePositiveInt("0123") != new HugePositiveInt("1230"))
     assert(new HugePositiveInt("0") < new HugePositiveInt("1"))
     assert(new HugePositiveInt("10") < new HugePositiveInt("11"))
     assert(new HugePositiveInt("100") < new HugePositiveInt("101"))
@@ -104,4 +107,25 @@ class TestHugePositiveInt extends FunSuite {
     assert(HugePositiveInt(34).lastDigits(HugePositiveInt(988), 1, _ * _).value === "2")
   }
 
+  test("isPalindrome checks if number is a palindrome") {
+    assert(new HugePositiveInt("1") == new HugePositiveInt("1"))
+    assert(HugePositiveInt("1") == HugePositiveInt("1".reverse))
+
+    assert(HugePositiveInt("1").isPalindrome)
+    assert(!HugePositiveInt(34).isPalindrome)
+    assert(HugePositiveInt(34566543).isPalindrome)
+    assert(HugePositiveInt(345676543).isPalindrome)
+    assert(HugePositiveInt("0345676543").isPalindrome)
+    assert(!HugePositiveInt("03456765430").isPalindrome)
+  }
+
+  test("checkLychrel checks if a number is presumed to be Lychrel " +
+    "(adding it to its reverse and repeating the process never forms a palindrome)") {
+    assert(!HugePositiveInt("1").presumedLychrel())
+    assert(!HugePositiveInt("47").presumedLychrel())
+    assert(HugePositiveInt("196").presumedLychrel())
+    assert(HugePositiveInt("4994").presumedLychrel())
+    assert(HugePositiveInt("10677").presumedLychrel(52))
+    assert(!HugePositiveInt("10677").presumedLychrel(53))
+  }
 }

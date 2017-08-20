@@ -22,6 +22,15 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
       else 0
     }
 
+  def canEqual(other: Any): Boolean = other.isInstanceOf[HugePositiveInt]
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: HugePositiveInt => that.canEqual(this) && this.compare(that) == 0
+      case _ => false
+    }
+
+  override def toString: String = value
+
   def +(other: HugePositiveInt): HugePositiveInt = {
     @tailrec def plusAcc(i: Int, carry: Int, acc: String): HugePositiveInt = {
       (digit(i), other.digit(i)) match {
@@ -92,6 +101,22 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
     HugePositiveInt(
       op(HugePositiveInt(this.value.takeRight(numDigits)), HugePositiveInt(other.value.takeRight(numDigits)))
         .value.takeRight(numDigits))
+  }
+
+  def reverse: HugePositiveInt = HugePositiveInt(value.reverse)
+
+  def isPalindrome: Boolean = this == reverse
+
+  def presumedLychrel(cycles: Int = 50): Boolean = {
+    def checkLychrel(cycle: Int, acc: HugePositiveInt): Boolean = {
+      if (cycle > cycles) true
+      else {
+        val next = acc + acc.reverse
+        if (next.isPalindrome) false
+        else checkLychrel(cycle + 1, next)
+      }
+    }
+    checkLychrel(1, this)
   }
 }
 
