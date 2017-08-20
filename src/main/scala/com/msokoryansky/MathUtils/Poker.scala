@@ -64,7 +64,9 @@ class Hand private(val cards: Array[Card]) extends Ordered[Hand] {
 object Hand {
   def apply(cards: Array[Card]): Hand = new Hand(cards)
   def apply(hand: Hand): Hand = new Hand(hand.cards)
-  def apply(str: String): Hand = new Hand(str.split("\\s|,").map(c => Card.fromString(c)))
+  def apply(str: String): Hand = new Hand(str.trim.split("\\s|,").map(c => Card.fromString(c)))
+
+  def twoHands(str: String): (Hand, Hand) = (Hand(str.substring(0, 15)), Hand(str.substring(15)))
 }
 
 case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) extends Ordered[Ranking] {
