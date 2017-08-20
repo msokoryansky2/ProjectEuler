@@ -128,4 +128,15 @@ class TestHugePositiveInt extends FunSuite {
     assert(HugePositiveInt("10677").presumedLychrel(52))
     assert(!HugePositiveInt("10677").presumedLychrel(53))
   }
+
+  test("sqrtOf2Expansion returns expansion of sqrt(2) in (numerator, denominator) form") {
+    assert(HugePositiveInt.sqrtOf2Expansion(1) === (HugePositiveInt(3), HugePositiveInt(2)))
+    assert(HugePositiveInt.sqrtOf2Expansion(2) === (HugePositiveInt(7), HugePositiveInt(5)))
+    assert(HugePositiveInt.sqrtOf2Expansion(3) === (HugePositiveInt(17), HugePositiveInt(12)))
+    assert(HugePositiveInt.sqrtOf2Expansion(4) === (HugePositiveInt(41), HugePositiveInt(29)))
+    assert(HugePositiveInt.sqrtOf2Expansion(5) === (HugePositiveInt(99), HugePositiveInt(70)))
+    assert(HugePositiveInt.sqrtOf2Expansion(6) === (HugePositiveInt(239), HugePositiveInt(169)))
+    assert(HugePositiveInt.sqrtOf2Expansion(7) === (HugePositiveInt(577), HugePositiveInt(408)))
+    assert(HugePositiveInt.sqrtOf2Expansion(8) === (HugePositiveInt(1393), HugePositiveInt(985)))
+  }
 }
