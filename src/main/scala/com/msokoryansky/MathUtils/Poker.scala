@@ -14,7 +14,7 @@ class Hand private(val cards: Array[Card]) extends Ordered[Hand] {
 
   lazy val twoPairs: Ranking =
     Ranking(Rank.TwoPairs, cards.partition(c => cards.count(_.value == c.value) == 2 &&
-      cards.exists(d => cards.count(_.value == d.value) == 2 && c != d)))
+      cards.exists(d => cards.count(_.value == d.value) == 2 && c != d && c.value.id > d.value.id)))
 
   lazy val threeOfAKind: Ranking =
     Ranking(Rank.ThreeOfAKind, cards.partition(c => cards.count(_.value == c.value) == 3))
@@ -32,14 +32,14 @@ class Hand private(val cards: Array[Card]) extends Ordered[Hand] {
     Ranking(Rank.Flush, cards.partition(c => !cards.exists(_.suit != c.suit)))
 
   lazy val fullHouse: Ranking =
-    if (threeOfAKind.exists && Hand(threeOfAKind.rankCards).onePair.exists) Ranking(Rank.FullHouse, threeOfAKind.cards)
+    if (threeOfAKind.exists && Hand(threeOfAKind.tiebreaker).onePair.exists) Ranking(Rank.FullHouse, threeOfAKind.cards)
     else Ranking(Rank.FullHouse, (Array(), cards))
 
   lazy val fourOfAKind: Ranking =
     Ranking(Rank.FourOfAKind, cards.partition(c => cards.count(_.value == c.value) == 4))
 
   lazy val straightFlush: Ranking =
-    if (straight.exists && flush.exists) Ranking(Rank.StraightFlush, (straight.rankCards, highCard.rankCards))
+    if (straight.exists && flush.exists) Ranking(Rank.StraightFlush, straight.cards)
     else Ranking(Rank.StraightFlush, (Array(), cards))
 
   lazy val royalFlush: Ranking =
