@@ -76,20 +76,28 @@ case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) {
   def exists: Boolean = cards._1.length > 0
   def rankCards: Array[Card] = cards._1
   def tiebreaker: Array[Card] = cards._2
+
+  override def toString: String = rank + ": [" + Hand(rankCards).toString + "], [" + Hand(tiebreaker).toString + "]"
+
+  override def equals(obj: scala.Any): Boolean =
+    obj.isInstanceOf[Ranking] &&
+      rank == obj.asInstanceOf[Ranking].rank &&
+      rankCards.toSet == obj.asInstanceOf[Ranking].rankCards.toSet &&
+      tiebreaker.toSet == obj.asInstanceOf[Ranking].tiebreaker.toSet
 }
 
 object Rank extends Enumeration {
   type Rank = Value
-  val High          = Value(2, "H")
-  val OnePair       = Value(3, "OP")
-  val TwoPairs      = Value(4, "TP")
-  val ThreeOfAKind  = Value(5, "3K")
-  val Straight      = Value(6, "S")
-  val Flush         = Value(7, "F")
-  val FullHouse     = Value(8, "FH")
-  val FourOfAKind   = Value(9, "4K")
-  val StraightFlush = Value(10, "SF")
-  val RoyalFlush    = Value(11, "RF")
+  val High          = Value(2, "High")
+  val OnePair       = Value(3, "OnePair")
+  val TwoPairs      = Value(4, "TwoPairs")
+  val ThreeOfAKind  = Value(5, "ThreeOfAKind")
+  val Straight      = Value(6, "Straight")
+  val Flush         = Value(7, "Flush")
+  val FullHouse     = Value(8, "FullHouse")
+  val FourOfAKind   = Value(9, "FourOfAKind")
+  val StraightFlush = Value(10, "StraightFlush")
+  val RoyalFlush    = Value(11, "RoyalFlush")
 }
 
 case class Card private (value: CardValue.Value, suit: Suit.Value) extends Ordered[Card] {

@@ -23,6 +23,11 @@ class TestPoker extends FunSuite {
     assert(Hand("5H 5C 6S 7S KD").toString === "5H 5C 6S 7S KD")
   }
 
+  test("onePair") {
+    assert(Hand("5H 5C 6S 7S KD").onePair === Ranking(Rank.OnePair, (Hand("5H 5C").cards, Hand("6S 7S KD").cards)))
+    assert(Hand("5H 2C 6S 7S KD").onePair === Ranking(Rank.OnePair, (Array(), Hand("5H 2C 6S 7S KD").cards)))
+  }
+
   test("Can compare two poker hands") {
     assert(Hand("5H 5C 6S 7S KD") < Hand("2C 3S 8S 8D TD"))
     assert(Hand("5D 8C 9S JS AC") > Hand("2C 5C 7D 8S QH"))
