@@ -58,12 +58,7 @@ class Hand private(val cards: Array[Card]) extends Ordered[Hand] {
     else if (onePair.exists) onePair
     else highCard
 
-  override def compare(that: Hand): Int = {
-    if (highestRanking.rank > that.highestRanking.rank) 1
-    else if (highestRanking.rank < that.highestRanking.rank) -1
-    else if (highestRanking.tiebreaker.isEmpty || that.highestRanking.tiebreaker.isEmpty) 0
-    else Hand(highestRanking.tiebreaker) compare Hand(that.highestRanking.tiebreaker)
-  }
+  override def compare(that: Hand): Int = this.highestRanking compare that.highestRanking
 }
 
 object Hand {
@@ -72,7 +67,7 @@ object Hand {
   def apply(str: String): Hand = new Hand(str.split("\\s|,").map(c => Card.fromString(c)))
 }
 
-case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) {
+case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) extends Ordered[Ranking] {
   def exists: Boolean = cards._1.length > 0
   def rankCards: Array[Card] = cards._1
   def tiebreaker: Array[Card] = cards._2
@@ -84,6 +79,24 @@ case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) {
       rank == obj.asInstanceOf[Ranking].rank &&
       rankCards.toSet == obj.asInstanceOf[Ranking].rankCards.toSet &&
       tiebreaker.toSet == obj.asInstanceOf[Ranking].tiebreaker.toSet
+
+  override def compare(that: Ranking): Int = {
+    if (rank > that.rank)
+      1
+    else if (rank < that.rank)
+      -1
+    else {
+      if (rankCards.nonEmpty &&
+            that.rankCards.nonEmpty &&
+            rank != Rank.High &&
+            Hand(rankCards).highCard.compare(Hand(that.rankCards).highCard) != 0)
+        Hand(rankCards).highCard compare Hand(that.rankCards).highCard
+      else if (tiebreaker.nonEmpty && that.tiebreaker.nonEmpty)
+        Hand(tiebreaker).highCard compare Hand(that.tiebreaker).highCard
+      else
+        0
+    }
+  }
 }
 
 object Rank extends Enumeration {
