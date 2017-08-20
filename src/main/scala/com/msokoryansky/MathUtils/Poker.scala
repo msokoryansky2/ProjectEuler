@@ -86,16 +86,17 @@ case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) extends 
     else if (rank < that.rank)
       -1
     else {
-      if (rankCards.nonEmpty &&
-            that.rankCards.nonEmpty &&
-            rank != Rank.High &&
-            Hand(rankCards).highCard.compare(Hand(that.rankCards).highCard) != 0)
-        Hand(rankCards).highCard compare Hand(that.rankCards).highCard
-      else if (tiebreaker.nonEmpty && that.tiebreaker.nonEmpty)
-        Hand(tiebreaker).highCard compare Hand(that.tiebreaker).highCard
-      else
-        0
-    }
+      if (rankCards.nonEmpty && that.rankCards.nonEmpty) {
+          if (rankCards.maxBy(_.value).value.id != that.rankCards.maxBy(_.value).value.id)
+            rankCards.maxBy(_.value).value.id - that.rankCards.maxBy(_.value).value.id
+          else if (tiebreaker.nonEmpty && that.tiebreaker.nonEmpty)
+            Hand(tiebreaker) compare Hand(that.tiebreaker)
+          else
+            0
+        }
+        else
+          Hand(rankCards) compare Hand(that.rankCards)
+      }
   }
 }
 
