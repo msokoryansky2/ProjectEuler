@@ -1,52 +1,100 @@
 package com.msokoryansky.MathUtils
 
-class PokerHand private (val cards: Array[Card]) extends Ordered[PokerHand] {
-  require(cards.length == 5, "A poker hand must have 5 cards")
-
-  def highCard: Int = cards.map(c => c.value.id).max
-  def onePair: Boolean = cards.exists(c => cards.count(_.value == c.value) >= 2)
-  def twoPairs: Boolean = cards.exists(c => cards.count(_.value == c.value) >= 2 &&
-                  cards.exists(d => cards.count(_.value == d.value) >= 2 &&
-                    c != d))
-  def threeOfAKind: Boolean = cards.exists(c => cards.count(_.value == c.value) >= 3)
-  def straight: Boolean = {
-    val consecutives = cards.map(c => c.value.id).sortWith(_ < _).sliding(2)
-    !consecutives.exists(cc => cc.length != 2 || cc.tail.head - cc.head != 1)
-  }
-  def flush: Boolean = !cards.exists(c => cards.exists(_.suit != c.suit))
-  def fullHouse: Boolean = threeOfAKind && onePair && !cards.exists(c => cards.count(_.value == c.value) == 1)
-  def fourOfAKind: Boolean = cards.exists(c => cards.count(_.value == c.value) >= 4)
-  def straightFlush: Boolean = straight && cards.exists(c => cards.count(_.suit == c.suit) == 5)
-  def royalFlush: Boolean = straightFlush && cards.exists(_.value == CardValue.Ace)
-
-  def value: Long = highCard +
-                    100 *          (if (onePair) 1 else 0) +
-                    1000 *         (if (twoPairs) 1 else 0) +
-                    10000 *        (if (threeOfAKind) 1 else 0) +
-                    100000 *       (if (straight) 1 else 0) +
-                    1000000 *      (if (flush) 1 else 0) +
-                    10000000 *     (if (fullHouse) 1 else 0) +
-                    100000000 *    (if (fourOfAKind) 1 else 0) +
-                    1000000000 *   (if (straightFlush) 1 else 0) +
-                    10000000000L * (if (royalFlush) 1 else 0)
-
+class Hand private(val cards: Array[Card]) extends Ordered[Hand] {
+  // Note that we allow PokerHand with less than 5 cards to resolve comparison conflicts
+  // by removing equally-valued "best" cards from both hands
 
   override def toString: String = cards.map(_.toString).mkString(" ")
-  override def compare(that: PokerHand): Int = value - that.value match {
-    case neg if neg < 0 => -1
-    case eq  if eq == 0 => 0
-    case pos if pos > 0 => 1
+
+  lazy val highCard: Ranking =
+    Ranking(Rank.High, cards.partition(c => c == cards.maxBy(_.value)))
+
+  lazy val onePair: Ranking =
+    Ranking(Rank.OnePair, cards.partition(c => cards.count(_.value == c.value) == 2))
+
+  lazy val twoPairs: Ranking =
+    Ranking(Rank.TwoPairs, cards.partition(c => cards.count(_.value == c.value) == 2 &&
+      cards.exists(d => cards.count(_.value == d.value) == 2 && c != d)))
+
+  lazy val threeOfAKind: Ranking =
+    Ranking(Rank.ThreeOfAKind, cards.partition(c => cards.count(_.value == c.value) == 3))
+
+  lazy val straight: Ranking = {
+    Ranking(Rank.Straight,
+      cards.map(c => c.value.id).sortWith(_ < _).sliding(2).filter(cc => cc.tail.head - cc.head != 1) match {
+        case e if e.isEmpty => (cards, Array())
+        case _ => (Array(), cards)
+      }
+    )
+  }
+
+  lazy val flush: Ranking =
+    Ranking(Rank.Flush, cards.partition(c => !cards.exists(_.suit != c.suit)))
+
+  lazy val fullHouse: Ranking =
+    if (threeOfAKind.exists && Hand(threeOfAKind.rankCards).onePair.exists) Ranking(Rank.FullHouse, threeOfAKind.cards)
+    else Ranking(Rank.FullHouse, (Array(), cards))
+
+  lazy val fourOfAKind: Ranking =
+    Ranking(Rank.FourOfAKind, cards.partition(c => cards.count(_.value == c.value) == 4))
+
+  lazy val straightFlush: Ranking =
+    if (straight.exists && flush.exists) Ranking(Rank.StraightFlush, (straight.rankCards, highCard.rankCards))
+    else Ranking(Rank.StraightFlush, (Array(), cards))
+
+  lazy val royalFlush: Ranking =
+    if (straightFlush.exists && cards.exists(_.value == CardValue.Ace)) Ranking(Rank.RoyalFlush, straightFlush.cards)
+    else Ranking(Rank.RoyalFlush, (Array(), cards))
+
+  lazy val highestRanking: Ranking =
+    if (royalFlush.exists) royalFlush
+    else if (straightFlush.exists) straightFlush
+    else if (fourOfAKind.exists) fourOfAKind
+    else if (fullHouse.exists) fullHouse
+    else if (flush.exists) flush
+    else if (straight.exists) straight
+    else if (threeOfAKind.exists) threeOfAKind
+    else if (twoPairs.exists) twoPairs
+    else if (onePair.exists) onePair
+    else highCard
+
+  override def compare(that: Hand): Int = {
+    if (highestRanking.rank > that.highestRanking.rank) 1
+    else if (highestRanking.rank < that.highestRanking.rank) -1
+    else if (highestRanking.tiebreaker.isEmpty || that.highestRanking.tiebreaker.isEmpty) 0
+    else Hand(highestRanking.tiebreaker) compare Hand(that.highestRanking.tiebreaker)
   }
 }
 
-object PokerHand {
-  def apply(cards: Array[Card]): PokerHand = new PokerHand(cards)
-  def apply(hand: PokerHand): PokerHand = new PokerHand(hand.cards)
-  def apply(str: String): PokerHand = new PokerHand(str.split("\\s|,").map(c => Card.fromString(c)))
+object Hand {
+  def apply(cards: Array[Card]): Hand = new Hand(cards)
+  def apply(hand: Hand): Hand = new Hand(hand.cards)
+  def apply(str: String): Hand = new Hand(str.split("\\s|,").map(c => Card.fromString(c)))
 }
 
-case class Card private (value: CardValue.Value, suit: Suit.Value) {
+case class Ranking(rank: Rank.Value, cards: (Array[Card], Array[Card])) {
+  def exists: Boolean = cards._1.length > 0
+  def rankCards: Array[Card] = cards._1
+  def tiebreaker: Array[Card] = cards._2
+}
+
+object Rank extends Enumeration {
+  type Rank = Value
+  val High          = Value(2, "H")
+  val OnePair       = Value(3, "OP")
+  val TwoPairs      = Value(4, "TP")
+  val ThreeOfAKind  = Value(5, "3K")
+  val Straight      = Value(6, "S")
+  val Flush         = Value(7, "F")
+  val FullHouse     = Value(8, "FH")
+  val FourOfAKind   = Value(9, "4K")
+  val StraightFlush = Value(10, "SF")
+  val RoyalFlush    = Value(11, "RF")
+}
+
+case class Card private (value: CardValue.Value, suit: Suit.Value) extends Ordered[Card] {
   override def toString: String = this.value.toString + this.suit.toString
+  override def compare(that: Card): Int = this.value.id - that.value.id
 }
 
 object Card {
