@@ -3,9 +3,10 @@ package com.msokoryansky.MathUtils
 import scala.annotation.tailrec
 
 class NumberSpiral(sideLength: Int, firstValue: Int = 1,
-                   direction: NumberSpiral.Direction.Value = NumberSpiral.Direction.R) {
+                   direction: NumberSpiral.Direction.Value = NumberSpiral.Direction.R,
+                   clockwise: NumberSpiral.Clockwise.Value = NumberSpiral.Clockwise.CW) {
   require(sideLength > 0 && sideLength % 2 == 1, "Number spiral side length must be an odd positive number")
-  val spiral: Vector[Vector[Long]] = NumberSpiral.fillSpiral(sideLength, firstValue)
+  val spiral: Vector[Vector[Long]] = NumberSpiral.fillSpiral(sideLength, firstValue, direction, clockwise)
 
   override def toString: String = NumberGrid.longGrid2stringGrid(spiral.map(_.toArray).toArray)
 
@@ -35,18 +36,23 @@ object NumberSpiral {
 
   def initialized(n: Long): Boolean = n != init
 
-  def apply(sideLength: Int, firstValue: Int = 1, direction: Direction.Value = Direction.R): NumberSpiral =
-    new NumberSpiral(sideLength, firstValue, direction)
+  def apply(sideLength: Int,
+            firstValue: Int = 1,
+            direction: Direction.Value = Direction.R,
+            clockwise: Clockwise.Value = Clockwise.CW): NumberSpiral =
+    new NumberSpiral(sideLength, firstValue, direction, clockwise)
 
-  def fillSpiral(sideLength: Int, firstValue: Int = 1,
-                 direction: Direction.Value = Direction.R): Vector[Vector[Long]] = {
+  def fillSpiral(sideLength: Int,
+                 firstValue: Int = 1,
+                 direction: Direction.Value = Direction.R,
+                 clockwise: Clockwise.Value = Clockwise.CW): Vector[Vector[Long]] = {
     @tailrec def fillSpiralAcc(x: Int, y: Int, value: Long, direction: Direction.Value,
                                acc: Vector[Vector[Long]]): Vector[Vector[Long]] = {
-      if (x < 0 || y < 0 || x >= sideLength || y >= sideLength || acc(y)(x) >= 0) acc
+      if (x < 0 || y < 0 || x >= sideLength || y >= sideLength || initialized(acc(y)(x))) acc
       else {
         // a little ugly if this is the first element in the spiral -- in that case we always go in specified direction.
         val nextDir = if (x == (sideLength - 1) / 2 && x == y) direction
-                      else nextDirection(sideLength, x, y, direction, acc)
+                      else nextDirection(sideLength, x, y, direction, clockwise, acc)
         fillSpiralAcc(nextX(x, nextDir), nextY(y, nextDir), value + 1, nextDir,
           acc.updated(y, acc(y).updated(x, value)))
       }
@@ -56,12 +62,22 @@ object NumberSpiral {
   }
 
   def nextDirection(sideLength: Int, x: Int, y: Int,
-                    direction: Direction.Value, spiral: Vector[Vector[Long]]): Direction.Value =
-    direction match {
-      case Direction.R => if (x >= sideLength - 1 || !initialized(spiral(y + 1)(x))) Direction.U else Direction.R
-      case Direction.D => if (y <= 0 || !initialized(spiral(y)(x + 1))) Direction.R  else Direction.D
-      case Direction.L => if (x <= 0 || !initialized(spiral(y - 1)(x))) Direction.D else Direction.L
-      case Direction.U => if (y >= sideLength - 1 || !initialized(spiral(y)(x - 1))) Direction.L else Direction.U
+                    direction: Direction.Value,
+                    clockwise: Clockwise.Value,
+                    spiral: Vector[Vector[Long]]): Direction.Value =
+    clockwise match {
+      case Clockwise.CW => direction match {
+        case Direction.R => if (x >= sideLength - 1 || !initialized(spiral(y + 1)(x))) Direction.U else Direction.R
+        case Direction.D => if (y <= 0 || !initialized(spiral(y)(x + 1))) Direction.R else Direction.D
+        case Direction.L => if (x <= 0 || !initialized(spiral(y - 1)(x))) Direction.D else Direction.L
+        case Direction.U => if (y >= sideLength - 1 || !initialized(spiral(y)(x - 1))) Direction.L else Direction.U
+      }
+      case Clockwise.CCW => direction match {
+        case Direction.R => if (x >= sideLength - 1 || !initialized(spiral(y - 1)(x))) Direction.D else Direction.R
+        case Direction.D => if (y <= 0 || !initialized(spiral(y)(x - 1))) Direction.L else Direction.D
+        case Direction.L => if (x <= 0 || !initialized(spiral(y + 1)(x))) Direction.U else Direction.L
+        case Direction.U => if (y >= sideLength - 1 || !initialized(spiral(y)(x + 1))) Direction.R else Direction.U
+      }
   }
 
   def nextX(thisX: Int, direction: Direction.Value): Int = {
@@ -82,5 +98,9 @@ object NumberSpiral {
 
   object Direction extends Enumeration {
     val R, D, L, U = Value
+  }
+
+  object Clockwise extends Enumeration {
+    val CW, CCW = Value
   }
 }
