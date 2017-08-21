@@ -158,22 +158,35 @@ object NumberSpiral {
   def corners(side: Int = 1): Stream[(Int, Seq[Long])] =
     (if (side == 1) (1, Vector(1.toLong)) else (side, (0.toLong to 3).map(side * side - _ * (side - 1)))) #:: corners(side + 2)
 
-  def cornersFind(p: Seq[Long] => Boolean, mixSideLength: Int): Seq[Long] = {
-    def cornersFindAcc(s: Stream[(Int, Seq[Long])], acc: Seq[Long]): Seq[Long] = {
-      val acc2 = s.head._2 ++ acc
-      if (s.head._1 >= mixSideLength && p(acc2)) acc2 else cornersFindAcc(s.tail, acc2)
+  def cornersFind(p: Seq[Long] => Boolean, minSideLength: Int, maxSideLength: Int): Option[Seq[Long]] = {
+    def cornersFindAcc(s: Stream[(Int, Seq[Long])], acc: Seq[Long]): Option[Seq[Long]] = {
+      if (maxSideLength > 0 && s.head._1 > maxSideLength) None
+      else {
+        val acc2 = s.head._2 ++ acc
+        if (s.head._1 >= minSideLength && p(acc2)) Some(acc2) else cornersFindAcc(s.tail, acc2)
+      }
     }
     cornersFindAcc(corners(), Seq())
   }
 
-  def cornersFind(p: Seq[Long] => Boolean,  mixSideLength: Int, maxSideLength: Int): Option[Seq[Long]] = {
-    def cornersFindAcc(s: Stream[(Int, Seq[Long])], acc: Seq[Long]): Option[Seq[Long]] = {
-      if (s.head._1 > maxSideLength) None
+  /**
+    * Optimized version of cornersFind that allows running tally of corners encountered so far so the entire
+    * predicte does not have to re-evaluated on every pull from the stream but only the newly pulled elements do.
+    * @param p              is a predicate that takes the accumulated corners list and current tally (including latest
+    *                       corners) of elements that satisfied criteria and checks whether criteria is satisfied
+    * @param filter         is a filter that takes last pulled elements from corners stream and checks whether it
+    *                       satisfies criterion
+    */
+  def cornersFind(p: (Long, Seq[Long]) => Boolean, filter: Long => Boolean,  minSideLength: Int, maxSideLength: Int):
+                  Option[Seq[Long]] = {
+    def cornersFindAcc(s: Stream[(Int, Seq[Long])], filterAcc: Long, acc: Seq[Long]): Option[Seq[Long]] = {
+      if (maxSideLength > 0 && s.head._1 > maxSideLength) None
       else {
         val acc2 = s.head._2 ++ acc
-        if (s.head._1 >= mixSideLength && p(acc2)) Some(acc2) else cornersFindAcc(s.tail, acc2)
+        val filterAcc2 = filterAcc + s.head._2.count(filter(_))
+        if (s.head._1 >= minSideLength && p(filterAcc2, acc2)) Some(acc2) else cornersFindAcc(s.tail, filterAcc2, acc2)
       }
     }
-    cornersFindAcc(corners(), Seq())
+    cornersFindAcc(corners(), 0, Seq())
   }
 }

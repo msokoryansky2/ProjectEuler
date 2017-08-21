@@ -132,8 +132,12 @@ class TestNumberSpiral extends FunSuite {
     assert(NumberSpiral.corners().tail.tail.tail.head === (7, Seq(49, 43, 37, 31)))
     assert(NumberSpiral.corners().tail.tail.tail.tail.head === (9, Seq(81, 73, 65, 57)))
 
-    assert(NumberSpiral.cornersFind(_.sum > 30, 1) === Seq(25, 21, 17, 13, 9, 7, 5, 3, 1))
     assert(NumberSpiral.cornersFind(_.sum > 30, 1, 10) === Some(Seq(25, 21, 17, 13, 9, 7, 5, 3, 1)))
     assert(NumberSpiral.cornersFind(_.sum < 1, 1, 10) === None)
+
+    assert(NumberSpiral.cornersFind((tally, _) => tally >= 3, (c) => c % 3 == 0, 1, 10) ===
+      Some(Seq(25, 21, 17, 13, 9, 7, 5, 3, 1)))
+    assert(NumberSpiral.cornersFind((tally, _) => tally >= 3, (c) => c < 10, 1, 10) ===
+      Some(Seq(9, 7, 5, 3, 1)))
   }
 }
