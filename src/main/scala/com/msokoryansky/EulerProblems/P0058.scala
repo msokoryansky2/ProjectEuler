@@ -24,7 +24,14 @@ along both diagonals first falls below 10%?
  */
 
 class P0058 extends EulerProblem {
-  def run: String = "hi"
+  def run: String =
+    NumberSpiral.find(1,
+                      NumberSpiral.Direction.R,
+                      NumberSpiral.Clockwise.CW,
+                      s => {
+                        val diagNumbers = s.diag1 ++ s.diag2.filter(_ != 1)
+                        s.sideLength > 1 && diagNumbers.count(Prime.isPrime).toDouble / diagNumbers.length < 0.13
+                      }).get.sideLength.toString
 }
 
 object P0058 extends App {
