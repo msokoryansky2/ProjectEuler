@@ -47,6 +47,16 @@ class TestNumberSpiral extends FunSuite {
 
     assert(ns.diag1 === Vector(21, 7, 1, 3, 13))
     assert(ns.diag2 === Vector(25, 9, 1, 5, 17))
+
+    val innerSpiral = ns.trim(1)
+
+    assert(innerSpiral.col(0) === Vector(7, 6, 5))
+    assert(innerSpiral.col(1) === Vector(8, 1, 4))
+    assert(innerSpiral.col(2) === Vector(9, 2, 3))
+
+    assert(innerSpiral.row(0) === Vector(7, 8, 9))
+    assert(innerSpiral.row(1) === Vector(6, 1, 2))
+    assert(innerSpiral.row(2) === Vector(5, 4, 3))
   }
 
   test("NumberSpiral counter-clockwise returns rows, columns, cells, and diagonals") {
@@ -93,6 +103,25 @@ class TestNumberSpiral extends FunSuite {
 
     assert(ns.diag1 === Vector(17, 5, 1, 9, 25))
     assert(ns.diag2 === Vector(13, 3, 1, 7, 21))
+
+    val innerSpiral = ns.trim(1)
+
+    assert(innerSpiral.col(0) === Vector(5, 6, 7))
+    assert(innerSpiral.col(1) === Vector(4, 1, 8))
+    assert(innerSpiral.col(2) === Vector(3, 2, 9))
+
+    assert(innerSpiral.row(0) === Vector(5, 4, 3))
+    assert(innerSpiral.row(1) === Vector(6, 1, 2))
+    assert(innerSpiral.row(2) === Vector(7, 8, 9))
   }
 
+  test("find finds smallest spiral matching predicate") {
+    val ns = NumberSpiral(9)
+    val sp2 = NumberSpiral.find(1, NumberSpiral.Direction.R, NumberSpiral.Clockwise.CW, s => s.diag1.length == 9).get
+    assert(sp2.sideLength === 9)
+    assert(sp2.diag1 === ns.diag1)
+    assert(sp2.diag2 === ns.diag2)
+    val sp3 = NumberSpiral.find(1, NumberSpiral.Direction.R, NumberSpiral.Clockwise.CW, s => s.diag1.length == 129).get
+    assert(sp3.sideLength === 129)
+  }
 }

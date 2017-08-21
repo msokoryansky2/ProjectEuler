@@ -1,12 +1,12 @@
 package com.msokoryansky.MathUtils
 
+import com.msokoryansky.MathUtils
+
 import scala.annotation.tailrec
 
-class NumberSpiral(sideLength: Int, firstValue: Int = 1,
-                   direction: NumberSpiral.Direction.Value = NumberSpiral.Direction.R,
-                   clockwise: NumberSpiral.Clockwise.Value = NumberSpiral.Clockwise.CW) {
+class NumberSpiral private(spiral: Vector[Vector[Long]]) {
+  val sideLength: Int = spiral.length
   require(sideLength > 0 && sideLength % 2 == 1, "Number spiral side length must be an odd positive number")
-  val spiral: Vector[Vector[Long]] = NumberSpiral.fillSpiral(sideLength, firstValue, direction, clockwise)
 
   override def toString: String = NumberGrid.longGrid2stringGrid(spiral.map(_.toArray).toArray)
 
@@ -29,6 +29,12 @@ class NumberSpiral(sideLength: Int, firstValue: Int = 1,
   def diag1: Vector[Long] = spiral.zipWithIndex.map(n => n._1(n._2))
 
   def diag2: Vector[Long] = spiral.zipWithIndex.map(n => n._1(sideLength - 1 - n._2))
+
+  def trim(trim: Int): NumberSpiral = {
+    require(trim >= 0, "Cannot specify negative trim")
+    require(trim <= (sideLength - 1) / 2, "Specified trim would result in removing the entire the spiral")
+    NumberSpiral(spiral.dropRight(trim).drop(trim).map(v => v.dropRight(trim).drop(trim)))
+  }
 }
 
 object NumberSpiral {
@@ -36,11 +42,15 @@ object NumberSpiral {
 
   def initialized(n: Long): Boolean = n != init
 
+  def apply (spiral: Vector[Vector[Long]]): NumberSpiral = new NumberSpiral(spiral)
+
   def apply(sideLength: Int,
             firstValue: Int = 1,
             direction: Direction.Value = Direction.R,
-            clockwise: Clockwise.Value = Clockwise.CW): NumberSpiral =
-    new NumberSpiral(sideLength, firstValue, direction, clockwise)
+            clockwise: Clockwise.Value = Clockwise.CW): NumberSpiral = {
+    require(sideLength > 0 && sideLength % 2 == 1, "Number spiral side length must be an odd positive number")
+    new NumberSpiral(NumberSpiral.fillSpiral(sideLength, firstValue, direction, clockwise))
+  }
 
   def fillSpiral(sideLength: Int,
                  firstValue: Int = 1,
@@ -102,5 +112,40 @@ object NumberSpiral {
 
   object Clockwise extends Enumeration {
     val CW, CCW = Value
+  }
+
+  /**
+    * Finds smallest matching spiral matching specified specs and predicate by iterating through possible spirals.
+    * Allow to give up after maxSideLength iterations.
+    */
+  def find(firstValue: Int = 1,
+           direction: Direction.Value = Direction.R,
+           clockwise: Clockwise.Value = Clockwise.CW,
+           p: (NumberSpiral) => Boolean,
+           maxSideLength: Int = 0): Option[NumberSpiral] = {
+    @tailrec def findAcc(startSideLength: Int,
+                          stopSideLength: Int,
+                          current: NumberSpiral,
+                          acc: Option[NumberSpiral]): Option[NumberSpiral] = {
+      if (p(current)) {
+        if (current.sideLength <= stopSideLength) Some(current)
+        else findAcc(startSideLength, stopSideLength, current.trim(1), Some(current))
+      }
+      else {
+        if (current.sideLength <= stopSideLength) {
+          if (acc.nonEmpty || (maxSideLength > 0 && startSideLength >= maxSideLength)) acc
+          else {
+            val nextStartSideLength = if (maxSideLength > 0) Math.min(startSideLength + 100, maxSideLength)
+                                      else startSideLength + 100
+            findAcc(nextStartSideLength, startSideLength,
+              NumberSpiral(nextStartSideLength, firstValue, direction, clockwise), None)
+          }
+        } else {
+          findAcc(startSideLength, stopSideLength, current.trim(1), acc)
+        }
+      }
+    }
+    val startSideLength = if (maxSideLength > 0) Math.min(101, maxSideLength) else 101
+    findAcc(startSideLength, 1, NumberSpiral(startSideLength, firstValue, direction, clockwise), None)
   }
 }
