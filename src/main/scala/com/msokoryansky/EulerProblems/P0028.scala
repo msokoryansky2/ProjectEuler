@@ -19,10 +19,7 @@ What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed 
  */
 
 class P0028 extends EulerProblem {
-  def run: String = {
-    val spiral = NumberSpiral(1001)
-    (spiral.diag1.sum + spiral.diag2.sum - 1).toString
-  }
+  def run: String = NumberSpiral.cornersFind(s => true, 1001, 1001).get.sum.toString
 }
 
 object P0028 extends App {
