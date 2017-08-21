@@ -148,4 +148,32 @@ object NumberSpiral {
     val startSideLength = if (maxSideLength > 0) Math.min(101, maxSideLength) else 101
     findAcc(startSideLength, 1, NumberSpiral(startSideLength, firstValue, direction, clockwise), None)
   }
+
+  /**
+    * Stream of corner numbers of all number spirals for specified starting side.
+    * Spiral with sidelength of 1 has only 1 "corner".
+    * All consecutive spirals have 4 corners. Effectively this function returns all numbers in two main diagonals
+    * of a spiral
+    */
+  def corners(side: Int = 1): Stream[(Int, Seq[Long])] =
+    (if (side == 1) (1, Vector(1.toLong)) else (side, (0.toLong to 3).map(side * side - _ * (side - 1)))) #:: corners(side + 2)
+
+  def cornersFind(p: Seq[Long] => Boolean, mixSideLength: Int): Seq[Long] = {
+    def cornersFindAcc(s: Stream[(Int, Seq[Long])], acc: Seq[Long]): Seq[Long] = {
+      val acc2 = s.head._2 ++ acc
+      if (s.head._1 >= mixSideLength && p(acc2)) acc2 else cornersFindAcc(s.tail, acc2)
+    }
+    cornersFindAcc(corners(), Seq())
+  }
+
+  def cornersFind(p: Seq[Long] => Boolean,  mixSideLength: Int, maxSideLength: Int): Option[Seq[Long]] = {
+    def cornersFindAcc(s: Stream[(Int, Seq[Long])], acc: Seq[Long]): Option[Seq[Long]] = {
+      if (s.head._1 > maxSideLength) None
+      else {
+        val acc2 = s.head._2 ++ acc
+        if (s.head._1 >= mixSideLength && p(acc2)) Some(acc2) else cornersFindAcc(s.tail, acc2)
+      }
+    }
+    cornersFindAcc(corners(), Seq())
+  }
 }

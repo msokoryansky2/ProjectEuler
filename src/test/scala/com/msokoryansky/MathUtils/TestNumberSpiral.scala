@@ -124,4 +124,16 @@ class TestNumberSpiral extends FunSuite {
     val sp3 = NumberSpiral.find(1, NumberSpiral.Direction.R, NumberSpiral.Clockwise.CW, s => s.diag1.length == 129).get
     assert(sp3.sideLength === 129)
   }
+
+  test("corners and cornersFind allow findings smallest spiral size whose corners match specified predicate") {
+    assert(NumberSpiral.corners().head === (1, Seq(1)))
+    assert(NumberSpiral.corners().tail.head === (3, Seq(9, 7, 5, 3)))
+    assert(NumberSpiral.corners().tail.tail.head === (5, Seq(25, 21, 17, 13)))
+    assert(NumberSpiral.corners().tail.tail.tail.head === (7, Seq(49, 43, 37, 31)))
+    assert(NumberSpiral.corners().tail.tail.tail.tail.head === (9, Seq(81, 73, 65, 57)))
+
+    assert(NumberSpiral.cornersFind(_.sum > 30, 1) === Seq(25, 21, 17, 13, 9, 7, 5, 3, 1))
+    assert(NumberSpiral.cornersFind(_.sum > 30, 1, 10) === Some(Seq(25, 21, 17, 13, 9, 7, 5, 3, 1)))
+    assert(NumberSpiral.cornersFind(_.sum < 1, 1, 10) === None)
+  }
 }
