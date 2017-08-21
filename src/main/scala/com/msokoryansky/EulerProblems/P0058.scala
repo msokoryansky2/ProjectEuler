@@ -25,8 +25,8 @@ along both diagonals first falls below 10%?
 
 class P0058 extends EulerProblem {
   def run: String = {
-    val cs = NumberSpiral.cornersFind((tally, acc) => (tally.toDouble / acc.length) < 0.10, Prime.isPrime, 3, 0).get
-    (cs.length - 1 / 2).toString
+    val cs = NumberSpiral.cornersFind((tally, acc) => (tally.toDouble / acc.length) < 0.1, Prime.isPrime, 3, 0).get
+    ((cs.length + 1) / 2).toString
   }
 }
 
