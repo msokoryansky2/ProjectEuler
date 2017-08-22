@@ -126,6 +126,20 @@ object Integer {
       combos.map(combo => ds.toList.zip(combo.map(_.asDigit)).filterNot(ic => ic._1 == 0 && ic._2 == 0).toMap)
     }).filterNot(_.isEmpty)
   }
+
+  /**
+    * Looks if number can be broken into concatenation of two parts.
+    * @param number  integer to be decatenate (as in de-con-catenate)
+    * @param parts   parts into which integer can be de-catenated
+    * @return        list of pairs of parts that can be concatenated back to number
+    */
+  def decatenate(number: Long, parts: IndexedSeq[Long]): Seq[(Long, Long)] = {
+    for {
+      n <- 1 until number.toString.length
+      (str1, str2) = number.toString.splitAt(n)
+      if !str2.startsWith("0") && parts.contains(str1.toLong) &&  parts.contains(str2.toLong)
+    } yield (str1.toLong, str2.toLong)
+  }
 }
 
 object IntegerOps {

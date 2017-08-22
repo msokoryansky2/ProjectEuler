@@ -1,7 +1,9 @@
 package com.msokoryansky.MathUtils
 
 import org.scalatest.FunSuite
-import  com.msokoryansky.MathUtils.IntegerOps.DigitOps
+import com.msokoryansky.MathUtils.IntegerOps.DigitOps
+
+import scala.collection.immutable.HashSet
 
 class TestInteger extends FunSuite {
   test("ints returns stream of ints") {
@@ -139,5 +141,12 @@ class TestInteger extends FunSuite {
     assert(Integer.subsetsWithFixedDigits(1) === set0)
     assert(Integer.subsetsWithFixedDigits(2) === set0 ++ set1 ++ set01)
     assert(Integer.subsetsWithFixedDigits(3) === set0 ++ set1 ++ set2 ++ set01 ++ set02 ++ set12 ++ set012)
+  }
+
+  test("decatenate finds which parts a number can be split into") {
+    assert(Integer.decatenate(1234567890, IndexedSeq[Long](123, 456, 7890, 123456, 12, 34567890)).toSet ===
+      Seq((123456, 7890), (12, 34567890)).toSet)
+    assert(Integer.decatenate(95035, IndexedSeq[Long](35, 95, 950, 350)).toSet
+      === Seq((950, 35)).toSet)
   }
 }
