@@ -20,7 +20,7 @@ package com.msokoryansky.MathUtils
 class StreamSearcher[A, B, C](data: Stream[A],
                               searcher: SearchInput[A, B] => SearchOutput[B, C],
                               stopper: A => Boolean,
-                              chunkSize: Int = 1000) {
+                              chunkSize: Int) {
   def search: Option[C] = {
 
     def pull(data: Stream[A]): (List[A], Stream[A]) = {
@@ -40,7 +40,6 @@ class StreamSearcher[A, B, C](data: Stream[A],
         if (output.success) output.result else searchNext(remainingData, output.state)
       }
     }
-
     searchNext(data, None)
   }
 }
@@ -49,7 +48,7 @@ object StreamSearcher {
   def apply[A, B, C](data: Stream[A],
                       searcher: SearchInput[A, B] => SearchOutput[B, C],
                       stopper: A => Boolean,
-                      chunkSize: Int = 1000): StreamSearcher[A, B, C] =
+                      chunkSize: Int): StreamSearcher[A, B, C] =
     new StreamSearcher[A, B, C](data, searcher, stopper, chunkSize)
 }
 
