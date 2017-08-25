@@ -25,7 +25,7 @@ class PolygonalNumber private (a: Int, b: Int, c: Int, d: Int) {
   /**
     * Stream of polygonal numbers
     */
-  def numbers(n: Long = 1): Stream[Long] = number(n) #:: numbers(n + 1)
+  def numbers(n: Long): Stream[Long] = number(n) #:: numbers(n + 1)
 
   /**
     * Next polygonal number larger than pn (pn itself may or may not be a polygonal number)
@@ -39,7 +39,7 @@ class PolygonalNumber private (a: Int, b: Int, c: Int, d: Int) {
   /**
     * Compute index of polygonal number pn (if any) from pn itself. None if pn is not polygonal number, return None
     * General formula for index is:
-    * n = (-ac + sqrt(aacc - 4abd*pn)) / 2ab
+    * n = (-ac + sqrt(aacc + 4abd*pn)) / 2ab
     *
     * This formula falls out of quadratic equation:
     * pn = an * (bn + c) / d
@@ -53,30 +53,22 @@ class PolygonalNumber private (a: Int, b: Int, c: Int, d: Int) {
   }
 
   def indexOfFractional(pn: Long): Double = {
-    val sqrt: Double = Math.sqrt(a * a * c * c - 4 * a * b * d * pn)
+    val sqrt: Double = Math.sqrt(a * a * c * c + 4 * a * b * d * pn)
     (-1 * a * c + sqrt) / (2 * a * b)
   }
 }
 
 object PolygonalNumber {
   def apply(a: Int, b: Int, c: Int, d: Int): PolygonalNumber = new PolygonalNumber(a, b, c, d)
-}
-
-object P3 {
-  def apply: PolygonalNumber = PolygonalNumber.apply(1, 1, 1, 2)
-}
-object P4 {
-  def apply: PolygonalNumber = PolygonalNumber.apply(1, 0, 0, 1)
-}
-object P5 {
-  def apply: PolygonalNumber = PolygonalNumber.apply(1, 3, -1, 2)
-}
-object P6 {
-  def apply: PolygonalNumber = PolygonalNumber.apply(1, 2, -1, 1)
-}
-object P7 {
-  def apply: PolygonalNumber = PolygonalNumber.apply(1, 5, -3, 2)
-}
-object P8 {
-  def apply: PolygonalNumber = PolygonalNumber.apply(1, 3, -2, 1)
+  def apply(ness: Int): PolygonalNumber = {
+    require(ness >= 3 && ness <= 8, "Must specfify polygonal-ness between 3 and 8")
+    ness match {
+      case 3 => PolygonalNumber(1, 1, 1, 2)
+      case 4 => PolygonalNumber(1, 1, 0, 1)
+      case 5 => PolygonalNumber(1, 3, -1, 2)
+      case 6 => PolygonalNumber(1, 2, -1, 1)
+      case 7 => PolygonalNumber(1, 5, -3, 2)
+      case 8 => PolygonalNumber(1, 3, -2, 1)
+    }
+  }
 }
