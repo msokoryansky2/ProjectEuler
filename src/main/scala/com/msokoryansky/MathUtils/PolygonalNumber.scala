@@ -53,6 +53,25 @@ class PolygonalNumber private (a: Int, b: Int, c: Int, d: Int) {
   }
 
   /**
+    * All polygonal numbers between low (inclusive) and high (exclusive)
+    */
+  def numbersBetween(low: Long, high: Long): IndexedSeq[Long] = {
+    val first = numberNext(low - 1)
+    val last = numberPrev(high)
+    (indexOf(first).get to indexOf(last).get).map(number)
+  }
+
+  /**
+    * Return all polygonal numbers of certain length (by number of digits)
+    */
+  def numbersOfLength(digits: Int): IndexedSeq[Long] = {
+    require(digits > 0, "Must specify positive number of digits")
+    val low = ("9" * (digits - 1)).toLong
+    val high = ("1" + "0" * digits).toLong
+    numbersBetween(low, high)
+  }
+
+  /**
     * Compute index of polygonal number pn (if any) from pn itself. None if pn is not polygonal number, return None
     * General formula for index is:
     * n = (-ac + sqrt(aacc + 4abd*pn)) / 2ab
