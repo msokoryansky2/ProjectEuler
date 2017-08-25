@@ -42,23 +42,28 @@ object Prime {
     primeFactorsOfRangeAcc(lo, hi, Seq.empty)
   }
 
-  def isPrime(n: Int): Boolean = {
-    n match {
-      case x if x < 2 => false
-      case _ => !(2 to Math.sqrt(n.toDouble).ceil.toInt).exists{x => x != n && n % x == 0}
-    }
-  }
-
   /**
     * Test if number is a prime (compares to all 1..SQRT(n))
     * @param n mumber to check if it's prime
     * @return if number is prime then true, else false
     */
-  def isPrime(n: Long): Boolean = {
+  def isPrime(n: Long): Boolean = isPrime2(n, 2)
+  def isPrime2(n: Long, firstIntegerToTest: Long): Boolean = {
     n match {
       case x if x < 2 => false
-      case _ => !(2 to Math.sqrt(n.toDouble).ceil.toInt).exists{x => x != n && n % x == 0}
+      case _ => !(firstIntegerToTest to Math.sqrt(n.toDouble).ceil.toInt).exists{x => x != n && n % x == 0}
     }
+  }
+
+  /**
+    * Efficient prime-ness check if we have a guaranteed list of all prime numbers less than some number.
+    * If the prime list goes to the sqrt of the number being checked, then that's all that's needed.
+    * Otherwise we have to do usual one-by-one checking from the last prime on
+    */
+  def isPrime2(n: Long, earlyPrimes: List[Long]): Boolean = {
+    val lastIntegerToTest = Math.sqrt(n.toDouble).ceil.toInt
+    if (earlyPrimes.exists(i => i <= lastIntegerToTest && n % i == 0)) false
+    else isPrime2(n, if (earlyPrimes.isEmpty) 2 else earlyPrimes.max)
   }
 
   def primeNumber(n: Int): BigInt = {
@@ -83,6 +88,19 @@ object Prime {
     else {
       @tailrec def nextPrimeAcc(ints: Stream[Long]): Long = {
         if (isPrime(ints.head)) ints.head else nextPrimeAcc(ints.tail)
+      }
+      nextPrimeAcc(ints(lowerLimit))
+    }
+  }
+
+  /**
+    * If know all primes from 2 up to some number, then we can test for primeness more efficiently
+    */
+  def nextPrime(lowerLimit: Long, earlyPrimes: List[Long]): Long = {
+    if (lowerLimit < 2) 2
+    else {
+      @tailrec def nextPrimeAcc(ints: Stream[Long]): Long = {
+        if (isPrime2(ints.head, earlyPrimes)) ints.head else nextPrimeAcc(ints.tail)
       }
       nextPrimeAcc(ints(lowerLimit))
     }

@@ -96,4 +96,12 @@ class TestPrime extends FunSuite {
     assert(Prime.primesFromDigitSubstitution(5, Map(0 -> 5, 1 -> 6, 4 -> 3)) ===
       List( 56003, 56113, 56333, 56443, 56663, 56773, 56993))
   }
+
+  test("isPrime can be done efficiently with a list of all known primes less than the number being checked") {
+    assert(Prime.isPrime2(11, List[Long](2, 3, 5, 7)))
+    assert(!Prime.isPrime2(15, List[Long](2, 3, 5, 7, 11, 13)))
+    assert(!Prime.isPrime2(15, List[Long](2)))
+    assert(Prime.isPrime2(17, List[Long](2, 3, 5, 7, 11, 13)))
+    assert(Prime.isPrime2(17, List[Long](2, 3)))
+  }
 }
