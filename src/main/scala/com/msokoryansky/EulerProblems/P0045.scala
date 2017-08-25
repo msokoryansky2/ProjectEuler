@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.{HexagonalNumber, PentagonalNumber, TriangleNumber}
+import com.msokoryansky.MathUtils.{PolygonalNumber6, PolygonalNumber5, PolygonalNumber3}
 
 /*
 
@@ -16,8 +16,8 @@ Find the next triangle number that is also pentagonal and hexagonal.
  */
 
 class P0045 extends EulerProblem {
-  def run: String = PentagonalNumber.pentagonalNumbers()
-    .find(n => HexagonalNumber.isHexagonalNumber(n) && TriangleNumber.isTriangleNumber(n) && n > 40755).get.toString
+  def run: String = PolygonalNumber5.pentagonalNumbers()
+    .find(n => PolygonalNumber6.isHexagonalNumber(n) && PolygonalNumber3.isTriangleNumber(n) && n > 40755).get.toString
 }
 
 object P0045 extends App {

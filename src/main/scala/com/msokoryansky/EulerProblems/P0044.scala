@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.PentagonalNumber
+import com.msokoryansky.MathUtils.PolygonalNumber5
 
 /*
 
@@ -17,13 +17,13 @@ Find the pair of pentagonal numbers, Pj and Pk, for which their sum and differen
 class P0044 extends EulerProblem {
   def run: String = {
     val firstPair =
-      PentagonalNumber.firstPentagonalPairWithProperty(1, PentagonalNumber.propertyPentagonalSumAndDiff)
-    val firstDistance = PentagonalNumber.distanceBetweenPentagonalNumbers(firstPair._1, firstPair._2)
-    val lastPossibleIndex = PentagonalNumber.firstRemotePentagonalNumber(firstDistance)
-    val finalPair = PentagonalNumber.allPentagonalPairsWithinDistanceWithProperty(1, lastPossibleIndex, firstDistance,
-                    PentagonalNumber.propertyPentagonalSumAndDiff)
-                    .minBy(p => PentagonalNumber.distanceBetweenPentagonalNumbers(p._1, p._2))
-    PentagonalNumber.distanceBetweenPentagonalNumbers(finalPair._1, finalPair._2).toString
+      PolygonalNumber5.firstPentagonalPairWithProperty(1, PolygonalNumber5.propertyPentagonalSumAndDiff)
+    val firstDistance = PolygonalNumber5.distanceBetweenPentagonalNumbers(firstPair._1, firstPair._2)
+    val lastPossibleIndex = PolygonalNumber5.firstRemotePentagonalNumber(firstDistance)
+    val finalPair = PolygonalNumber5.allPentagonalPairsWithinDistanceWithProperty(1, lastPossibleIndex, firstDistance,
+                    PolygonalNumber5.propertyPentagonalSumAndDiff)
+                    .minBy(p => PolygonalNumber5.distanceBetweenPentagonalNumbers(p._1, p._2))
+    PolygonalNumber5.distanceBetweenPentagonalNumbers(finalPair._1, finalPair._2).toString
   }
 }
 

@@ -3,7 +3,7 @@ package com.msokoryansky.MathUtils
 /**
   * Legacy wrapper around PolygonalObject
   */
-object TriangleNumber {
+object PolygonalNumber3 {
   def triangleNumber(n: Int): Long = PolygonalNumber(3).number(n)
 
   def getTriangleNumberIndex(tn: Long): Option[Long] = PolygonalNumber(3).indexOf(tn)

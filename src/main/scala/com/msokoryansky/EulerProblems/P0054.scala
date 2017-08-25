@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.{Hand, String, TriangleNumber}
+import com.msokoryansky.MathUtils.{Hand, String, PolygonalNumber3}
 
 /*
 

@@ -3,7 +3,7 @@ package com.msokoryansky.MathUtils
 /**
   * Legacy wrapper around PolygonalObject
   */
-object HexagonalNumber {
+object PolygonalNumber6 {
   def hexagonalNumber(n: Int): Long = PolygonalNumber(6).number(n)
 
   def getHexagonalNumberIndex(hn: Long): Option[Long] = PolygonalNumber(6).indexOf(hn)

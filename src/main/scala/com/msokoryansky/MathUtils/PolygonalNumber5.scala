@@ -3,7 +3,7 @@ package com.msokoryansky.MathUtils
 /**
   * Legacy wrapper around PolygonalObject
   */
-object PentagonalNumber {
+object PolygonalNumber5 {
   def pentagonalNumber(n: Long): Long = PolygonalNumber(5).number(n)
 
   def getPentagonalNumberIndex(pn: Long): Option[Long] = PolygonalNumber(5).indexOf(pn)

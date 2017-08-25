@@ -1,6 +1,6 @@
 package com.msokoryansky.EulerProblems
 
-import com.msokoryansky.MathUtils.{TriangleNumber, String}
+import com.msokoryansky.MathUtils.{PolygonalNumber3, String}
 
 import scala.io.Source
 
@@ -21,7 +21,7 @@ common English words, how many are triangle words?
 
 class P0042 extends  EulerProblem {
   def run: String = Source.fromResource("p042_words.txt").getLines.mkString("").replaceAll("[^A-Z,]", "").split(",")
-                      .count(w => TriangleNumber.isTriangleNumber(String.wordValue(w))).toString
+                      .count(w => PolygonalNumber3.isTriangleNumber(String.wordValue(w))).toString
 }
 
 object P0042 extends App {
