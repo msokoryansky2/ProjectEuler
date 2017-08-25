@@ -94,7 +94,7 @@ class TestPentagonalNumber extends FunSuite {
     val mismatches = for {
       i <- 1 to 10000000
       index = PentagonalNumber.getPentagonalNumberIndex(PentagonalNumber.pentagonalNumber(i)).getOrElse(0)
-      if i != index
+      if i.toLong != index
     } yield (i, index)
     assert(mismatches.isEmpty)
   }
