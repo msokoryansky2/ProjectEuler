@@ -31,51 +31,44 @@ triangle, square, pentagonal, hexagonal, heptagonal, and octagonal, is represent
 
 class P0061 extends EulerProblem {
   def run: String = {
-    // Map from 3/4/5/6/7/8 to all polygonal numbers of that polygonalness
-    val ps = (3 to 8).map(ness => (ness, PolygonalNumber(ness).numbersOfLength(4))).toMap
     // Map 3..8 to map from all possible two-digit prefixes to polygonal numbers of that polygonalness with that prefix
-    val psStart = (3 to 8).map(ness =>
+    val ps = (3 to 8).map(ness =>
                     (ness, (10 to 99).map(start =>
-                      (start, ps(ness).filter(p =>
+                      (start, PolygonalNumber(ness).numbersOfLength(4).filter(p =>
                         p / 100 == start))).filterNot(_._2.isEmpty).toMap)).toMap
-    // Map 3..8 to map from all possible two-digit suffixes to polygonal numbers of that polygonalness with that suffix
-    val psEnd = (3 to 8).map(ness =>
-                    (ness, (10 to 99).map(end =>
-                      (end, ps(ness).filter(p =>
-                        p % 100 == end))).filterNot(_._2.isEmpty).toMap)).toMap
 
     (for {
-      nessA <- 3 to 8
+      nessA <- 3 to 3
       nessB <- 3 to 8 if nessB != nessA
       nessC <- 3 to 8 if nessC != nessA && nessC != nessB
       nessD <- 3 to 8 if nessD != nessA && nessD != nessB && nessD != nessC
       nessE <- 3 to 8 if nessE != nessA && nessE != nessB && nessE != nessC && nessE != nessD
       nessF <- 3 to 8 if nessF != nessA && nessF != nessB && nessF != nessC && nessF != nessD && nessF != nessE
 
-      if psStart.contains(nessA) && psStart(nessA).nonEmpty
-      prefA <- psStart(nessA).keys
-      if psStart(nessA).contains(prefA) && psStart(nessA)(prefA).nonEmpty
-      suffA <- psStart(nessA)(prefA).map(_ % 100)
+      if ps.contains(nessA) && ps(nessA).nonEmpty
+      prefA <- ps(nessA).keys
+      if ps(nessA).contains(prefA) && ps(nessA)(prefA).nonEmpty
+      suffA <- ps(nessA)(prefA).map(_ % 100)
       prefB = suffA.toInt
-      if psStart.contains(nessB) && psStart(nessB).nonEmpty
-      if psStart(nessB).contains(prefB) && psStart(nessB).contains(prefB)
-      suffB <- psStart(nessB)(prefB).map(_ % 100)
+      if ps.contains(nessB) && ps(nessB).nonEmpty
+      if ps(nessB).contains(prefB) && ps(nessB).contains(prefB)
+      suffB <- ps(nessB)(prefB).map(_ % 100)
       prefC = suffB.toInt
-      if psStart.contains(nessC) && psStart(nessC).nonEmpty
-      if psStart(nessC).contains(prefC) && psStart(nessC)(prefC).nonEmpty
-      suffC <- psStart(nessC)(prefC).map(_ % 100)
+      if ps.contains(nessC) && ps(nessC).nonEmpty
+      if ps(nessC).contains(prefC) && ps(nessC)(prefC).nonEmpty
+      suffC <- ps(nessC)(prefC).map(_ % 100)
       prefD = suffC.toInt
-      if psStart.contains(nessD) && psStart(nessD).nonEmpty
-      if psStart(nessD).contains(prefD) && psStart(nessD)(prefD).nonEmpty
-      suffD <- psStart(nessD)(prefD).map(_ % 100)
+      if ps.contains(nessD) && ps(nessD).nonEmpty
+      if ps(nessD).contains(prefD) && ps(nessD)(prefD).nonEmpty
+      suffD <- ps(nessD)(prefD).map(_ % 100)
       prefE = suffD.toInt
-      if psStart.contains(nessE) && psStart(nessE).nonEmpty
-      if psStart(nessE).contains(prefE) && psStart(nessE)(prefE).nonEmpty
-      suffE <- psStart(nessE)(prefE).map(_ % 100)
+      if ps.contains(nessE) && ps(nessE).nonEmpty
+      if ps(nessE).contains(prefE) && ps(nessE)(prefE).nonEmpty
+      suffE <- ps(nessE)(prefE).map(_ % 100)
       prefF = suffE.toInt
-      if psStart.contains(nessF) && psStart(nessF).nonEmpty
-      if psStart(nessF).contains(prefF) && psStart(nessF)(prefF).nonEmpty
-      suffF <- psStart(nessF)(prefF).map(_ % 100)
+      if ps.contains(nessF) && ps(nessF).nonEmpty
+      if ps(nessF).contains(prefF) && ps(nessF)(prefF).nonEmpty
+      suffF <- ps(nessF)(prefF).map(_ % 100)
       if prefA == suffF
 
       a = (prefA.toString + suffA.toString).toLong
@@ -85,8 +78,7 @@ class P0061 extends EulerProblem {
       e = (prefE.toString + suffE.toString).toLong if e != a && e != b && e != c && e != d
       f = (prefF.toString + suffF.toString).toLong if f != a && c != b && f != c && f != d && f != e
 
-      if (a > b && b > c && c > d && d > e && e > f) || (a < b && b < c && c < d && d < e && e < f)
-    } yield (nessA -> a, nessB -> b, nessC -> c, nessD -> d, nessE -> e, nessF -> f)).toString
+    } yield a + b + c + d + e + f).head.toString
   }
 }
 
