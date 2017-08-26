@@ -75,7 +75,8 @@ class P0061 extends EulerProblem {
       prefF = suffE.toInt
       if psStart.contains(nessF) && psStart(nessF).nonEmpty
       if psStart(nessF).contains(prefF) && psStart(nessF)(prefF).nonEmpty
-      suffF = prefA.toInt
+      suffF <- psStart(nessF)(prefF).map(_ % 100)
+      if prefA == suffF
 
       a = (prefA.toString + suffA.toString).toLong
       b = (prefB.toString + suffB.toString).toLong if b != a

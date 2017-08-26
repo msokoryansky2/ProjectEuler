@@ -139,6 +139,15 @@ class TestPolygonalNumber extends FunSuite {
     assert(PolygonalNumber(8).indexOfFractional(60) < PolygonalNumber(8).indexOf(65).get)
   }
 
+  test("isNumber checks if a number is polygonal") {
+    assert(PolygonalNumber(6).isNumber(9453))
+    assert(PolygonalNumber(4).isNumber(5329))
+    assert(PolygonalNumber(3).isNumber(2926))
+    assert(PolygonalNumber(5).isNumber(2625))
+    assert(PolygonalNumber(7).isNumber(2512))
+    assert(PolygonalNumber(8).isNumber(1294))
+  }
+
   test("numberNext outputs next polygonal number larger than the number specified") {
     assert(PolygonalNumber(3).numberNext(-1) === 1)
     assert(PolygonalNumber(3).numberNext(0) === 1)
