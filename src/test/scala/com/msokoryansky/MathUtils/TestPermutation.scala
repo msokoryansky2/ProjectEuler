@@ -65,4 +65,20 @@ class TestPermutation extends FunSuite {
             "3124", "3142", "3214", "3241", "3412", "3421",
             "4123", "4132", "4213", "4231", "4312", "4321"))
   }
+
+  test("permutations returns all permutations of a string") {
+    assert(Permutation.permutations("AB").sortWith(_ < _) ===
+      List("AB", "BA"))
+    assert(Permutation.permutations("ABC").sortWith(_ < _) ===
+      List("ABC", "ACB", "BAC", "BCA", "CAB", "CBA"))
+    assert(Permutation.permutations("1234").sortWith(_ < _) ===
+      List("1234", "1243", "1324", "1342", "1423", "1432",
+        "2134", "2143", "2314", "2341", "2413", "2431",
+        "3124", "3142", "3214", "3241", "3412", "3421",
+        "4123", "4132", "4213", "4231", "4312", "4321"))
+    assert(Permutation.permutations("1233").sortWith(_ < _) ===
+      List("1233", "1323", "1332",
+        "2133", "2313", "2331",
+        "3123", "3132", "3213", "3231", "3312", "3321"))
+  }
 }

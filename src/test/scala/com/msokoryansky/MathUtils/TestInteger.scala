@@ -149,4 +149,16 @@ class TestInteger extends FunSuite {
     assert(Integer.decatenate(95035, IndexedSeq[Long](35, 95, 950, 350)).toSet
       === Seq((950, 35)).toSet)
   }
+
+  test("isPow checks if a number is a specified power") {
+    assert(Integer.isPow(100, 2))
+    assert(Integer.isPow(27, 3))
+    assert(Integer.isPow(256, 8))
+    assert(!Integer.isPow(1023, 10))
+    assert(Integer.isPow(1024, 10))
+    assert(Integer.isPow(41063625, 3))
+    assert(Integer.isPow(56623104, 3))
+    assert(!Integer.isPow(41063626, 3))
+    assert(!Integer.isPow(56623103, 3))
+  }
 }

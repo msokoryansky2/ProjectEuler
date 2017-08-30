@@ -10,6 +10,12 @@ object Integer {
     */
   def ints[A: Integral](i: A): Stream[A] = i #:: ints(implicitly[Integral[A]].plus(i, implicitly[Integral[A]].one))
 
+  /**
+    * Stream of f(x) values for integral x
+    */
+  def ints[A: Integral](i: A, f: (A) => (A)): Stream[A] =
+    f(i) #:: ints(implicitly[Integral[A]].plus(i, implicitly[Integral[A]].one), f)
+
   def intsDesc(hi: BigInt, lo: BigInt): Stream[BigInt] = if (hi >= lo) hi #:: intsDesc(hi - 1, lo) else Stream.Empty
 
   /**
@@ -139,6 +145,20 @@ object Integer {
       (str1, str2) = number.toString.splitAt(n)
       if !str2.startsWith("0") && parts.contains(str1.toLong) &&  parts.contains(str2.toLong)
     } yield (str1.toLong, str2.toLong)
+  }
+
+  /**
+    * All permutations of digits of a number (excludes "numbers" starting with zero
+    */
+  def permutations(number: Long): List[Long] =
+    Permutation.permutations(number.toString).filterNot(_.startsWith("0")).map(_.toLong)
+
+  /**
+    * Check if number is a specified power of some whole number
+    */
+  def isPow(number: Long, power: Double): Boolean = {
+    val v = Math.pow(number, 1 / power)
+    v.isWhole || v.floor * v.floor * v.floor == number || v.ceil * v.ceil * v.ceil == number
   }
 }
 

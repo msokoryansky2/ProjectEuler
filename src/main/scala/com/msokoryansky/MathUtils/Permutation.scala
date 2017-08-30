@@ -43,6 +43,21 @@ object Permutation {
     }
     permutationsAcc(chars.toList, List[String]())
   }
+
+  /**
+    * Returns all permutations of characters of a string
+    */
+  def permutations(string: String): List[String] = {
+    def permutationsAcc(string: String, acc: List[String]): List[String] = string match {
+      case none if none.isEmpty => acc
+      case _ => (0 until string.length).flatMap(i => {
+        val char = string(i).toString
+        val remaining = string.substring(0, i) + string.substring(i + 1)
+        permutationsAcc(remaining, if (acc.isEmpty) List(char) else acc.map(s => s + char))
+      }).toList
+    }
+    permutationsAcc(string, List[String]()).distinct
+  }
 }
 
 object SumOfParts {
