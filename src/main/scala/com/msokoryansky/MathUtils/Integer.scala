@@ -163,8 +163,17 @@ object Integer {
 }
 
 object IntegerOps {
-  implicit class DigitOps(n: Int) {
+  implicit class DigitOps[A: Integral](n: A) {
     def mapDigits[B](f: (Int) ⇒ B): List[B] = n.toString.map(c => f(c.asDigit)).toList
-    def pow(power: Int): Long = Math.pow(n, power).toLong
+    def pow(power: Int): Long = Math.pow(implicitly[Integral[A]].toDouble(n), power).toLong
+    def sumDigits: A = {
+      @tailrec def sumDigitsAcc(tail: A, acc: A): A = {
+        if (tail == implicitly[Integral[A]].fromInt(0)) acc
+        else sumDigitsAcc(implicitly[Integral[A]].quot(tail, implicitly[Integral[A]].fromInt(10)),
+          implicitly[Integral[A]].plus(acc, implicitly[Integral[A]].rem(tail,
+            implicitly[Integral[A]].fromInt(10))))
+      }
+      sumDigitsAcc(n, implicitly[Integral[A]].fromInt(0))
+    }
   }
 }

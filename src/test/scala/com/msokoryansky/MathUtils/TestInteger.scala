@@ -161,4 +161,17 @@ class TestInteger extends FunSuite {
     assert(!Integer.isPow(41063626, 3))
     assert(!Integer.isPow(56623103, 3))
   }
+
+  test("sumDigits returns sum of digits") {
+    assert(0.sumDigits === 0)
+    assert(1.sumDigits === 1)
+    assert(100000.sumDigits === 1)
+    assert(123456789.sumDigits === 45)
+    assert(1000000000000000L.sumDigits === 1)
+    assert(BigInt("123456789012345678901234567890").sumDigits === 135)
+    assert(-100000.sumDigits === -1)
+    assert(-123456789.sumDigits === -45)
+    assert(-1000000000000000L.sumDigits === -1)
+    assert(BigInt("-123456789012345678901234567890").sumDigits === -135)
+  }
 }
