@@ -174,4 +174,11 @@ class TestInteger extends FunSuite {
     assert(-1000000000000000L.sumDigits === -1)
     assert(BigInt("-123456789012345678901234567890").sumDigits === -135)
   }
+
+  test("isPermutation checks if two numbers are permutations of digits of one another") {
+    assert(Integer.isPermutation(123, 321))
+    assert(Integer.isPermutation(12300, 30021))
+    assert(Integer.isPermutation(33445566777888L, 87878765433456L))
+    assert(!Integer.isPermutation(334455660777888L, 87878765433456L))
+  }
 }

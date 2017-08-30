@@ -154,6 +154,12 @@ object Integer {
     Permutation.permutations(number.toString).filterNot(_.startsWith("0")).map(_.toLong)
 
   /**
+    * Check if one number is digit-permutation of another
+    */
+  def isPermutation(number1: Long, number2: Long): Boolean =
+    number1.toString.toList.sortWith(_ < _) == number2.toString.toList.sortWith(_ < _)
+
+  /**
     * Check if number is a specified power of some whole number
     */
   def isPow(number: Long, power: Double): Boolean = {
