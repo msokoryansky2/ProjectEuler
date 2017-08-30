@@ -12,6 +12,13 @@ Find the smallest cube for which exactly five permutations of its digits are cub
  */
 
 class P0062 extends EulerProblem {
+
+  def run: String = Integer.ints(1).find(i => {
+                      println(i)
+                      val cube = i * i * i
+                      Integer.permutations(cube).filter(_ % 10 != 0).count(ip =>
+                        Integer.isPow(ip, 3)) == 5}).get.toString
+  /*
   def run: String = {
     def searcher(input: SearchInput[Long, (Long, Map[Long, Long])]): SearchOutput[(Long, Map[Long, Long]), Long] = {
       val state: (Long, Map[Long, Long]) = input.state.getOrElse((0, Map[Long, Long]()))
@@ -26,13 +33,14 @@ class P0062 extends EulerProblem {
       // That way we can be super-sure that all permutations have already been encountered.
       val firstMatch: Option[Long] = (start until (start + newCubes.size / 3)).toList.find(i => {
           println(i)
-          Integer.permutations(i * i * i).filterNot(_ % 10 == 0).count(ip => allCubeValues.contains(ip)) == 3})
+          Integer.permutations(i * i * i).filterNot(_ % 10 == 0).count(ip => allCubeValues.contains(ip)) == 5})
 
       if (firstMatch.isEmpty) SearchOutput(Some((start + newCubes.size / 3, allCubes)), None)
       else SearchOutput(None, Some(firstMatch.get))
     }
     StreamSearcher[Long, (Long, Map[Long, Long]), Long](Integer.ints(1), searcher, (_) => false, 300).search.get.toString
   }
+  */
 }
 
 object P0062 extends App {
