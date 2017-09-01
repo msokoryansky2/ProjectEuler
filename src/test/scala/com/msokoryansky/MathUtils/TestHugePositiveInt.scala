@@ -128,4 +128,25 @@ class TestHugePositiveInt extends FunSuite {
     assert(HugePositiveInt("10677").presumedLychrel(52))
     assert(!HugePositiveInt("10677").presumedLychrel(53))
   }
+
+  test("powersSameAsNumDigits returns powers of specified number (1+) that have same number of digits as power") {
+    assert(HugePositiveInt(0).powersSameAsNumDigits ===
+      List(HugePositiveInt(0)))
+    assert(HugePositiveInt(1).powersSameAsNumDigits ===
+      List(HugePositiveInt(1)))
+    assert(HugePositiveInt(2).powersSameAsNumDigits ===
+      List(HugePositiveInt(2)))
+    assert(HugePositiveInt(3).powersSameAsNumDigits ===
+      List(HugePositiveInt(3)))
+    assert(HugePositiveInt(4).powersSameAsNumDigits ===
+      List(HugePositiveInt(16), HugePositiveInt(4)))
+    assert(HugePositiveInt(5).powersSameAsNumDigits ===
+      List(HugePositiveInt(125), HugePositiveInt(25), HugePositiveInt(5)))
+    assert(HugePositiveInt(6).powersSameAsNumDigits ===
+      List(HugePositiveInt(1296), HugePositiveInt(216), HugePositiveInt(36), HugePositiveInt(6)))
+    assert(HugePositiveInt(10).powersSameAsNumDigits ===
+      List())
+    assert(HugePositiveInt(11).powersSameAsNumDigits ===
+      List())
+  }
 }

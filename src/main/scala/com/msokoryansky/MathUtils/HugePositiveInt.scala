@@ -118,6 +118,21 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
     }
     checkLychrel(1, this)
   }
+
+  /**
+    * Return all powers of number that have the same number of digits as the power
+    */
+  def powersSameAsNumDigits: List[HugePositiveInt] = {
+    def powersSameAsNumDigitsAcc(lastNumber: HugePositiveInt,
+                                 lastPower: Long,
+                                 acc: List[HugePositiveInt]): List[HugePositiveInt] = {
+      val nextPower = lastPower + 1
+      val nextNumber = lastNumber * this
+      if (nextNumber.toString.length != nextPower) acc
+      else powersSameAsNumDigitsAcc(nextNumber, nextPower, nextNumber :: acc)
+    }
+    powersSameAsNumDigitsAcc(HugePositiveInt(1), 0, List())
+  }
 }
 
 object HugePositiveInt {

@@ -43,7 +43,6 @@ class P0062 extends EulerProblem {
       // we only check numbers 3 times less than the max number whose cube we calculated.
       // That way we can be certain that all permutations have already been encountered.
       val firstMatch: Option[Long] = (start until (start + newCubes.size / 3)).toList.find(i => {
-          println(i)
           val cube = i * i * i
           val sumDigits = cube.sumDigits
           if (allCubes.contains(sumDigits) &&
