@@ -58,4 +58,8 @@ class TestEulerProblems0051_0075 extends FunSuite {
   test("#64") {
     assert((new P0064).run === "1322")
   }
+
+  test("#65") {
+    assert((new P0065).run === "272")
+  }
 }

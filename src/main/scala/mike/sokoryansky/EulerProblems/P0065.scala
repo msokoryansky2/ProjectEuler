@@ -18,6 +18,7 @@ Find the sum of digits in the numerator of the 100th convergent of the continued
  */
 
 class P0065 extends EulerProblem {
+  // We index starting from 0, so 100th convergent is indexed at 99
   def run: String = CF.e(99).toFraction(99).num.toString.toList.map(_.asDigit).sum.toString
 }
 
