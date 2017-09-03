@@ -134,7 +134,7 @@ case class CFSqrtElement(numN: Long, numAdd: Long, denom: Long) {
     val t = numAdd - wholeValue * denom
     val nextDenomFraction = Fraction(numN - t * t, denom).simplify
     assert(nextDenomFraction.denom == 1, s"Numerator of ${nextDenomFraction.toString} was not 1 as expected")
-    CFSqrtElement(numN, 0 - t, nextDenomFraction.num)
+    CFSqrtElement(numN, 0 - t, nextDenomFraction.num.toLong)
   }
 
   override def toString: String = s"(SQRT($numN) + $numAdd) / $denom"

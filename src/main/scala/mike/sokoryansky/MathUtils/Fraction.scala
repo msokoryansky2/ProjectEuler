@@ -2,10 +2,10 @@ package mike.sokoryansky.MathUtils
 
 import scala.annotation.tailrec
 
-class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
+class Fraction(val num: BigInt, val denom: BigInt) extends Ordered[Fraction] {
   require(denom != 0, "Cannot have denominator of 0")
 
-  lazy val decimal: Float = num / denom
+  lazy val decimal: Float = (num.toDouble / denom.toDouble).toFloat
   lazy val isWhole: Boolean = simplify.denom == 1
 
   override def toString: String = num.toString + "/" + denom.toString
@@ -17,7 +17,7 @@ class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
     if (this2.num < 0 && that2.num >= 0) -1
     else if (this2.num > 0 && that2.num <= 0) 1
     else if (this2.num < 0 && that2.num < 0)
-      -1 * Fraction(Math.abs(this2.num), this2.denom).compare(Fraction(Math.abs(that2.num), that2.denom))
+      -1 * Fraction(this2.num.abs, this2.denom).compare(Fraction(that2.num.abs, that2.denom))
     else this2.num * that2.denom - this2.denom * that2.num match {
       case x if x > 0  => 1
       case x if x == 0 => 0
@@ -33,6 +33,10 @@ class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
 
   def simplifyPositiveDenom: Fraction = if (denom < 0) Fraction(0 - num, 0 - denom) else this
 
+  /**
+    * Simplifies fraction by dividing num and denom by their common factors.
+    * Current implementation returns erroneous results for BigInt num/denom that are bigger than a Long.
+    */
   def simplify: Fraction = {
     // Get simple cases out of the way quickly
     if (num == 0) Fraction(0, 1)
@@ -46,8 +50,8 @@ class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
             if (!denomFactors.contains(firstNumFactor)) simplifyAcc(otherNumFactors, denomFactors, acc)
             else Fraction(num / firstNumFactor, denom / firstNumFactor).simplify
         }
-      simplifyAcc(Integer.divisors(Math.abs(num)).filter(_ != 1).toList,
-                  Integer.divisors(Math.abs(denom)).filter(_ != 1).toList,
+      simplifyAcc(Integer.divisors(num.abs.toLong).filter(_ != 1).toList,
+                  Integer.divisors(denom.abs.toLong).filter(_ != 1).toList,
                   this).simplifyPositiveDenom
     }
   }
@@ -74,6 +78,6 @@ class Fraction(val num: Long, val denom: Long) extends Ordered[Fraction] {
 }
 
 object Fraction {
-  def apply(num: Long, denom: Long) = new Fraction(num, denom)
-  def apply(num: Long) = new Fraction(num, 1)
+  def apply(num: BigInt, denom: BigInt) = new Fraction(num, denom)
+  def apply(num: BigInt) = new Fraction(num, 1)
 }
