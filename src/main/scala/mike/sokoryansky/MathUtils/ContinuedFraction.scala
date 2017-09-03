@@ -75,6 +75,19 @@ object CF {
       else Seq[Long]()
     CF(whole, fractionStart, fractionRepeat)
   }
+
+  /**
+    * Returns continued fraction approximation of e (as in natural log, aka 2.71...)
+    * e = [2; 1,2,1, 1,4,1, 1,6,1 , ... , 1,2k,1, ...].
+    */
+  def e(iterations: Int): CF = {
+    require(iterations >= 0, "Cannot specify negative number of iterations")
+    def eElement(index: Int): Long =
+      if (index == 0) 2
+      else if ((index - 1) % 3 == 0 || (index - 1) % 3 == 2) 1
+      else (index + 1) / 3 * 2
+    CF(eElement(0), (1 to iterations).map(eElement), Seq())
+  }
 }
 
 case class CFSqrtElement(numN: Long, numAdd: Long, denom: Long) {

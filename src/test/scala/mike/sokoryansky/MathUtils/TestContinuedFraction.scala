@@ -102,5 +102,24 @@ class TestContinuedFraction extends FunSuite {
     assert(sqrt2.toFraction(5).toString === "99/70")
     assert(sqrt2.toFraction(6).toString === "239/169")
     assert(sqrt2.toFraction(7).toString === "577/408")
+    assert(sqrt2.toFraction(8).toString === "1393/985")
+    assert(sqrt2.toFraction(9).toString === "3363/2378")
+  }
+
+  test("CF.e approximates e as a continued fraction") {
+    val e = CF.e(10)
+
+    assert(e.toString === "2;1,2,1,1,4,1,1,6,1,1")
+
+    assert(e.toFraction(0).toString === "2/1")
+    assert(e.toFraction(1).toString === "3/1")
+    assert(e.toFraction(2).toString === "8/3")
+    assert(e.toFraction(3).toString === "11/4")
+    assert(e.toFraction(4).toString === "19/7")
+    assert(e.toFraction(5).toString === "87/32")
+    assert(e.toFraction(6).toString === "106/39")
+    assert(e.toFraction(7).toString === "193/71")
+    assert(e.toFraction(8).toString === "1264/465")
+    assert(e.toFraction(9).toString === "1457/536")
   }
 }
