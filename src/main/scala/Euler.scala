@@ -1,4 +1,4 @@
-import com.msokoryansky.EulerProblems.EulerProblem
+import mike.sokoryansky.EulerProblems.EulerProblem
 
 object Euler {
   def main(args: Array[String]): Unit = {
