@@ -107,9 +107,9 @@ class TestContinuedFraction extends FunSuite {
   }
 
   test("CF.e approximates e as a continued fraction") {
-    val e = CF.e(10)
+    val e = CF.e(12)
 
-    assert(e.toString === "2;1,2,1,1,4,1,1,6,1,1")
+    assert(e.toString === "2;1,2,1,1,4,1,1,6,1,1,8,1")
 
     assert(e.toFraction(0).toString === "2/1")
     assert(e.toFraction(1).toString === "3/1")

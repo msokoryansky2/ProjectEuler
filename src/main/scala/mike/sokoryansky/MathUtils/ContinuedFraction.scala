@@ -36,7 +36,7 @@ case class CF(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]) 
 
   def toFraction(iterations: Int): Fraction = {
     require(iterations >= 0, "Cannot specify negative number of iterations")
-    val index = if (isRepeating) iterations else lastIndex
+    val index = if (isRepeating) iterations else Math.min(iterations, lastIndex)
     if (index == 0) Fraction(element(0), 1)
     else {
       @tailrec def toFractionAcc(i: Int, acc: Fraction): Fraction = {
