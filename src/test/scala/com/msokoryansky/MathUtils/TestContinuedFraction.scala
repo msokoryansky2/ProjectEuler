@@ -29,7 +29,7 @@ class TestContinuedFraction extends FunSuite {
     assert(CFSqrt.sqrt(23).toString === "4;[1,3,1,8]...")
 
     assert(CFSqrt.sqrt(61).toString === "7;[1,4,3,1,2,2,1,3,4,1,14]...")
-    assert(CFSqrt.sqrt(62).toString === "7;]1,6,1,14]...")
+    assert(CFSqrt.sqrt(62).toString === "7;[1,6,1,14]...")
     assert(CFSqrt.sqrt(63).toString === "7;[1,14]...")
     assert(CFSqrt.sqrt(64).toString === "8")
     assert(CFSqrt.sqrt(65).toString === "8;[16]...")
@@ -44,5 +44,7 @@ class TestContinuedFraction extends FunSuite {
     assert(CFSqrt.sqrt(74).toString === "8;[1,1,1,1,16]...")
     assert(CFSqrt.sqrt(75).toString === "8;[1,1,1,16]...")
     assert(CFSqrt.sqrt(76).toString === "8;[1,2,1,1,5,4,5,1,1,2,1,16]...")
+
+    assert(CFSqrt.sqrt(9007).toString === "94;[1,9,1,1,4,2,8,5,1,1,1,2,1,2,6,1,1,1,30,1,62,3,3,5,2,4,1,2,16,1,9,20,1,93,1,20,9,1,16,2,1,4,2,5,3,3,62,1,30,1,1,1,6,2,1,2,1,1,1,5,8,2,4,1,1,9,1,188]...")
   }
 }
