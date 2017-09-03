@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.CFSqrt
+import mike.sokoryansky.MathUtils.CF
 
 /*
 The first ten continued fraction representations of (irrational) square roots are:
@@ -22,7 +22,7 @@ How many continued fractions for N ≤ 10000 have an odd period?
  */
 
 class P0064 extends EulerProblem {
-  def run: String = (1 to 10000).map(CFSqrt.sqrt(_)).count(_.fractionRepeat.size % 2 == 1).toString
+  def run: String = (1 to 10000).map(CF.sqrt(_)).count(_.fractionRepeat.size % 2 == 1).toString
 }
 
 object P0064 extends App {

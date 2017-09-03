@@ -1,5 +1,6 @@
 package mike.sokoryansky.MathUtils
 
+import scala.annotation.tailrec
 import scala.collection.immutable.Queue
 
 /**
@@ -14,22 +15,46 @@ import scala.collection.immutable.Queue
   * For a much better expl, see http://www.maths.surrey.ac.uk/hosted-sites/R.Knott/Fibonacci/cfINTRO.html#section6.1
   */
 
-case class CFSqrt(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]) {
+case class CF(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]) {
   override def toString: String =
     new String(whole.toString
       + (if (fractionStart.nonEmpty || fractionRepeat.nonEmpty) ";" else "")
       + (if (fractionStart.nonEmpty) fractionStart.mkString(",") else "")
       + (if (fractionStart.nonEmpty && fractionRepeat.nonEmpty) "," else "")
       + (if (fractionRepeat.nonEmpty) "[" + fractionRepeat.mkString(",") + "]..." else ""))
+
+  def isRepeating: Boolean = fractionRepeat.nonEmpty
+
+  def lastIndex: Int = if (isRepeating) -1 else fractionStart.length
+
+  def element(index: Int): Long = {
+    require(isRepeating || index <= lastIndex, "Invalid index specified")
+    if (index == 0) whole
+    else if (index <= fractionStart.size) fractionStart(index - 1)
+    else fractionRepeat((index - fractionStart.size - 1) % fractionRepeat.size)
+  }
+
+  def toFraction(iterations: Int): Fraction = {
+    require(iterations >= 0, "Cannot specify negative number of iterations")
+    val index = if (isRepeating) iterations else lastIndex
+    if (index == 0) Fraction(element(0), 1)
+    else {
+      @tailrec def toFractionAcc(i: Int, acc: Fraction): Fraction = {
+        if (i <= 0) acc
+        else toFractionAcc(i - 1, Fraction(element(i - 1) * acc.num + acc.denom, acc.num))
+      }
+      toFractionAcc(index - 1, Fraction(element(index - 1) * element(index) + 1, element(index)))
+    }
+  }
 }
 
-object CFSqrt {
-  def apply(whole: Long): CFSqrt =
-    new CFSqrt(whole, List(), List())
-  def apply(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]): CFSqrt =
-    new CFSqrt(whole, fractionStart, fractionRepeat)
+object CF {
+  def apply(whole: Long): CF =
+    new CF(whole, List(), List())
+  def apply(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]): CF =
+    new CF(whole, fractionStart, fractionRepeat)
 
-  def sqrt(number: Long): CFSqrt = {
+  def sqrt(number: Long): CF = {
     // The accumulator returns a queue of fractional (post-semicolon) CFSqrtElement values
     // and a Long value indicating start of repeat in the queue
     def sqrtAcc(el: CFSqrtElement, acc: Queue[CFSqrtElement]): (Queue[CFSqrtElement], Int) = {
@@ -48,7 +73,7 @@ object CFSqrt {
     val fractionRepeat =
       if (startOfRepeat > 0 && els.size > startOfRepeat) els.tail.drop(startOfRepeat - 1).map(_.wholeValue)
       else Seq[Long]()
-    CFSqrt(whole, fractionStart, fractionRepeat)
+    CF(whole, fractionStart, fractionRepeat)
   }
 }
 
