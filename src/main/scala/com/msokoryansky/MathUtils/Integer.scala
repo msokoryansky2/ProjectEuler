@@ -164,7 +164,7 @@ object Integer {
     */
   def isPow(number: Long, power: Double): Boolean = {
     val v = Math.pow(number, 1 / power)
-    v.isWhole || v.floor * v.floor * v.floor == number || v.ceil * v.ceil * v.ceil == number
+    v.isWhole || Math.pow(v.floor, power) == number.toDouble ||  Math.pow(v.ceil, power) == number.toDouble
   }
 }
 

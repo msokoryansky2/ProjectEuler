@@ -24,29 +24,29 @@ case class CFSqrt(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Lon
 }
 
 object CFSqrt {
-  def apply(whole: Long) =
-    CFSqrt(whole, List(), List())
-  def apply(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]) =
-    CFSqrt(whole, fractionStart, fractionRepeat)
+  def apply(whole: Long): CFSqrt =
+    new CFSqrt(whole, List(), List())
+  def apply(whole: Long, fractionStart: Seq[Long], fractionRepeat: Seq[Long]): CFSqrt =
+    new CFSqrt(whole, fractionStart, fractionRepeat)
 
   def sqrt(number: Long): CFSqrt = {
     // The accumulator returns a queue of fractional (post-semicolon) CFSqrtElement values
     // and a Long value indicating start of repeat in the queue
     def sqrtAcc(el: CFSqrtElement, acc: Queue[CFSqrtElement]): (Queue[CFSqrtElement], Int) = {
-      if (el.isNPerfectSquare) (acc, -1)
-      else acc.indexWhere(_ == el) match {
-        case startOfRepeat if startOfRepeat >= 0 => (acc, startOfRepeat)
+      if (el.isNPerfectSquare) (Queue(el), -1)
+      else acc.indexWhere(_ == el, 1) match {
+        case start if start > 0 => (acc, start)
         case _ => sqrtAcc(el.nextElement, acc.enqueue(el))
       }
     }
     val el0 = CFSqrtElement(number, 0, 1)
     val (els, startOfRepeat) = sqrtAcc(el0, Queue[CFSqrtElement]())
-    val whole = el0.wholeValue
+    val whole = els.head.wholeValue
     val fractionStart =
-      if (startOfRepeat > 0 && els.size > startOfRepeat) els.take(startOfRepeat).map(_.wholeValue)
+      if (startOfRepeat > 0 && els.size > startOfRepeat) els.tail.take(startOfRepeat - 1).map(_.wholeValue)
       else Seq[Long]()
     val fractionRepeat =
-      if (startOfRepeat > 0 && els.size > startOfRepeat) els.drop(startOfRepeat).map(_.wholeValue)
+      if (startOfRepeat > 0 && els.size > startOfRepeat) els.tail.drop(startOfRepeat - 1).map(_.wholeValue)
       else Seq[Long]()
     CFSqrt(whole, fractionStart, fractionRepeat)
   }
@@ -110,7 +110,9 @@ case class CFSqrtElement(numN: Long, numAdd: Long, denom: Long) {
 }
 
 object CFSqrtElement {
-  def apply(numN: Long) = CFSqrtElement(numN, 0, 1)
-  def apply(numN: Long, numAdd: Long, denom: Long) = CFSqrtElement(numN, numAdd, denom)
+  def apply(numN: Long): CFSqrtElement =
+    new CFSqrtElement(numN, 0, 1)
+  def apply(numN: Long, numAdd: Long, denom: Long): CFSqrtElement =
+    new CFSqrtElement(numN, numAdd, denom)
 }
 
