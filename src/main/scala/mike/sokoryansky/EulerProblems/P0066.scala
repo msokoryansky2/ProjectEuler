@@ -28,7 +28,7 @@ Find the value of D ≤ 1000 in minimal solutions of x for which the largest val
 
 class P0066 extends EulerProblem {
   def run: String =
-    (1 to 100).filterNot(d => Integer.isPow(d, 2))
+    (1 to 1000).filterNot(d => Integer.isPow(d, 2))
       .map(d => {
         print(s"d = $d: ")
         val dio = Diophantine(1, 2, 0 - d, 2, 1)
@@ -36,8 +36,8 @@ class P0066 extends EulerProblem {
         print(s"y = $y, ")
         val x = dio.x(y).get
         println(s"x = $x")
-        x
-      }).max.toString
+        d -> x
+      }).maxBy(_._2)._1.toString
 }
 
 object P0066 extends App {
