@@ -33,4 +33,26 @@ class TestDiophantine extends FunSuite {
     assert(dio7.yFind.get === 3)
     assert(dio7.x(dio7.yFind.get).get === 8)
   }
+
+  test("Pell is a subset of solve Diophantine with a quick solution using continued fractions") {
+    val pell2 = Pell(2)
+    assert(pell2.xFirst === 3)
+    assert(pell2.yFirst === 2)
+
+    val pell3 = Pell(3)
+    assert(pell3.xFirst === 2)
+    assert(pell3.yFirst === 1)
+
+    val pell5 = Pell(5)
+    assert(pell5.xFirst === 9)
+    assert(pell5.yFirst === 4)
+
+    val pell6 = Pell(6)
+    assert(pell6.xFirst === 5)
+    assert(pell6.yFirst === 2)
+
+    val pell7 = Pell(7)
+    assert(pell7.xFirst === 8)
+    assert(pell7.yFirst === 3)
+  }
 }

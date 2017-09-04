@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.{Diophantine, Integer}
+import mike.sokoryansky.MathUtils.{Diophantine, Integer, Pell}
 
 /*
 
@@ -27,17 +27,8 @@ Find the value of D ≤ 1000 in minimal solutions of x for which the largest val
  */
 
 class P0066 extends EulerProblem {
-  def run: String =
-    (1 to 1000).filterNot(d => Integer.isPow(d, 2))
-      .map(d => {
-        print(s"d = $d: ")
-        val dio = Diophantine(1, 2, 0 - d, 2, 1)
-        val y = dio.yFind.get
-        print(s"y = $y, ")
-        val x = dio.x(y).get
-        println(s"x = $x")
-        d -> x
-      }).maxBy(_._2)._1.toString
+  // These are Pell Equations so we use Pell-specific implementation with fast solution
+  def run: String = (1 to 1000).filterNot(d => Integer.isPow(d, 2)).map(d => d -> Pell(d).xFirst).maxBy(_._2)._1.toString
 }
 
 object P0066 extends App {
