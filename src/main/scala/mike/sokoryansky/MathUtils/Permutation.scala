@@ -45,6 +45,18 @@ object Permutation {
   }
 
   /**
+    * Generic permutation of a set of As
+    */
+  def permutations2[A](as: Set[A]): List[List[A]] = {
+    def permutationsAcc(as: List[A], acc: List[List[A]]): List[List[A]] = as match {
+      case none if none.isEmpty => acc
+      case _ => as.flatMap(a => permutationsAcc(as.filter(_ != a),
+        if (acc.isEmpty) List(List(a)) else acc.map(s => a :: s)))
+    }
+    permutationsAcc(as.toList, List[List[A]]())
+  }
+
+  /**
     * Returns all permutations of characters of a string
     */
   def permutations(string: String): List[String] = {
