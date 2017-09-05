@@ -9,23 +9,30 @@ package mike.sokoryansky.MathUtils
   * We don't care which outside spoke is first, since it's just a matter of turning the polygon. What matters is
   * that we follow clockwise from the first.
   */
-case class NGon(numbers: Set[Long]) {
+case class NGon(numbers: List[Int]) extends Ordered[NGon] {
   require(numbers.size % 2 == 0, "Must have even number of numbers for vertices and spokes")
   require(numbers.size >= 6, "Must have at least 6 numbers specified for a 3-gon")
   val sides: Int = numbers.size / 2
-  val (outer, inner) = numbers.toIndexedSeq.splitAt(sides)
-  lazy val lines: Seq[Seq[Long]] = (0 until sides).map(i => List(outer(i), inner(i), inner((i + 1) % sides)))
+  lazy val (outer, inner) = numbers.toIndexedSeq.splitAt(sides)
+  lazy val s: Int = outer.zipWithIndex.min._2
+  lazy val lines: Seq[Seq[Int]] = 
+    (0 until sides).map(i => List(outer((i + s) % sides), inner((i + s) % sides), inner((i + s + 1) % sides)))
   lazy val lineValues: Seq[String] = lines.map(_.mkString)
-  lazy val ngonValue: String = lineValues.mkString
+  lazy val value: String = lineValues.mkString
+
+  def compare(other: NGon): Int = BigInt(this.value) compare BigInt(other.value)
+  def canEqual(other: NGon): Boolean = other.isInstanceOf[NGon] && other.sides == this.sides
+  override def equals(that: Any): Boolean =
+    that.isInstanceOf[NGon] && that.asInstanceOf[NGon].canEqual(this) && this.compare(that.asInstanceOf[NGon]) == 0
 }
 
 object NGon {
-  def apply(numbers: Set[Long]) = new NGon(numbers)
+  def apply(numbers: List[Int]) = new NGon(numbers)
   /**
     * Produce all possible but different ngons. Two ngons are different from one another if they can't be roteted
     * to be identical. Note that the outer spokes rotate together with the inner polygon.
     */
-  def ngons(numbers: Set[Long]): Seq[NGon] = {
-    Permutation.permutations2(numbers).map(l => NGon(l.toSet))
+  def ngons(numbers: List[Int]): Seq[NGon] = {
+    Permutation.permutations2(numbers.toSet).map(l => NGon(l))
   }
 }
