@@ -32,7 +32,14 @@ object NGon {
     * Produce all possible but different ngons. Two ngons are different from one another if they can't be roteted
     * to be identical. Note that the outer spokes rotate together with the inner polygon.
     */
-  def ngons(numbers: List[Int]): Seq[NGon] = {
-    Permutation.permutations2(numbers.toSet).map(l => NGon(l))
+  def ngons(numbers: Set[Int]): Seq[NGon] = Permutation.permutations2(numbers).map(NGon(_))
+
+  /**
+    * Produce all permutations of NGons with pre-specified inner and outer vertices
+    */
+  def ngons(outer: Set[Int], inner: Set[Int]): Seq[NGon] = {
+    val outers = Permutation.permutations2(outer)
+    val inners = Permutation.permutations2(inner)
+    outers.flatMap(o => inners.map(i => o ++ i)).map(NGon(_))
   }
 }

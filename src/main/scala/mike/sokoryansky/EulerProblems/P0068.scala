@@ -30,7 +30,15 @@ What is the maximum 16-digit string for a "magic" 5-gon ring?
  */
 
 class P0068 extends EulerProblem {
-  def run: String = NGon.ngons((1 to 10).toList).map(_.value).filter(_.length == 16).max
+  /**
+    *  By statement of this problem we know that 10 must be in the outer vertices (because if it's in the inner,
+    *  then we would get 17-digit strings instead of 16). We also know that we are looking the for the largest
+    *  string value of NGon which means largest possible starting digit in the 16-digit string. Since the strings
+    *  are formed using smallest outer value as first, the largest outer leading digit can be 6 with outer vertices
+    *  being 6, 7, 8, 9, and 10. Therefore inner vertices are 1, 2, 3, 4, and 5. We form all such permutations without
+    *  any more optimization since numbers are low enough already and look for max.
+    */
+  def run: String = NGon.ngons((6 to 10).toSet, (1 to 5).toSet).map(_.value).max
 }
 
 object P0068 extends App {
