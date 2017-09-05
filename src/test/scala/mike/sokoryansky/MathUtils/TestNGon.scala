@@ -25,6 +25,7 @@ class TestNGon extends FunSuite {
   }
 
   test("NGon.ngons returns all possible permutations of NGons for given vertices values") {
-    assert(NGon.ngons((1 to 6).toSet).map(_.value).max === "432621513")
+    assert(NGon.ngons((1 to 6).toSet).filter(_.lineSumsEqual).map(_.value).max === "432621513")
+    assert(NGon.ngons((4 to 6).toSet, (1 to 3).toSet).filter(_.lineSumsEqual).map(_.value).max === "432621513")
   }
 }

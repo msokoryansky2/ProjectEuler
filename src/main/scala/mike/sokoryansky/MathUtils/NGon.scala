@@ -14,9 +14,11 @@ case class NGon(numbers: List[Int]) extends Ordered[NGon] {
   require(numbers.size >= 6, "Must have at least 6 numbers specified for a 3-gon")
   val sides: Int = numbers.size / 2
   lazy val (outer, inner) = numbers.toIndexedSeq.splitAt(sides)
+  val equalLineSum: Long = (outer.sum + 2 * inner.sum) / sides
   lazy val s: Int = outer.zipWithIndex.min._2
   lazy val lines: Seq[Seq[Int]] = 
     (0 until sides).map(i => List(outer((i + s) % sides), inner((i + s) % sides), inner((i + s + 1) % sides)))
+  lazy val lineSumsEqual: Boolean = !lines.exists(_.sum != equalLineSum)
   lazy val lineValues: Seq[String] = lines.map(_.mkString)
   lazy val value: String = lineValues.mkString
 

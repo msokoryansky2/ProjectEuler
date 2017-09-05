@@ -104,4 +104,30 @@ class TestPrime extends FunSuite {
     assert(Prime.isPrime2(17, List[Long](2, 3, 5, 7, 11, 13)))
     assert(Prime.isPrime2(17, List[Long](2, 3)))
   }
+
+  test("relativePrime/totient returns list/count of numbers less than and relatively prime to specified number") {
+    intercept[Exception] {
+      assert(Prime.relativePrimes(1) === Seq(1))
+    }
+
+    assert(Prime.relativePrimes(2) === Seq(1))
+    assert(Prime.relativePrimes(3) === Seq(1, 2))
+    assert(Prime.relativePrimes(4) === Seq(1, 3))
+    assert(Prime.relativePrimes(5) === Seq(1, 2, 3, 4))
+    assert(Prime.relativePrimes(6) === Seq(1, 5))
+    assert(Prime.relativePrimes(7) === Seq(1, 2, 3, 4, 5, 6))
+    assert(Prime.relativePrimes(8) === Seq(1, 3, 5, 7))
+    assert(Prime.relativePrimes(9) === Seq(1, 2, 4, 5, 7, 8))
+    assert(Prime.relativePrimes(10) === Seq(1, 3, 7, 9))
+
+    assert(Prime.totient(2) === 1)
+    assert(Prime.totient(3) === 2)
+    assert(Prime.totient(4) === 2)
+    assert(Prime.totient(5) === 4)
+    assert(Prime.totient(6) === 2)
+    assert(Prime.totient(7) === 6)
+    assert(Prime.totient(8) === 4)
+    assert(Prime.totient(9) === 6)
+    assert(Prime.totient(10) === 4)
+  }
 }

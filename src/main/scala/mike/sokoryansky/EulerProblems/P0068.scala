@@ -38,7 +38,7 @@ class P0068 extends EulerProblem {
     *  being 6, 7, 8, 9, and 10. Therefore inner vertices are 1, 2, 3, 4, and 5. We form all such permutations without
     *  any more optimization since numbers are low enough already and look for max.
     */
-  def run: String = NGon.ngons((6 to 10).toSet, (1 to 5).toSet).map(_.value).max
+  def run: String = NGon.ngons((6 to 10).toSet, (1 to 5).toSet).filter(_.lineSumsEqual).max.value
 }
 
 object P0068 extends App {

@@ -4,6 +4,7 @@ import mike.sokoryansky.MathUtils.Integer.ints
 import mike.sokoryansky.MathUtils.Misc.union2
 
 import scala.annotation.tailrec
+import scala.collection.immutable.HashSet
 
 object Prime {
   /**
@@ -149,4 +150,28 @@ object Prime {
       .map(d => (0 until numDigits).map(dn => if (fixed.contains(dn)) fixed(dn) else d).mkString.toLong)
       .filter(Prime.isPrime)
   }
+
+  /**
+    * List of relative primes of n. For example, as 1, 2, 4, 5, 7, and 8 are relative primes of 9.
+    * Providing a version that already has a map of all numbers from 1 to (at least) n to their divisors
+    * (including 1 and number itself) and also where this map needs to be built from scratch.
+    *
+    * We do not try to check the map for completeness -- if it's provided we assume it has mappings
+    * from 1 to (at least) n. Exceptions will be thrown if it doesn't
+    */
+  def relativePrimes(n: Long): Seq[Long] = relativePrimes(n, (1.toLong to n).map(i => i -> Integer.divisors(i)).toMap)
+  def relativePrimes(n: Long, divisors: Map[Long, HashSet[Long]]): Seq[Long] = {
+    require(n > 1, "Can only find relative primes for integers larger than 1")
+    (1.toLong until n).filterNot(i => divisors(i).exists(id => id != 1 && divisors(n).contains(id)))
+  }
+
+  /**
+    * Euler's Totient function, φ(n) [sometimes called the phi function], is used to determine the number of numbers
+    * less than n which are relatively prime to n.
+    * For example, as 1, 2, 4, 5, 7, and 8, are all less than nine and relatively prime to nine, φ(9)=6.
+    *
+    * As with relativePrimes(), we assume that if divisors map is included it covers all numbers from 1 to (at least) n.
+    */
+  def totient(n: Long): Long = relativePrimes(n).size
+  def totient(n: Long, divisors: Map[Long, HashSet[Long]]): Long = relativePrimes(n, divisors).size
 }
