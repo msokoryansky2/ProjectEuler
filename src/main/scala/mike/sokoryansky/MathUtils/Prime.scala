@@ -179,9 +179,14 @@ object Prime {
         val nonTrivialDivisors: HashSet[Long] = divisors(next).filterNot(d => d == 1 || d == next)
         // lack of non-trivial divisors means number is prime so it's relatively prime with all numbers below it
         if (nonTrivialDivisors.isEmpty) relativePrimesThroughNAcc(next + 1, acc + (next -> (1.toLong until next)))
-        // TBD: Use info about already computed mutual primes of numbers less than next to figure out the same for next
+        // for number with non-trivial divisors, relative primes are those numbers between 1 and it that are
+        // relatively prime with all its divisors
         else {
-          relativePrimesThroughNAcc(next + 1, acc + (next -> relativePrimes(next, divisors)))
+          val largeRelativePrimes = (1.toLong until next)
+            .filterNot(i => nonTrivialDivisors.contains(i) || nonTrivialDivisors.exists(d => i > d && !acc(i).contains(d)))
+          relativePrimesThroughNAcc(next + 1, acc + (next -> largeRelativePrimes))
+          // Dumb but working impl:
+          // relativePrimesThroughNAcc(next + 1, acc + (next -> relativePrimes(next, divisors)))
         }
       }
     }
@@ -197,4 +202,8 @@ object Prime {
     */
   def totient(n: Long): Long = relativePrimes(n).size
   def totient(n: Long, divisors: Map[Long, HashSet[Long]]): Long = relativePrimes(n, divisors).size
+  def totientThroughN(n: Long): Map[Long, Long] =
+    relativePrimesThroughN(n).map(p => p._1 -> p._2.size.toLong)
+  def totientThroughN(n: Long, divisors: Map[Long, HashSet[Long]]): Map[Long, Long] =
+    relativePrimesThroughN(n, divisors).map(p => p._1 -> p._2.size.toLong)
 }
