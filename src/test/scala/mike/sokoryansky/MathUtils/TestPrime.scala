@@ -130,4 +130,16 @@ class TestPrime extends FunSuite {
     assert(Prime.totient(9) === 6)
     assert(Prime.totient(10) === 4)
   }
+
+  test("relativePrimeeFrom1 returns a map of all numbers from 2 to n with their respective mutual primes") {
+    assert(Prime.relativePrimesThroughN(10) === Map(2 -> Seq(1),
+                                                    3 -> Seq(1, 2),
+                                                    4 -> Seq(1, 3),
+                                                    5 -> Seq(1, 2, 3, 4),
+                                                    6 -> Seq(1, 5),
+                                                    7 -> Seq(1, 2, 3, 4, 5, 6),
+                                                    8 -> Seq(1, 3, 5, 7),
+                                                    9 -> Seq(1, 2, 4, 5, 7, 8),
+                                                    10 -> Seq(1, 3, 7, 9)))
+  }
 }

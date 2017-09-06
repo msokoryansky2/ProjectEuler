@@ -166,6 +166,29 @@ object Prime {
   }
 
   /**
+    * List of relative primes from all numbers from 1 to n.
+    * Optimized to be much faster than n equivalent calls to relativePrimes()
+    */
+  def relativePrimesThroughN(n: Long): Map[Long, Seq[Long]] =
+    relativePrimesThroughN(n, (1.toLong to n).map(i => i -> Integer.divisors(i)).toMap)
+  def relativePrimesThroughN(n: Long, divisors: Map[Long, HashSet[Long]]): Map[Long, Seq[Long]] = {
+    require(n > 1, "Can only find relative primes for integers larger than 1")
+    @tailrec def relativePrimesThroughNAcc(next: Long, acc: Map[Long, Seq[Long]]): Map[Long, Seq[Long]] = {
+      if (next > n) acc
+      else {
+        val nonTrivialDivisors: HashSet[Long] = divisors(next).filterNot(d => d == 1 || d == next)
+        // lack of non-trivial divisors means number is prime so it's relatively prime with all numbers below it
+        if (nonTrivialDivisors.isEmpty) relativePrimesThroughNAcc(next + 1, acc + (next -> (1.toLong until next)))
+        // TBD: Use info about already computed mutual primes of numbers less than next to figure out the same for next
+        else {
+          relativePrimesThroughNAcc(next + 1, acc + (next -> relativePrimes(next, divisors)))
+        }
+      }
+    }
+    relativePrimesThroughNAcc(2, Map[Long, Seq[Long]]())
+  }
+
+  /**
     * Euler's Totient function, φ(n) [sometimes called the phi function], is used to determine the number of numbers
     * less than n which are relatively prime to n.
     * For example, as 1, 2, 4, 5, 7, and 8, are all less than nine and relatively prime to nine, φ(9)=6.
