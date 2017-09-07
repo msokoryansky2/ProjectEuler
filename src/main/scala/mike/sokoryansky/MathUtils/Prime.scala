@@ -38,16 +38,16 @@ object Prime {
 
 
   /**
-    * List of all prime factors (some may appear multiple times for specified number given list of all primes
-    * that are less or equal to that number. Returns a map of prime numbers to how many times they occur. E.g.
-    * primeFactors(24) = Map(2 -> 3, 3 -> 1)
+    * List of all prime factors given list of all primes with max element >= sqrt(number).
+    * Returns a map of prime numbers to how many times they occur.
+    * E.g. primeFactors(24) = Map(2 -> 3, 3 -> 1)
     */
   def primeFactors(i: Long, primes: List[Long]): Map[Long, Long] = {
     require(i > 1, "Must specify integer larger than 1 to be factored")
     def primeFactorsAcc(i: Long, acc: Map[Long, Long]): Map[Long, Long] = {
       if (i == 1) acc
       else {
-        val factor = primes.find(p => p <= i && i % p == 0).get
+        val factor = primes.find(p => p <= i && i % p == 0).getOrElse(i)
         primeFactorsAcc(i / factor, acc + (factor -> (acc.getOrElse(factor, 0L) + 1)))
       }
     }

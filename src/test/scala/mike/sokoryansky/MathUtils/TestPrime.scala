@@ -114,6 +114,7 @@ class TestPrime extends FunSuite {
     }
     assert(Prime.primeFactors(2, primes) === Map(2 -> 1))
     assert(Prime.primeFactors(37, primes) === Map(37 -> 1))
+    assert(Prime.primeFactors(349, primes) === Map(349 -> 1))
     assert(Prime.primeFactors(720, primes) === Map(2 -> 4, 3 -> 2, 5 -> 1))
     assert(Prime.primeFactors(650, primes) === Map(2 -> 1, 5 -> 2, 13 -> 1))
   }
