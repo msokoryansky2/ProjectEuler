@@ -2,7 +2,7 @@ package mike.sokoryansky.MathUtils
 
 import org.scalatest.FunSuite
 
-import scala.collection.immutable.HashSet
+import scala.collection.immutable.{HashSet, SortedSet}
 
 class TestPrime extends FunSuite {
   test("primeFactors should factor numbers") {
@@ -108,7 +108,7 @@ class TestPrime extends FunSuite {
   }
 
   test("primeFactors can use pre-computed prime lookup table for quick prime factorization") {
-    val primes = HashSet() ++ Prime.primes(1).takeWhile(_ <= 100)
+    val primes = Prime.primes(1).takeWhile(_ <= 100).toList.sorted
     intercept[Exception] {
       Prime.primeFactors(1, primes)
     }

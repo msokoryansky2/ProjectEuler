@@ -42,13 +42,12 @@ object Prime {
     * that are less or equal to that number. Returns a map of prime numbers to how many times they occur. E.g.
     * primeFactors(24) = Map(2 -> 3, 3 -> 1)
     */
-  def primeFactors(i: Long, primes: HashSet[Long]): Map[Long, Long] = {
+  def primeFactors(i: Long, primes: List[Long]): Map[Long, Long] = {
     require(i > 1, "Must specify integer larger than 1 to be factored")
     def primeFactorsAcc(i: Long, acc: Map[Long, Long]): Map[Long, Long] = {
       if (i == 1) acc
-      else if (primes.contains(i)) acc + (i -> (acc.getOrElse(i, 0L) + 1))
       else {
-        val factor = primes.find(p => p < i && i % p == 0).get
+        val factor = primes.find(p => p <= i && i % p == 0).get
         primeFactorsAcc(i / factor, acc + (factor -> (acc.getOrElse(factor, 0L) + 1)))
       }
     }
