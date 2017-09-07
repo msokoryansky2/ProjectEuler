@@ -28,11 +28,31 @@ object Prime {
     * @param factors accumulator list of factors
     * @return complete list of all prime factors of a number so that product of all numbers in the list == i
     */
-  @tailrec final def primeFactors(i: BigInt, primesToCheck: Stream[BigInt], factors: List[BigInt]): List[BigInt] = {
+  @tailrec def primeFactors(i: BigInt, primesToCheck: Stream[BigInt], factors: List[BigInt]): List[BigInt] = {
     if (i < 2) factors
     else if (i % primesToCheck.head == 0)
       primeFactors(i / primesToCheck.head, primes(ints(2)), primesToCheck.head :: factors)
     else primeFactors(i, primesToCheck.tail, factors)
+  }
+  def primeFactorsUnique(i: BigInt): List[BigInt] = primeFactors(i, primes(ints(2)), List()).distinct
+
+
+  /**
+    * List of all prime factors (some may appear multiple times for specified number given list of all primes
+    * that are less or equal to that number. Returns a map of prime numbers to how many times they occur. E.g.
+    * primeFactors(24) = Map(2 -> 3, 3 -> 1)
+    */
+  def primeFactors(i: Long, primes: HashSet[Long]): Map[Long, Long] = {
+    require(i > 1, "Must specify integer larger than 1 to be factored")
+    def primeFactorsAcc(i: Long, acc: Map[Long, Long]): Map[Long, Long] = {
+      if (i == 1) acc
+      else if (primes.contains(i)) acc + (i -> (acc.getOrElse(i, 0L) + 1))
+      else {
+        val factor = primes.find(p => p < i && i % p == 0).get
+        primeFactorsAcc(i / factor, acc + (factor -> (acc.getOrElse(factor, 0L) + 1)))
+      }
+    }
+    primeFactorsAcc(i, Map())
   }
 
   def primeFactorsOfRange(lo: BigInt, hi: BigInt): Seq[BigInt] = {
@@ -151,18 +171,20 @@ object Prime {
       .filter(Prime.isPrime)
   }
 
+
   /**
     * List of relative primes of n. For example, as 1, 2, 4, 5, 7, and 8 are relative primes of 9.
-    * Providing a version that already has a map of all numbers from 1 to (at least) n to their divisors
-    * (including 1 and number itself) and also where this map needs to be built from scratch.
+    * Providing a version that already has a map of all numbers from 1 to (at least) n to their prime factors
+    * and also where this map needs to be built from scratch.
     *
     * We do not try to check the map for completeness -- if it's provided we assume it has mappings
-    * from 1 to (at least) n. Exceptions will be thrown if it doesn't
+    * from 2 to (at least) (n - 1). Exceptions will be thrown if it doesn't
     */
-  def relativePrimes(n: Long): Seq[Long] = relativePrimes(n, (1.toLong to n).map(i => i -> Integer.divisors(i)).toMap)
-  def relativePrimes(n: Long, divisors: Map[Long, HashSet[Long]]): Seq[Long] = {
+  def relativePrimes(n: Long): Seq[Long] =
+    relativePrimes(n, (2.toLong to n).map(i => i -> (HashSet() ++ primeFactorsUnique(i).map(_.toLong))).toMap)
+  def relativePrimes(n: Long, factors: Map[Long, HashSet[Long]]): Seq[Long] = {
     require(n > 1, "Can only find relative primes for integers larger than 1")
-    (1.toLong until n).filterNot(i => divisors(i).exists(id => id != 1 && divisors(n).contains(id)))
+    Seq(1L) ++ (2L until n).filterNot(i => factors(i).exists(id => id != 1 && factors(n).contains(id)))
   }
 
   /**
@@ -170,22 +192,23 @@ object Prime {
     * Optimized to be much faster than n equivalent calls to relativePrimes()
     */
   def relativePrimesThroughN(n: Long): Map[Long, Seq[Long]] =
-    relativePrimesThroughN(n, (1.toLong to n).map(i => i -> Integer.divisors(i)).toMap)
-  def relativePrimesThroughN(n: Long, divisors: Map[Long, HashSet[Long]]): Map[Long, Seq[Long]] = {
+    relativePrimesThroughN(n, (2.toLong to n).map(i => i -> (HashSet() ++ primeFactorsUnique(i).map(_.toLong))).toMap)
+  def relativePrimesThroughN(n: Long, factors: Map[Long, HashSet[Long]]): Map[Long, Seq[Long]] = {
     require(n > 1, "Can only find relative primes for integers larger than 1")
     @tailrec def relativePrimesThroughNAcc(next: Long, acc: Map[Long, Seq[Long]]): Map[Long, Seq[Long]] = {
       if (next > n) acc
+      // lack of non-trivial divisors means number is prime so it's relatively prime with all numbers below it
       else {
-        val nonTrivialDivisors: HashSet[Long] = divisors(next).filterNot(d => d == 1 || d == next)
-        // lack of non-trivial divisors means number is prime so it's relatively prime with all numbers below it
-        if (nonTrivialDivisors.isEmpty) relativePrimesThroughNAcc(next + 1, acc + (next -> (1.toLong until next)))
+        val nextFacts = factors(next)
+        if (nextFacts.isEmpty) relativePrimesThroughNAcc(next + 1, acc + (next -> (1L until next)))
         // for number with non-trivial divisors, relative primes are those numbers between 1 and it that are
         // relatively prime with all its divisors
         else {
-          val largeRelativePrimes = (1.toLong until next)
-            .filterNot(i => nonTrivialDivisors.contains(i) || nonTrivialDivisors.exists(d => i > d && !acc(i).contains(d)))
-          relativePrimesThroughNAcc(next + 1, acc + (next -> largeRelativePrimes))
-          // Dumb but working impl:
+          val relPrimes =
+            (2L until next).filterNot(i => nextFacts.contains(i) || nextFacts.exists(d => i > d && !acc(i).contains(d)))
+          relativePrimesThroughNAcc(next + 1, acc + (next -> (Seq(1L) ++ relPrimes)))
+
+          // Dumb/slow but correct impl:
           // relativePrimesThroughNAcc(next + 1, acc + (next -> relativePrimes(next, divisors)))
         }
       }
@@ -198,12 +221,12 @@ object Prime {
     * less than n which are relatively prime to n.
     * For example, as 1, 2, 4, 5, 7, and 8, are all less than nine and relatively prime to nine, φ(9)=6.
     *
-    * As with relativePrimes(), we assume that if divisors map is included it covers all numbers from 1 to (at least) n.
+    * As with relativePrimes(), we assume that if factor map is included it covers all numbers from 2 to (at least) n-1.
     */
   def totient(n: Long): Long = relativePrimes(n).size
-  def totient(n: Long, divisors: Map[Long, HashSet[Long]]): Long = relativePrimes(n, divisors).size
+  def totient(n: Long, factors: Map[Long, HashSet[Long]]): Long = relativePrimes(n, factors).size
   def totientThroughN(n: Long): Map[Long, Long] =
     relativePrimesThroughN(n).map(p => p._1 -> p._2.size.toLong)
-  def totientThroughN(n: Long, divisors: Map[Long, HashSet[Long]]): Map[Long, Long] =
-    relativePrimesThroughN(n, divisors).map(p => p._1 -> p._2.size.toLong)
+  def totientThroughN(n: Long, factors: Map[Long, HashSet[Long]]): Map[Long, Long] =
+    relativePrimesThroughN(n, factors).map(p => p._1 -> p._2.size.toLong)
 }

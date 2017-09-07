@@ -2,6 +2,8 @@ package mike.sokoryansky.MathUtils
 
 import org.scalatest.FunSuite
 
+import scala.collection.immutable.HashSet
+
 class TestPrime extends FunSuite {
   test("primeFactors should factor numbers") {
     assert(Prime.primeFactors(1, Prime.primes(Integer.ints(2)), Nil).sortWith(_ < _) === List())
@@ -105,6 +107,17 @@ class TestPrime extends FunSuite {
     assert(Prime.isPrime2(17, List[Long](2, 3)))
   }
 
+  test("primeFactors can use pre-computed prime lookup table for quick prime factorization") {
+    val primes = HashSet() ++ Prime.primes(1).takeWhile(_ <= 100)
+    intercept[Exception] {
+      Prime.primeFactors(1, primes)
+    }
+    assert(Prime.primeFactors(2, primes) === Map(2 -> 1))
+    assert(Prime.primeFactors(37, primes) === Map(37 -> 1))
+    assert(Prime.primeFactors(720, primes) === Map(2 -> 4, 3 -> 2, 5 -> 1))
+    assert(Prime.primeFactors(650, primes) === Map(2 -> 1, 5 -> 2, 13 -> 1))
+  }
+
   test("relativePrime/totient returns list/count of numbers less than and relatively prime to specified number") {
     intercept[Exception] {
       assert(Prime.relativePrimes(1) === Seq(1))
@@ -119,6 +132,16 @@ class TestPrime extends FunSuite {
     assert(Prime.relativePrimes(8) === Seq(1, 3, 5, 7))
     assert(Prime.relativePrimes(9) === Seq(1, 2, 4, 5, 7, 8))
     assert(Prime.relativePrimes(10) === Seq(1, 3, 7, 9))
+    assert(Prime.relativePrimes(11) === Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+    assert(Prime.relativePrimes(12) === Seq(1, 5, 7, 11))
+    assert(Prime.relativePrimes(13) === Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
+    assert(Prime.relativePrimes(14) === Seq(1, 3, 5, 9, 11, 13))
+    assert(Prime.relativePrimes(15) === Seq(1, 2, 4, 7, 8, 11, 13, 14))
+    assert(Prime.relativePrimes(16) === Seq(1, 3, 5, 7, 9, 11, 13, 15))
+    assert(Prime.relativePrimes(17) === Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16))
+    assert(Prime.relativePrimes(18) === Seq(1, 5, 7, 11, 13, 17))
+    assert(Prime.relativePrimes(19) === Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18))
+    assert(Prime.relativePrimes(20) === Seq(1, 3, 7, 9, 11, 13, 17, 19))
 
     assert(Prime.totient(2) === 1)
     assert(Prime.totient(3) === 2)
@@ -129,17 +152,38 @@ class TestPrime extends FunSuite {
     assert(Prime.totient(8) === 4)
     assert(Prime.totient(9) === 6)
     assert(Prime.totient(10) === 4)
+    assert(Prime.totient(11) === 10)
+    assert(Prime.totient(12) === 4)
+    assert(Prime.totient(13) === 12)
+    assert(Prime.totient(14) === 6)
+    assert(Prime.totient(15) === 8)
+    assert(Prime.totient(16) === 8)
+    assert(Prime.totient(17) === 16)
+    assert(Prime.totient(18) === 6)
+    assert(Prime.totient(19) === 18)
+    assert(Prime.totient(20) === 8)
   }
 
   test("relativePrimeeFrom1 returns a map of all numbers from 2 to n with their respective mutual primes") {
-    assert(Prime.relativePrimesThroughN(10) === Map(2 -> Seq(1),
-                                                    3 -> Seq(1, 2),
-                                                    4 -> Seq(1, 3),
-                                                    5 -> Seq(1, 2, 3, 4),
-                                                    6 -> Seq(1, 5),
-                                                    7 -> Seq(1, 2, 3, 4, 5, 6),
-                                                    8 -> Seq(1, 3, 5, 7),
-                                                    9 -> Seq(1, 2, 4, 5, 7, 8),
-                                                    10 -> Seq(1, 3, 7, 9)))
+    assert(Prime.relativePrimesThroughN(20) ===
+                                  Map(2 -> Seq(1),
+                                      3 -> Seq(1, 2),
+                                      4 -> Seq(1, 3),
+                                      5 -> Seq(1, 2, 3, 4),
+                                      6 -> Seq(1, 5),
+                                      7 -> Seq(1, 2, 3, 4, 5, 6),
+                                      8 -> Seq(1, 3, 5, 7),
+                                      9 -> Seq(1, 2, 4, 5, 7, 8),
+                                      10 -> Seq(1, 3, 7, 9),
+                                      11 -> Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+                                      12 -> Seq(1, 5, 7, 11),
+                                      13 -> Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+                                      14 -> Seq(1, 3, 5, 9, 11, 13),
+                                      15 -> Seq(1, 2, 4, 7, 8, 11, 13, 14),
+                                      16 -> Seq(1, 3, 5, 7, 9, 11, 13, 15),
+                                      17 -> Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                                      18 -> Seq(1, 5, 7, 11, 13, 17),
+                                      19 -> Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18),
+                                      20 -> Seq(1, 3, 7, 9, 11, 13, 17, 19)))
   }
 }
