@@ -42,16 +42,18 @@ object Prime {
     * Returns a map of prime numbers to how many times they occur.
     * E.g. primeFactors(24) = Map(2 -> 3, 3 -> 1)
     */
-  def primeFactors(i: Long, primes: List[Long]): Map[Long, Long] = {
+  def primeFactorsWithLookup(i: Long): Map[Long, Long] =
+    primeFactorsWithLookup(i, Prime.primes(1).takeWhile(_ <= Math.sqrt(i).ceil.toLong).toList.sorted)
+  def primeFactorsWithLookup(i: Long, primes: List[Long]): Map[Long, Long] = {
     require(i > 1, "Must specify integer larger than 1 to be factored")
-    def primeFactorsAcc(i: Long, acc: Map[Long, Long]): Map[Long, Long] = {
+    @tailrec def primeFactorsWithLookupAcc(i: Long, acc: Map[Long, Long]): Map[Long, Long] = {
       if (i == 1) acc
       else {
         val factor = primes.find(p => p <= i && i % p == 0).getOrElse(i)
-        primeFactorsAcc(i / factor, acc + (factor -> (acc.getOrElse(factor, 0L) + 1)))
+        primeFactorsWithLookupAcc(i / factor, acc + (factor -> (acc.getOrElse(factor, 0L) + 1)))
       }
     }
-    primeFactorsAcc(i, Map())
+    primeFactorsWithLookupAcc(i, Map())
   }
 
   def primeFactorsOfRange(lo: BigInt, hi: BigInt): Seq[BigInt] = {
@@ -174,25 +176,29 @@ object Prime {
   /**
     * List of relative primes of n. For example, as 1, 2, 4, 5, 7, and 8 are relative primes of 9.
     * Providing a version that already has a map of all numbers from 1 to (at least) n to their prime factors
-    * and also where this map needs to be built from scratch.
+    * in a form of Map(primeFactor -> primeFactorPower) and also where this map needs to be built from scratch.
     *
     * We do not try to check the map for completeness -- if it's provided we assume it has mappings
     * from 2 to (at least) (n - 1). Exceptions will be thrown if it doesn't
     */
-  def relativePrimes(n: Long): Seq[Long] =
-    relativePrimes(n, (2.toLong to n).map(i => i -> (HashSet() ++ primeFactorsUnique(i).map(_.toLong))).toMap)
-  def relativePrimes(n: Long, factors: Map[Long, HashSet[Long]]): Seq[Long] = {
+  def relativePrimes(n: Long): Seq[Long] = {
+    val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
+    relativePrimes(n, (2.toLong to n).map(i => i -> primeFactorsWithLookup(i, primesLookup)).toMap)
+  }
+  def relativePrimes(n: Long, factors: Map[Long, Map[Long, Long]]): Seq[Long] = {
     require(n > 1, "Can only find relative primes for integers larger than 1")
-    Seq(1L) ++ (2L until n).filterNot(i => factors(i).exists(id => id != 1 && factors(n).contains(id)))
+    Seq(1L) ++ (2L until n).filterNot(i => factors(i).exists(m => factors(n).contains(m._1)))
   }
 
   /**
     * List of relative primes from all numbers from 1 to n.
     * Optimized to be much faster than n equivalent calls to relativePrimes()
     */
-  def relativePrimesThroughN(n: Long): Map[Long, Seq[Long]] =
-    relativePrimesThroughN(n, (2.toLong to n).map(i => i -> (HashSet() ++ primeFactorsUnique(i).map(_.toLong))).toMap)
-  def relativePrimesThroughN(n: Long, factors: Map[Long, HashSet[Long]]): Map[Long, Seq[Long]] = {
+  def relativePrimesThroughN(n: Long): Map[Long, Seq[Long]] = {
+    val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
+    relativePrimesThroughN(n, (2.toLong to n).map(i => i -> primeFactorsWithLookup(i, primesLookup)).toMap)
+  }
+  def relativePrimesThroughN(n: Long, factors: Map[Long, Map[Long, Long]]): Map[Long, Seq[Long]] = {
     require(n > 1, "Can only find relative primes for integers larger than 1")
     @tailrec def relativePrimesThroughNAcc(next: Long, acc: Map[Long, Seq[Long]]): Map[Long, Seq[Long]] = {
       if (next > n) acc
@@ -203,12 +209,9 @@ object Prime {
         // for number with non-trivial divisors, relative primes are those numbers between 1 and it that are
         // relatively prime with all its divisors
         else {
-          val relPrimes =
-            (2L until next).filterNot(i => nextFacts.contains(i) || nextFacts.exists(d => i > d && !acc(i).contains(d)))
+          val relPrimes = (2L until next).filterNot(i =>
+            nextFacts.contains(i) || nextFacts.keys.exists(d => i > d && !acc(i).contains(d)))
           relativePrimesThroughNAcc(next + 1, acc + (next -> (Seq(1L) ++ relPrimes)))
-
-          // Dumb/slow but correct impl:
-          // relativePrimesThroughNAcc(next + 1, acc + (next -> relativePrimes(next, divisors)))
         }
       }
     }
@@ -223,9 +226,9 @@ object Prime {
     * As with relativePrimes(), we assume that if factor map is included it covers all numbers from 2 to (at least) n-1.
     */
   def totient(n: Long): Long = relativePrimes(n).size
-  def totient(n: Long, factors: Map[Long, HashSet[Long]]): Long = relativePrimes(n, factors).size
+  def totient(n: Long, factors: Map[Long, Map[Long, Long]]): Long = relativePrimes(n, factors).size
   def totientThroughN(n: Long): Map[Long, Long] =
     relativePrimesThroughN(n).map(p => p._1 -> p._2.size.toLong)
-  def totientThroughN(n: Long, factors: Map[Long, HashSet[Long]]): Map[Long, Long] =
+  def totientThroughN(n: Long, factors: Map[Long, Map[Long, Long]]): Map[Long, Long] =
     relativePrimesThroughN(n, factors).map(p => p._1 -> p._2.size.toLong)
 }

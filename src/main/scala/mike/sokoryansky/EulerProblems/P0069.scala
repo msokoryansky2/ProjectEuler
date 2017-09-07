@@ -27,12 +27,7 @@ Find the value of n ≤ 1,000,000 for which n/φ(n) is a maximum.
 class P0069 extends EulerProblem {
   def run: String = {
     val mil = 1000000L
-    val primes = Prime.primes(1).takeWhile(_ <= Math.sqrt(mil).ceil.toLong).toList.sorted
-    println("got primes")
-    val factors = (2L to mil).map(i => i -> Prime.primeFactors(i, primes))
-    println("got factors")
-    // Prime.totientThroughN(10000, factors).maxBy(t => t._1.toDouble / t._2)._1.toString
-    ""
+    Prime.totientThroughN(1000).maxBy(t => t._1.toDouble / t._2)._1.toString
   }
 }
 

@@ -110,13 +110,14 @@ class TestPrime extends FunSuite {
   test("primeFactors can use pre-computed prime lookup table for quick prime factorization") {
     val primes = Prime.primes(1).takeWhile(_ <= 100).toList.sorted
     intercept[Exception] {
-      Prime.primeFactors(1, primes)
+      Prime.primeFactorsWithLookup(1, primes)
     }
-    assert(Prime.primeFactors(2, primes) === Map(2 -> 1))
-    assert(Prime.primeFactors(37, primes) === Map(37 -> 1))
-    assert(Prime.primeFactors(349, primes) === Map(349 -> 1))
-    assert(Prime.primeFactors(720, primes) === Map(2 -> 4, 3 -> 2, 5 -> 1))
-    assert(Prime.primeFactors(650, primes) === Map(2 -> 1, 5 -> 2, 13 -> 1))
+    assert(Prime.primeFactorsWithLookup(2, primes) === Map(2 -> 1))
+    assert(Prime.primeFactorsWithLookup(37, primes) === Map(37 -> 1))
+    assert(Prime.primeFactorsWithLookup(349, primes) === Map(349 -> 1))
+    assert(Prime.primeFactorsWithLookup(720, primes) === Map(2 -> 4, 3 -> 2, 5 -> 1))
+    assert(Prime.primeFactorsWithLookup(650, primes) === Map(2 -> 1, 5 -> 2, 13 -> 1))
+    assert(Prime.primeFactorsWithLookup(650) === Map(2 -> 1, 5 -> 2, 13 -> 1))
   }
 
   test("relativePrime/totient returns list/count of numbers less than and relatively prime to specified number") {
