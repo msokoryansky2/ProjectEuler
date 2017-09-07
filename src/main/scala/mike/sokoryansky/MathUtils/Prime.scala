@@ -223,12 +223,29 @@ object Prime {
     * less than n which are relatively prime to n.
     * For example, as 1, 2, 4, 5, 7, and 8, are all less than nine and relatively prime to nine, φ(9)=6.
     *
-    * As with relativePrimes(), we assume that if factor map is included it covers all numbers from 2 to (at least) n-1.
+    * As with relativePrimes(), we assume that if factor map is includes all prime factors.
+    *
+    * The algo for totient is that we count all numbers less than n divisible by each of n's factors and add all of
+    * them up. But that results in double-counting in cases like totient(12) counts 6 twice -- once when considering
+    * all numbers divisible by 2 and once when all numbers divisible by 3. So to account for that we create list of
+    * products of all possible pairs of different prime factors of n and subtract from the initial sum the sum of
+    * all occurences of these new numbers' multiples in numbers up to n.
     */
-  def totient(n: Long): Long = relativePrimes(n).size
-  def totient(n: Long, factors: Map[Long, Map[Long, Long]]): Long = relativePrimes(n, factors).size
-  def totientThroughN(n: Long): Map[Long, Long] =
-    relativePrimesThroughN(n).map(p => p._1 -> p._2.size.toLong)
-  def totientThroughN(n: Long, factors: Map[Long, Map[Long, Long]]): Map[Long, Long] =
-    relativePrimesThroughN(n, factors).map(p => p._1 -> p._2.size.toLong)
+  def totient(n: Long): Long = {
+    val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
+    val factors = primeFactorsWithLookup(n, primesLookup)
+    totient(n, factors)
+  }
+  def totient(n: Long, factors: Map[Long, Long]): Long = {
+    val primes = factors.keySet
+    val primesMultsSum = primes.map(p => (n - 1) / p).sum
+
+    val primeProducs = for {
+      p1 <- primes
+      p2 <- primes if p2 != p1
+    } yield p1 * p2
+    val primeProductsMultsSum =  primeProducs.map(pp => (n - 1) / pp).sum
+
+    n - 1 - primesMultsSum + primeProductsMultsSum
+  }
 }
