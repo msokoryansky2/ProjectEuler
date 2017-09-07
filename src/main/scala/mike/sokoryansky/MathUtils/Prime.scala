@@ -229,7 +229,7 @@ object Prime {
     * them up. But that results in double-counting in cases like totient(12) counts 6 twice -- once when considering
     * all numbers divisible by 2 and once when all numbers divisible by 3. So to account for that we create list of
     * products of all possible pairs of different prime factors of n and subtract from the initial sum the sum of
-    * all occurences of these new numbers' multiples in numbers up to n.
+    * all occurrences of these new numbers' multiples in numbers up to n.
     */
   def totient(n: Long): Long = {
     val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
@@ -237,15 +237,19 @@ object Prime {
     totient(n, factors)
   }
   def totient(n: Long, factors: Map[Long, Long]): Long = {
-    val primes = factors.keySet
-    val primesMultsSum = primes.map(p => (n - 1) / p).sum
+    val primeFactors = factors.keySet
+    // Sum of counts of all multiples of factors on n that are less than n. Will have double-counts.
+    val primeFactorsMultsSum = primeFactors.map(p => (n - 1) / p).sum
+    // A double-count occurs when a number less than n is a multiple of two or more prime factors of n.
+    // We create a map of all such composite/non-prime factor sets by their prime factor count.
+    val compositeFactors =
+      (2 to primeFactors.size).map(size => size -> Subset.subsets(primeFactors, size).filter(_.product < n))
+        .toMap.filterNot(_._2.isEmpty)
+    // Now for each compose factor we calculate the number of times its multiple occur
+    val compositeFactorsDoubleCounts =
+      compositeFactors.map(factors => factors._1 -> factors._2.map(cf => (n - 1) / cf.product).sum)
+    val compositeFactorsDoubleCountsSum = compositeFactorsDoubleCounts.map(cfdc => (cfdc._1 - 1) * cfdc._2).sum
 
-    val primeProducs = for {
-      p1 <- primes
-      p2 <- primes if p2 != p1
-    } yield p1 * p2
-    val primeProductsMultsSum =  primeProducs.map(pp => (n - 1) / pp).sum
-
-    n - 1 - primesMultsSum + primeProductsMultsSum
+    n - 1 - primeFactorsMultsSum + compositeFactorsDoubleCountsSum
   }
 }

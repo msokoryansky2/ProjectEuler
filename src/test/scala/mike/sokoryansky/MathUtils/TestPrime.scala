@@ -164,6 +164,9 @@ class TestPrime extends FunSuite {
     assert(Prime.totient(18) === 6)
     assert(Prime.totient(19) === 18)
     assert(Prime.totient(20) === 8)
+    assert(Prime.totient(30) === 8)
+    assert(Prime.totient(60) === 16)
+    assert(Prime.totient(210) === 48)
 
     assert(Prime.totient(613) === 612)
     assert(Prime.totient(630) === 144)
