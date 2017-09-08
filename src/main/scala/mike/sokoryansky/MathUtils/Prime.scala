@@ -247,4 +247,13 @@ object Prime {
     val OneMinusOverPrimeFactorsProduct: Fraction = OneMinusOverPrimeFactors.foldLeft(Fraction(1, 1))(_ * _)
     (OneMinusOverPrimeFactorsProduct.num / OneMinusOverPrimeFactorsProduct.denom).toLong
   }
+
+  /**
+    * Efficient way to calc all totients from 2 to N given list of primes <= N.
+    * Uses the fact that totient(a * b) == totient(a) * totient(b) if a and b are co-prime
+    * (i.e. their greatest common denominator -- gcd -- is 1)
+    */
+  def totient2toN(n: Long, primes: HashSet[Long]): Map[Long, Long] = {
+    ???
+  }
 }

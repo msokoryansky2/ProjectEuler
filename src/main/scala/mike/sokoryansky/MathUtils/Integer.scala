@@ -166,6 +166,16 @@ object Integer {
     val v = Math.pow(number, 1 / power)
     v.isWhole || Math.pow(v.floor, power) == number.toDouble ||  Math.pow(v.ceil, power) == number.toDouble
   }
+
+  /**
+    * Greatest common divisor of two numbers
+    */
+  @tailrec def gcd(a: Long, b: Long): Long = {
+    require(a > 0 && b > 0, "Must specify two positive integers")
+    if (b > a) gcd(b, a)
+    else if (a % b == 0) b
+    else gcd(b, a % b)
+  }
 }
 
 object IntegerOps {

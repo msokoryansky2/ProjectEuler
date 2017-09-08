@@ -181,4 +181,23 @@ class TestInteger extends FunSuite {
     assert(Integer.isPermutation(33445566777888L, 87878765433456L))
     assert(!Integer.isPermutation(334455660777888L, 87878765433456L))
   }
+
+  test("gcd computes greatest common divisor") {
+    intercept[Exception] {
+      Integer.gcd(0, 1)
+    }
+    assert(Integer.gcd(1, 1) === 1)
+    assert(Integer.gcd(1, 2) === 1)
+    assert(Integer.gcd(2, 1) === 1)
+    assert(Integer.gcd(1, 17) === 1)
+    assert(Integer.gcd(17, 1) === 1)
+    assert(Integer.gcd(23, 17) === 1)
+    assert(Integer.gcd(17, 23) === 1)
+    assert(Integer.gcd(66, 33) === 33)
+    assert(Integer.gcd(33, 66) === 33)
+    assert(Integer.gcd(48, 72) === 24)
+    assert(Integer.gcd(72, 48) === 24)
+    assert(Integer.gcd(600, 720) === 120)
+    assert(Integer.gcd(720, 600) === 120)
+  }
 }
