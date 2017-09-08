@@ -249,11 +249,26 @@ object Prime {
   }
 
   /**
-    * Efficient way to calc all totients from 2 to N given list of primes <= N.
+    * If we didn't know totient fraction multiplier formula above, the following is a semi-efficient way to calc all
+    * totients from 2 to N given list of prime factors of all such numbers.
     * Uses the fact that totient(a * b) == totient(a) * totient(b) if a and b are co-prime
     * (i.e. their greatest common denominator -- gcd -- is 1)
     */
-  def totient2toN(n: Long, primes: HashSet[Long]): Map[Long, Long] = {
-    ???
+  def totient2toN(n: Long): Map[Long, Long] = {
+    require(n >= 2, "Must specify integer greater than 1 to find totient for all numbers from 2 to that integer")
+    val primesSet: HashSet[Long] = HashSet[Long]() ++ primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong)
+    val primesLookup: List[Long] = primesSet.toList.sorted
+    val factors: Map[Long, Map[Long, Long]] = (2L to n).map(i => (i, primeFactorsWithLookup(i, primesLookup))).toMap
+    def totient2toNAcc(m: Long, acc: Map[Long, Long]): Map[Long, Long] = {
+      if (m > n) acc
+      else if (primesSet.contains(m)) totient2toNAcc(m + 1, acc + (m -> (m - 1)))
+      else if (factors(m).size == 1) totient2toNAcc(m + 1, acc + (m -> (m - 1 - (m - 1) / factors(m).head._1)))
+      else {
+        val firstFactor = Math.pow(factors(m).head._1, factors(m).head._2).toLong
+        val secondFactor = m / firstFactor
+        totient2toNAcc(m + 1, acc + (m -> (acc(firstFactor) * acc(secondFactor))))
+      }
+    }
+    totient2toNAcc(2, Map())
   }
 }

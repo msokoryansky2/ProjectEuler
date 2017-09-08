@@ -194,4 +194,27 @@ class TestPrime extends FunSuite {
                                       19 -> Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18),
                                       20 -> Seq(1, 3, 7, 9, 11, 13, 17, 19)))
   }
+
+  test("totient2toN returns a map of all numbers from 2 to n with their respective totient values") {
+    assert(Prime.totient2toN(20) ===
+                                  Map(2 -> 1,
+                                      3 -> 2,
+                                      4 -> 2,
+                                      5 -> 4,
+                                      6 -> 2,
+                                      7 -> 6,
+                                      8 -> 4,
+                                      9 -> 6,
+                                      10 -> 4,
+                                      11 -> 10,
+                                      12 -> 4,
+                                      13 -> 12,
+                                      14 -> 6,
+                                      15 -> 8,
+                                      16 -> 8,
+                                      17 -> 16,
+                                      18 -> 6,
+                                      19 -> 18,
+                                      20 -> 8))
+  }
 }
