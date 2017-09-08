@@ -237,15 +237,21 @@ object Prime {
     * Duh.
     */
   def totient(n: Long): Long = {
-    val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
-    val factors = primeFactorsWithLookup(n, primesLookup)
-    totient(n, factors)
+    if (n == 1) 1
+    else {
+      val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
+      val factors = primeFactorsWithLookup(n, primesLookup)
+      totient(n, factors)
+    }
   }
   def totient(n: Long, factors: Map[Long, Long]): Long = {
-    val primeFactors = factors.keySet
-    val OneMinusOverPrimeFactors: List[Fraction] = List(Fraction(n, 1)) ++ primeFactors.map(p => Fraction(p - 1, p))
-    val OneMinusOverPrimeFactorsProduct: Fraction = OneMinusOverPrimeFactors.foldLeft(Fraction(1, 1))(_ * _)
-    (OneMinusOverPrimeFactorsProduct.num / OneMinusOverPrimeFactorsProduct.denom).toLong
+    if (n == 1) 1
+    else {
+      val primeFactors = factors.keySet
+      val OneMinusOverPrimeFactors: List[Fraction] = List(Fraction(n, 1)) ++ primeFactors.map(p => Fraction(p - 1, p))
+      val OneMinusOverPrimeFactorsProduct: Fraction = OneMinusOverPrimeFactors.foldLeft(Fraction(1, 1))(_ * _)
+      (OneMinusOverPrimeFactorsProduct.num / OneMinusOverPrimeFactorsProduct.denom).toLong
+    }
   }
 
   /**
@@ -254,21 +260,26 @@ object Prime {
     * Uses the fact that totient(a * b) == totient(a) * totient(b) if a and b are co-prime
     * (i.e. their greatest common denominator -- gcd -- is 1)
     */
-  def totient2toN(n: Long): Map[Long, Long] = {
-    require(n >= 2, "Must specify integer greater than 1 to find totient for all numbers from 2 to that integer")
-    val primesSet: HashSet[Long] = HashSet[Long]() ++ primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong)
-    val primesLookup: List[Long] = primesSet.toList.sorted
-    val factors: Map[Long, Map[Long, Long]] = (2L to n).map(i => (i, primeFactorsWithLookup(i, primesLookup))).toMap
-    def totient2toNAcc(m: Long, acc: Map[Long, Long]): Map[Long, Long] = {
-      if (m > n) acc
-      else if (primesSet.contains(m)) totient2toNAcc(m + 1, acc + (m -> (m - 1)))
-      else if (factors(m).size == 1) totient2toNAcc(m + 1, acc + (m -> (m - 1 - (m - 1) / factors(m).head._1)))
-      else {
-        val firstFactor = Math.pow(factors(m).head._1, factors(m).head._2).toLong
-        val secondFactor = m / firstFactor
-        totient2toNAcc(m + 1, acc + (m -> (acc(firstFactor) * acc(secondFactor))))
+  def totient1toN(n: Long): Map[Long, Long] = {
+    require(n >= 1, "Must specify integer greater than 1 to find totient for all numbers from 2 to that integer")
+    if (n == 1) Map(1L -> 1L)
+    else {
+      val primesSet: HashSet[Long] = HashSet[Long]() ++ primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong)
+      val primesLookup: List[Long] = primesSet.toList.sorted
+      val factors: Map[Long, Map[Long, Long]] = (2L to n).map(i => (i, primeFactorsWithLookup(i, primesLookup))).toMap
+
+      def totient1toNAcc(m: Long, acc: Map[Long, Long]): Map[Long, Long] = {
+        if (m > n) acc
+        else if (primesSet.contains(m)) totient1toNAcc(m + 1, acc + (m -> (m - 1)))
+        else if (factors(m).size == 1) totient1toNAcc(m + 1, acc + (m -> (m - 1 - (m - 1) / factors(m).head._1)))
+        else {
+          val firstFactor = Math.pow(factors(m).head._1, factors(m).head._2).toLong
+          val secondFactor = m / firstFactor
+          totient1toNAcc(m + 1, acc + (m -> (acc(firstFactor) * acc(secondFactor))))
+        }
       }
+
+      totient1toNAcc(2, Map(1L -> 1L))
     }
-    totient2toNAcc(2, Map())
   }
 }
