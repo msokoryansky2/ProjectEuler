@@ -225,11 +225,16 @@ object Prime {
     *
     * As with relativePrimes(), we assume that if factor map is includes all prime factors.
     *
-    * The algo for totient is that we count all numbers less than n divisible by each of n's factors and add all of
+    * The algo for totient seems easy: count all numbers less than n divisible by each of n's factors and add all of
     * them up. But that results in double-counting in cases like totient(12) counts 6 twice -- once when considering
-    * all numbers divisible by 2 and once when all numbers divisible by 3. So to account for that we create list of
-    * products of all possible pairs of different prime factors of n and subtract from the initial sum the sum of
-    * all occurrences of these new numbers' multiples in numbers up to n.
+    * all numbers divisible by 2 and once when all numbers divisible by 3. Accounting for that for combos of several
+    * prime factors becomes a huge mess.
+    *
+    * Eventually I gave up and looked up the efficient algo for totient at:
+    * http://mathworld.wolfram.com/TotientFunction.html
+    *
+    * It's simply totient(n) = n * (1 - 1/p1) * (1 - 1/p2) * ... * (1 - 1/pm) where p1 thru pm are prime factors on n
+    * Duh.
     */
   def totient(n: Long): Long = {
     val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
@@ -238,18 +243,8 @@ object Prime {
   }
   def totient(n: Long, factors: Map[Long, Long]): Long = {
     val primeFactors = factors.keySet
-    // Sum of counts of all multiples of factors on n that are less than n. Will have double-counts.
-    val primeFactorsMultsSum = primeFactors.map(p => (n - 1) / p).sum
-    // A double-count occurs when a number less than n is a multiple of two or more prime factors of n.
-    // We create a map of all such composite/non-prime factor sets by their prime factor count.
-    val compositeFactors =
-      (2 to primeFactors.size).map(size => size -> Subset.subsets(primeFactors, size).filter(_.product < n))
-        .toMap.filterNot(_._2.isEmpty)
-    // Now for each compose factor we calculate the number of times its multiple occur
-    val compositeFactorsDoubleCounts =
-      compositeFactors.map(factors => factors._1 -> factors._2.map(cf => (n - 1) / cf.product).sum)
-    val compositeFactorsDoubleCountsSum = compositeFactorsDoubleCounts.map(cfdc => (cfdc._1 - 1) * cfdc._2).sum
-
-    n - 1 - primeFactorsMultsSum + compositeFactorsDoubleCountsSum
+    val OneMinusOverPrimeFactors: List[Fraction] = List(Fraction(n, 1)) ++ primeFactors.map(p => Fraction(p - 1, p))
+    val OneMinusOverPrimeFactorsProduct: Fraction = OneMinusOverPrimeFactors.foldLeft(Fraction(1, 1))(_ * _)
+    (OneMinusOverPrimeFactorsProduct.num / OneMinusOverPrimeFactorsProduct.denom).toLong
   }
 }
