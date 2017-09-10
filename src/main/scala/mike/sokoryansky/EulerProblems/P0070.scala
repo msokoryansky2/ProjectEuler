@@ -33,11 +33,11 @@ class P0070 extends EulerProblem {
   def run: String = {
     // Try combinations of primes ordered by their product as (perfect or imperfect?) proxy for sorting by min n/φ(n)
     def primeProductsWalk(numPrimes: Int): List[(Set[Long], Long, Long)] = {
-      val primes = Prime.primes(1).takeWhile(_ <= Math.pow(tenToSeventh, 1.0 / numPrimes).ceil.toLong).toSet
+      val primes = Prime.primes(1).takeWhile(_ <= Math.pow(tenToSeventh * 10, 1.0 / numPrimes).ceil.toLong).toSet
       val primesSets = Subset.subsetsDupes(primes, numPrimes).toList.sortBy(_.product)
+                          .filterNot(_.product >= tenToSeventh)
       val primesSetsMatches = primesSets.map(set => (set, set.product, set.map(p => p - 1).product))
                                 .filter(setInfo => Integer.isPermutation(setInfo._2, setInfo._3))
-      println(primesSetsMatches)
       if (primesSetsMatches.nonEmpty) primesSetsMatches else primeProductsWalk(numPrimes + 1)
     }
     primeProductsWalk(2).minBy(setInfo => setInfo._2.toDouble / setInfo._3).toString
