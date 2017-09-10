@@ -237,6 +237,7 @@ object Prime {
     * Duh.
     */
   def totient(n: Long): Long = {
+    require(n >= 1, "Must specify integer >= 1 to find totient of")
     if (n == 1) 1
     else {
       val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
@@ -245,6 +246,7 @@ object Prime {
     }
   }
   def totient(n: Long, factors: Map[Long, Long]): Long = {
+    require(n >= 1, "Must specify integer >= 1 to find totient of")
     if (n == 1) 1
     else {
       val primeFactors = factors.keySet
@@ -261,7 +263,7 @@ object Prime {
     * (i.e. their greatest common denominator -- gcd -- is 1)
     */
   def totient1toN(n: Long): Map[Long, Long] = {
-    require(n >= 1, "Must specify integer greater than 1 to find totient for all numbers from 2 to that integer")
+    require(n >= 1, "Must specify integer >= 1 to find totient for all numbers from 2 to that integer")
     if (n == 1) Map(1L -> 1L)
     else {
       val primesSet: HashSet[Long] = HashSet[Long]() ++ primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong)
