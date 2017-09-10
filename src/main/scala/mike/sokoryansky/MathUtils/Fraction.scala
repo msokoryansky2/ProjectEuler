@@ -69,6 +69,9 @@ class Fraction(val num: BigInt, val denom: BigInt) extends Ordered[Fraction] {
     Fraction(this.num * that.denom, this.denom * that.num).simplify
   }
 
+  def mediant(that: Fraction): Fraction =
+    Fraction(this.num + that.num, this.denom + that.denom).simplify
+
   def isCurious2Digit: Boolean =
     num >= 10 && num <= 99 && denom >= 10 && denom <= 99 &&
     (denom % 10 != 0 && num / 10 == denom / 10 && this == Fraction(num % 10, denom % 10)) ||
