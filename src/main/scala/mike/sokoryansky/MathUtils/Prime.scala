@@ -115,6 +115,14 @@ object Prime {
     }
   }
 
+  def rangePrimes(lowerLimit: Long, cutoff: Long): Stream[Long] = {
+    if (lowerLimit >= cutoff) Stream.empty[Long]
+    else {
+      val p = nextPrime(lowerLimit)
+      p #:: rangePrimes(p + 1, cutoff)
+    }
+  }
+
   /**
     * If know all primes from 2 up to some number, then we can test for primeness more efficiently
     */
