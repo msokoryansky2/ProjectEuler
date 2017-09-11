@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.Prime
+import mike.sokoryansky.MathUtils.FareySequence
 
 /*
 
@@ -29,7 +29,7 @@ class P0072 extends EulerProblem {
     * Because our function bulk totient function starts with N == 1, we subtract 1 at the end
     * (which is the totient of 1 by definition but there are no proper fractions with denom of 1).
     */
-  def run: String = (Prime.totient1toN(1000000).values.sum - 1).toString
+  def run: String = FareySequence.count2ToN(1000000).toString
 }
 
 object P0072 extends App {
