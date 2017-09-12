@@ -24,8 +24,8 @@ class P0073 extends EulerProblem {
     * left of it and half to the right.
     */
   def run: String =
-    FareySeq.numeratorsFilter2ToN(8, (f: Fraction) => f < Fraction(1, 2) && f > Fraction(1, 3))
-      .map(_._2.sum).sum.toString
+    FareySeq.numeratorsFilter2ToN(1200, (f: Fraction) => f < Fraction(1, 2) && f > Fraction(1, 3))
+      .map(_._2.size).sum.toString
 }
 
 object P0073 extends App {
