@@ -1,5 +1,7 @@
 package mike.sokoryansky.EulerProblems
 
+import mike.sokoryansky.MathUtils.{FareySeq, Fraction}
+
 /*
 
 
@@ -21,7 +23,9 @@ class P0073 extends EulerProblem {
     * Intuitively, 1/2 liest halfway between 0 and 1 and therefore half of reduced proper fractions should be to
     * left of it and half to the right.
     */
-  def run: String = ""
+  def run: String =
+    FareySeq.numeratorsFilter2ToN(8, (f: Fraction) => f < Fraction(1, 2) && f > Fraction(1, 3))
+      .map(_._2.sum).sum.toString
 }
 
 object P0073 extends App {
