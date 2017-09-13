@@ -122,4 +122,17 @@ class TestFareySeq extends FunSuite {
                                                                               7 -> List(1, 2),
                                                                               8 -> List(1)))
   }
+
+  test("numeratorsBetweenFractions returns all numerators of Fareq Seq fractions" +
+    "where such fraction is between (but not equial to) specified comparison fractions") {
+    assert(FareySeq.numeratorsBetweenFractions(18, Fraction(1, 3), Fraction(2, 3)) === List(7, 11))
+  }
+
+  test("numeratorsBetweenFractions2ToN returns all numerators of Fareq Seq fractions with denoms " +
+    "from 2 to specified number where such fraction is between (but not equial to) specified comparison fractions") {
+    assert(FareySeq.numeratorsBetweenFractions2ToN(8, Fraction(1, 3), Fraction(1, 2)) === Map(
+                                                                              5 -> List(2),
+                                                                              7 -> List(3),
+                                                                              8 -> List(3)))
+  }
 }

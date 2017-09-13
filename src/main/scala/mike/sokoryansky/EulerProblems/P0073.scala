@@ -20,10 +20,8 @@ How many fractions lie between 1/3 and 1/2 in the sorted set of reduced proper f
 
 class P0073 extends EulerProblem {
   val twelvek = 12000
-  def run: String = {
-    (FareySeq.numeratorsLessThanFraction2ToN(twelvek, Fraction(1, 2)).map(_._2.size).sum -
-      (FareySeq.numeratorsLessThanFraction2ToN(twelvek, Fraction(1, 3)).map(_._2.size).sum + 1)).toString
-  }
+  def run: String =
+    FareySeq.numeratorsBetweenFractions2ToN(twelvek, Fraction(1, 3), Fraction(1, 2)).map(_._2.size).sum.toString
 }
 
 object P0073 extends App {
