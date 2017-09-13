@@ -21,14 +21,8 @@ How many fractions lie between 1/3 and 1/2 in the sorted set of reduced proper f
 class P0073 extends EulerProblem {
   val twelvek = 12000
   def run: String = {
-    val primeFactors = Prime.primes(1).takeWhile(_ <= Math.sqrt(twelvek).ceil.toLong).toList.sorted
-    val denom2nums = (2 to twelvek).map(i => i -> {
-      val lower = i / 3 + 1
-      val upper = if (i % 2 == 0) i / 2 - 1 else i / 2
-      //println(s"Range for $i : $lower to $upper with primes $primeFactors")
-      (lower to upper).filter(n => !primeFactors.exists(p => n > p && n % p == 0))
-    }).toMap.filterNot(_._2.isEmpty)
-    denom2nums.map(_._2.size).sum.toString
+    (FareySeq.numeratorsLessThanFraction2ToN(twelvek, Fraction(1, 2)).map(_._2.size).sum -
+      (FareySeq.numeratorsLessThanFraction2ToN(twelvek, Fraction(1, 3)).map(_._2.size).sum + 1)).toString
   }
 }
 

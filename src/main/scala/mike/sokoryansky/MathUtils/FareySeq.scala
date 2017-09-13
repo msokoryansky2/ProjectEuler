@@ -44,4 +44,27 @@ object FareySeq {
     */
   def numeratorsFilter2ToN(n: Long, p: Fraction => Boolean): Map[Long, Seq[Long]] =
     numerators2ToN(n).map(fs => fs._1 -> fs._2.filter(num => p(Fraction(num, fs._1))))
+
+  /**
+    * Numerators of all Fareq Seq fractions for specified denom that are less than comparison fraction (optimized)
+    */
+  def numeratorsLessThanFraction(n: Long, f: Fraction): Seq[Long] = {
+    val fNum = f.num.toLong
+    val fDenom = f.denom.toLong
+    val upper = if ((n * fNum) % fDenom == 0) (n * fNum) / fDenom - 1 else (n * fNum) / fDenom
+    (1L to upper).filter(i => Integer.gcd(i, n) == 1)
+  }
+
+  /**
+    * Numerators of all Fareq Seq fractions for denoms from 2 to specified number
+    * that are less than comparison fraction (optimized)
+    */
+  def numeratorsLessThanFraction2ToN(n: Long, f: Fraction): Map[Long, Seq[Long]] = {
+    val fNum = f.num.toLong
+    val fDenom = f.denom.toLong
+    (2L to n).map(n2 => n2 -> {
+      val upper = if ((n2 * fNum) % fDenom == 0) (n2 * fNum) / fDenom - 1 else (n2 * fNum) / fDenom
+      (1L to upper).filter(i => Integer.gcd(i, n2) == 1)
+    }).toMap.filterNot(_._2.isEmpty)
+  }
 }

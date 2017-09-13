@@ -75,4 +75,51 @@ class TestFareySeq extends FunSuite {
                                                   7 -> List(1, 2, 3),
                                                   8 -> List(1, 3)))
   }
+
+  test("numeratorsLessThanFraction returns all numerators of Fareq Seq fractions" +
+    "where such fraction is < specified comparison fraction") {
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(6, 6)) === List(1, 5, 7, 11, 13, 17))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(5, 6)) === List(1, 5, 7, 11, 13))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(4, 6)) === List(1, 5, 7, 11))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(2, 3)) === List(1, 5, 7, 11))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 2)) === List(1, 5, 7))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 3)) === List(1, 5))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 4)) === List(1))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 5)) === List(1))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 17)) === List(1))
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 18)) === List())
+    assert(FareySeq.numeratorsLessThanFraction(18, Fraction(1, 19)) === List())
+
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(6, 6)) === List(1, 2, 4, 5, 8, 10, 11, 13, 16, 17, 19, 20))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(5, 6)) === List(1, 2, 4, 5, 8, 10, 11, 13, 16, 17))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(4, 6)) === List(1, 2, 4, 5, 8, 10, 11, 13))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(2, 3)) === List(1, 2, 4, 5, 8, 10, 11, 13))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(3, 8)) === List(1, 2, 4, 5))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 2)) === List(1, 2, 4, 5, 8, 10))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 3)) === List(1, 2, 4, 5))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 4)) === List(1, 2, 4, 5))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 5)) === List(1, 2, 4))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 6)) === List(1, 2))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 7)) === List(1, 2))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 10)) === List(1, 2))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 11)) === List(1))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 20)) === List(1))
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 21)) === List())
+    assert(FareySeq.numeratorsLessThanFraction(21, Fraction(1, 22)) === List())
+  }
+
+  test("numeratorsLessThanFraction2ToN returns map from denoms between 2 and specified number to numerators of " +
+    "Fareq Seq fractions where such fraction is < specified comparison fraction") {
+    assert(FareySeq.numeratorsLessThanFraction2ToN(8, Fraction(1, 2)) === Map(3 -> List(1),
+                                                                              4 -> List(1),
+                                                                              5 -> List(1, 2),
+                                                                              6 -> List(1),
+                                                                              7 -> List(1, 2, 3),
+                                                                              8 -> List(1, 3)))
+    assert(FareySeq.numeratorsLessThanFraction2ToN(8, Fraction(1, 3)) === Map(4 -> List(1),
+                                                                              5 -> List(1),
+                                                                              6 -> List(1),
+                                                                              7 -> List(1, 2),
+                                                                              8 -> List(1)))
+  }
 }
