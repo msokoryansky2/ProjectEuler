@@ -200,4 +200,47 @@ class TestInteger extends FunSuite {
     assert(Integer.gcd(600, 720) === 120)
     assert(Integer.gcd(720, 600) === 120)
   }
+
+  test("sumDigitsFactorial returns sum of factorials of a number's digits") {
+    assert(Integer.sumDigitsFactorial(0) === 1)
+    assert(Integer.sumDigitsFactorial(100) === 3)
+    assert(Integer.sumDigitsFactorial(145) === 145)
+    assert(Integer.sumDigitsFactorial(871) === 45361)
+    assert(Integer.sumDigitsFactorial(872) === 45362)
+  }
+
+  test("sumDigitsFactorialChainLength returns the length of chain of sums of digits' factorials before first repeat") {
+    /*
+    145 (→ 145)
+    169 → 363601 → 1454 → (169)
+    871 → 45361 → (871)
+    872 → 45362 → (872)
+    69 → 363600 → 1454 → 169 → 363601 (→ 1454)
+    78 → 45360 → 871 → 45361 (→ 871)
+    540 → 145 (→ 145)
+     */
+    assert(Integer.sumDigitsFactorialChainLength(145) === 1)
+    assert(Integer.sumDigitsFactorialChainLength(169) === 3)
+    assert(Integer.sumDigitsFactorialChainLength(871) === 2)
+    assert(Integer.sumDigitsFactorialChainLength(872) === 2)
+    assert(Integer.sumDigitsFactorialChainLength(69) === 5)
+    assert(Integer.sumDigitsFactorialChainLength(78) === 4)
+    assert(Integer.sumDigitsFactorialChainLength(540) === 2)
+  }
+
+  test("sumDigitsFactorialChainLength1ToN computes sumDigitsFactorialChainLength for all integers from 1 to N") {
+    val lengths = Integer.sumDigitsFactorialChainLength1ToN(10000)
+    assert(lengths.size === 10000)
+    assert(lengths(145) === 1)
+    assert(lengths(169) === 3)
+    assert(lengths(871) === 2)
+    assert(lengths(872) === 2)
+    assert(lengths(69) === 5)
+    assert(lengths(78) === 4)
+    assert(lengths(540) === 2)
+    (1 to 10000).map(i => {
+      assert(lengths.contains(i))
+      assert(lengths(i) === Integer.sumDigitsFactorialChainLength(i))
+    })
+  }
 }

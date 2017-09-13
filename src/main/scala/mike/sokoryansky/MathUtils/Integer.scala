@@ -38,6 +38,62 @@ object Integer {
     factorialAcc(i, 1)
   }
 
+  def sumDigitsFactorial(n: Long): Long = {
+    require(n >= 0, "Must specify  integer >= zero")
+    val digiFacts = Map(0 -> 1, 1 -> 1, 2 -> 2, 3 -> 6, 4 -> 24, 5 -> 120, 6 -> 720, 7 -> 5040, 8 -> 40320, 9 -> 362880)
+    n.toString.toList.map(d => digiFacts(d.asDigit)).sum
+  }
+
+  /**
+    * A chain of sums of digits' factorials goes until a repeat. E.g.: 78 → 45360 → 871 → 45361 (→ 871)
+    * In the above example, sumDigitsFactorialChainLength(78) should return 4 (length of Seq(78, 45360, 871, 45361))
+    */
+  def sumDigitsFactorialChainLength(n: Long): Long = {
+    require(n >= 0, "Must specify  integer >= zero")
+    def sumDigitsFactorialChainLengthAcc(i: Long, acc: HashSet[Long]): Long = {
+      val next = sumDigitsFactorial(i)
+      if (acc.contains(next)) acc.size
+      else sumDigitsFactorialChainLengthAcc(next, acc ++ HashSet(next))
+    }
+    sumDigitsFactorialChainLengthAcc(n, HashSet[Long](n))
+  }
+
+  /**
+    * sumDigitsFactorialChainLength for all integers from 1 to N, optimized to re-use already known chain lengths
+    */
+  def sumDigitsFactorialChainLength1ToN(n: Long): Map[Long, Long] = {
+    require(n >= 1, "Must specify  integer >= 1")
+    def sumDigitsFactorialChainLength1ToNAcc(local: Long,
+                                             accLocal: HashSet[Long],
+                                             n2: Long,
+                                             acc: Map[Long, HashSet[Long]]): Map[Long, Long] = {
+      if (n2 > n) acc.map(nc => nc._1 -> nc._2.size.toLong)
+      else {
+        val next = sumDigitsFactorial(local)
+        if (acc.contains(next) && accLocal.intersect(acc(next)).isEmpty)
+          // We already encountered this number in history and its chain doesn't overlap with current chain,
+          // then we know that current chain will end with it
+          sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
+                                                HashSet[Long](n2 + 1),
+                                                n2 + 1,
+                                                acc + (n2 -> (accLocal ++ acc(next))))
+        else {
+          if (accLocal.contains(next))
+            sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
+                                                  HashSet[Long](n2 + 1),
+                                                  n2 + 1,
+                                                  acc + (n2 -> accLocal))
+          else
+            sumDigitsFactorialChainLength1ToNAcc(next,
+                                                  accLocal ++ HashSet(next),
+                                                  n2,
+                                                  acc)
+        }
+      }
+    }
+    sumDigitsFactorialChainLength1ToNAcc(1, HashSet[Long](1), 1, Map[Long, HashSet[Long]]())
+  }
+
   /**
     * Returns greatest product of numDigits consecutive digits in the number represented by a String
     * @param number    a string representation of a arbitrarily large number
