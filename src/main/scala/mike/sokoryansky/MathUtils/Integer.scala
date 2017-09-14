@@ -61,7 +61,7 @@ object Integer {
   /**
     * sumDigitsFactorialChainLength for all integers from 1 to N, optimized to re-use already known chain lengths
     */
-  def sumDigitsFactorialChainLength1ToN(n: Long): Map[Long, Long] = {
+  def sumDigitsFactorialChainLength1ToNSlow(n: Long): Map[Long, Long] = {
     require(n >= 1, "Must specify  integer >= 1")
     def sumDigitsFactorialChainLength1ToNAcc(local: Long,
                                              accLocal: HashSet[Long],
@@ -101,6 +101,43 @@ object Integer {
       }
     }
     sumDigitsFactorialChainLength1ToNAcc(1, HashSet[Long](1), 1, Map[Long, HashSet[Long]]())
+  }
+
+  /**
+    * Because as we explained in a long comment sumDigitsFactorialChainLength1ToN we don't need
+    * to check for intersection of already computed chains with the one in progress when encountering
+    * a common element, we don't actually need to preserve those old chains, but just their lengths.
+    * This allows for the following optimized version.
+    */
+  def sumDigitsFactorialChainLength1ToN(n: Long): Map[Long, Long] = {
+    require(n >= 1, "Must specify  integer >= 1")
+    def sumDigitsFactorialChainLength1ToNAcc(local: Long,
+                                             accLocal: HashSet[Long],
+                                             n2: Long,
+                                             acc: Map[Long, Long]): Map[Long, Long] = {
+      if (n2 > n) acc
+      else {
+        val next = sumDigitsFactorial(local)
+        if (acc.contains(next))
+          sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
+            HashSet[Long](n2 + 1),
+            n2 + 1,
+            acc + (n2 -> (accLocal.size + acc(next))))
+        else {
+          if (accLocal.contains(next))
+            sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
+              HashSet[Long](n2 + 1),
+              n2 + 1,
+              acc + (n2 -> accLocal.size))
+          else
+            sumDigitsFactorialChainLength1ToNAcc(next,
+              accLocal ++ HashSet(next),
+              n2,
+              acc)
+        }
+      }
+    }
+    sumDigitsFactorialChainLength1ToNAcc(1, HashSet[Long](1), 1, Map[Long, Long]())
   }
 
   /**
