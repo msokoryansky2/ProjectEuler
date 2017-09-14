@@ -29,7 +29,7 @@ How many chains, with a starting number below one million, contain exactly sixty
  */
 
 class P0074 extends EulerProblem {
-  def run: String = Integer.sumDigitsFactorialChainLength1ToN(1000000).count(_._2 == 60).toString
+  def run: String = Integer.sumDigitsFactorialChainLength1ToN(999999).count(_._2 == 60).toString
 }
 
 object P0074 extends App {

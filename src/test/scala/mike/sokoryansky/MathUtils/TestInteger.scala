@@ -228,25 +228,9 @@ class TestInteger extends FunSuite {
     assert(Integer.sumDigitsFactorialChainLength(540) === 2)
   }
 
-  test("sumDigitsFactorialChainLength1ToNSlow computes sumDigitsFactorialChainLength for all integers from 1 to N") {
-    val lengths = Integer.sumDigitsFactorialChainLength1ToNSlow(10000)
-    assert(lengths.size === 10000)
-    assert(lengths(145) === 1)
-    assert(lengths(169) === 3)
-    assert(lengths(871) === 2)
-    assert(lengths(872) === 2)
-    assert(lengths(69) === 5)
-    assert(lengths(78) === 4)
-    assert(lengths(540) === 2)
-    (1 to 10000).map(i => {
-      assert(lengths.contains(i))
-      assert(lengths(i) === Integer.sumDigitsFactorialChainLength(i))
-    })
-  }
-
   test("sumDigitsFactorialChainLength1ToN computes sumDigitsFactorialChainLength for all integers from 1 to N") {
-    val lengths = Integer.sumDigitsFactorialChainLength1ToN(10000)
-    assert(lengths.size === 10000)
+    val lengths = Integer.sumDigitsFactorialChainLength1ToN(1000)
+    assert(lengths.size === 1000)
     assert(lengths(145) === 1)
     assert(lengths(169) === 3)
     assert(lengths(871) === 2)
@@ -254,8 +238,7 @@ class TestInteger extends FunSuite {
     assert(lengths(69) === 5)
     assert(lengths(78) === 4)
     assert(lengths(540) === 2)
-    (1 to 10000).map(i => {
-      println(i)
+    (1 to 1000).map(i => {
       assert(lengths.contains(i))
       assert(lengths(i) === Integer.sumDigitsFactorialChainLength(i))
     })

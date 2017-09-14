@@ -61,7 +61,7 @@ object Integer {
   /**
     * sumDigitsFactorialChainLength for all integers from 1 to N, optimized to re-use already known chain lengths
     */
-  def sumDigitsFactorialChainLength1ToNSlow(n: Long): Map[Long, Long] = {
+  def sumDigitsFactorialChainLength1ToN(n: Long): Map[Long, Long] = {
     require(n >= 1, "Must specify  integer >= 1")
     def sumDigitsFactorialChainLength1ToNAcc(local: Long,
                                              accLocal: HashSet[Long],
@@ -71,17 +71,17 @@ object Integer {
       else {
         val next = sumDigitsFactorial(local)
         if (acc.contains(next) /* && accLocal.intersect(acc(next)).isEmpty *** Read below why this is not needed ***/ )
-          // We already encountered this number in history and its chain doesn't overlap with current chain,
-          // then we know that current chain will end with it. Here's the tricky part.
-          // If acc contains next then we can be sure that the current chain (accLocal)
-          // doesn't intersect acc's chain for next. Proof:
-          // Suppose current chain (accLocal) for (a) consists of Seq(a, b, c), next is (d) and
-          // acc(d) is Seq(d, e, c, g, h). This would mean that there is an intersect of two sets in (c).
-          // But if it were so, then next must actually be (g) and not (d) because as we know from acc(c) history,
-          // (d) is followed by (g, h, d). So accLocal should actually be Seq(a, b, c, g, h) and then we can repeat
-          // the same argument for why acc(g) couldn't have any elements already encountered in accLocal. So there is
-          // no need to check if accLocal intersects the already computed acc(next) -- if acc(next) exists then
-          // it does not intersect accLocal
+          // The reasons we do not need to check for set intersection is because our ultimate chain length for n2
+          // will be set union of the imcomplete local chain (accLocal) +
+          // already known chain for next element of current chain (acc(next)).
+          //
+          // It's very possible for accLocal to contain an element that occurs in acc(next). E.g.:
+          // acc(169) has length 3: 169 -> 363601-> 1454 (next would be 169 -- a repeat)
+          // accLocal for 174: 174 -> 5065 -> 961 -> 363601 -> 1454 (next would be 169 -- a match in acc)
+          // However element 363601 of accLocal matches an element of acc(169), meaning that a hypothetical full chain
+          // for 174 would be:  174 -> 5065 -> 961 -> 363601 -> 1454 -> 169 (next would be 363601 -- a repeat).
+          // However the union operation of accLocal ++ acc(169) produces the same set of numbers since everything post-
+          // 363601 repeats in both sets. That's why we don't need to worry about checking for intersection
           sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
                                                 HashSet[Long](n2 + 1),
                                                 n2 + 1,
@@ -101,43 +101,6 @@ object Integer {
       }
     }
     sumDigitsFactorialChainLength1ToNAcc(1, HashSet[Long](1), 1, Map[Long, HashSet[Long]]())
-  }
-
-  /**
-    * Because as we explained in a long comment sumDigitsFactorialChainLength1ToN we don't need
-    * to check for intersection of already computed chains with the one in progress when encountering
-    * a common element, we don't actually need to preserve those old chains, but just their lengths.
-    * This allows for the following optimized version.
-    */
-  def sumDigitsFactorialChainLength1ToN(n: Long): Map[Long, Long] = {
-    require(n >= 1, "Must specify  integer >= 1")
-    def sumDigitsFactorialChainLength1ToNAcc(local: Long,
-                                             accLocal: HashSet[Long],
-                                             n2: Long,
-                                             acc: Map[Long, Long]): Map[Long, Long] = {
-      if (n2 > n) acc
-      else {
-        val next = sumDigitsFactorial(local)
-        if (acc.contains(next))
-          sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
-            HashSet[Long](n2 + 1),
-            n2 + 1,
-            acc + (n2 -> (accLocal.size + acc(next))))
-        else {
-          if (accLocal.contains(next))
-            sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
-              HashSet[Long](n2 + 1),
-              n2 + 1,
-              acc + (n2 -> accLocal.size))
-          else
-            sumDigitsFactorialChainLength1ToNAcc(next,
-              accLocal ++ HashSet(next),
-              n2,
-              acc)
-        }
-      }
-    }
-    sumDigitsFactorialChainLength1ToNAcc(1, HashSet[Long](1), 1, Map[Long, Long]())
   }
 
   /**
