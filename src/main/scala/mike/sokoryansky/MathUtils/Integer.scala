@@ -70,9 +70,18 @@ object Integer {
       if (n2 > n) acc.map(nc => nc._1 -> nc._2.size.toLong)
       else {
         val next = sumDigitsFactorial(local)
-        if (acc.contains(next) && accLocal.intersect(acc(next)).isEmpty)
+        if (acc.contains(next) /* && accLocal.intersect(acc(next)).isEmpty *** Read below why this is not needed ***/ )
           // We already encountered this number in history and its chain doesn't overlap with current chain,
-          // then we know that current chain will end with it
+          // then we know that current chain will end with it. Here's the tricky part.
+          // If acc contains next then we can be sure that the current chain (accLocal)
+          // doesn't intersect acc's chain for next. Proof:
+          // Suppose current chain (accLocal) for (a) consists of Seq(a, b, c), next is (d) and
+          // acc(d) is Seq(d, e, c, g, h). This would mean that there is an intersect of two sets in (c).
+          // But if it were so, then next must actually be (g) and not (d) because as we know from acc(c) history,
+          // (d) is followed by (g, h, d). So accLocal should actually be Seq(a, b, c, g, h) and then we can repeat
+          // the same argument for why acc(g) couldn't have any elements already encountered in accLocal. So there is
+          // no need to check if accLocal intersects the already computed acc(next) -- if acc(next) exists then
+          // it does not intersect accLocal
           sumDigitsFactorialChainLength1ToNAcc(n2 + 1,
                                                 HashSet[Long](n2 + 1),
                                                 n2 + 1,
