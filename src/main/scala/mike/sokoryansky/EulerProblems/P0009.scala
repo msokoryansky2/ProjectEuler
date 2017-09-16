@@ -14,7 +14,10 @@ Find the product abc.
 */
 
 class P0009 extends EulerProblem {
-  def run: String = Pythagorean.pythagoreanProduct(Pythagorean.pythagoreanTripletBySum(1000))
+  def run: String = {
+    val tri = Pythagorean.pythagoreanTriple(1000).head
+    (tri._1 * tri._2 * tri._3).toString
+  }
 }
 
 object P0009 extends App {

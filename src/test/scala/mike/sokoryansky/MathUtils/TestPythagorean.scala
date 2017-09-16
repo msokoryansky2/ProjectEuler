@@ -3,16 +3,15 @@ package mike.sokoryansky.MathUtils
 import org.scalatest.FunSuite
 
 class TestPythagorean extends FunSuite {
-  test("pythagoreanC returns Option(c) so that c is a pythagorean match to a and b and a + b + c add up to sum") {
-    assert(Pythagorean.pythagoreanC(1, 2, 3) === None)
-    assert(Pythagorean.pythagoreanC(3, 4, 12) === Some(5))
-  }
 
-  test("pythagoreanTripletBySum returns Option(a, b, c) so that they are a pythagorean triple adding up to sum") {
-    assert(Pythagorean.pythagoreanTripletBySum(7) === None)
-    assert(Pythagorean.pythagoreanTripletBySum(12) === Some((3, 4, 5))
-      || Pythagorean.pythagoreanTripletBySum(12) === Some(4, 3, 5))
-    assert(Pythagorean.pythagoreanProduct(Pythagorean.pythagoreanTripletBySum(7)) === "None")
-    assert(Pythagorean.pythagoreanProduct(Pythagorean.pythagoreanTripletBySum(12)) === "60")
+  test("rightTriangles returns all integer-sides right triangles for a given perimeter") {
+    assert(Pythagorean.pythagoreanTriple(-2) === List())
+    assert(Pythagorean.pythagoreanTriple(0) === List())
+    assert(Pythagorean.pythagoreanTriple(5) === List())
+    assert(Pythagorean.pythagoreanTriple(11) === List())
+    assert(Pythagorean.pythagoreanTriple(12) === List((3, 4, 5)))
+    assert(Pythagorean.pythagoreanTriple(13) === List())
+    assert(Pythagorean.pythagoreanTriple(24) === List((6, 8, 10)))
+    assert(Pythagorean.pythagoreanTriple(120) === List((20,48,52), (24,45,51), (30,40,50)))
   }
 }
