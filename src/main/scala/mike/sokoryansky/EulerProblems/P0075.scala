@@ -1,7 +1,7 @@
 package mike.sokoryansky.EulerProblems
 
 
-import mike.sokoryansky.MathUtils.Integer
+import mike.sokoryansky.MathUtils.{Integer, Pythagorean}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.HashSet
@@ -30,8 +30,11 @@ can exactly one integer sided right angle triangle be formed?
  */
 
 class P0075 extends EulerProblem {
-  val perim = 1500000
-  def run: String = {
+  val perim = 15000
+
+  def run: String = Pythagorean.pythagoreanTriplesNonTrivial1ToN(perim).toString
+
+  def run2: String = {
     @tailrec def rightTriAcc(per: Long, matches: List[(Long, Long, Long)], acc: List[Long]): List[Long] = {
       if (per % 10000 == 0) println(per + "...")
       if (per > perim) acc
@@ -51,35 +54,6 @@ class P0075 extends EulerProblem {
           } yield (a, b, c)).toList
           if (mults + newTris.size == 1) rightTriAcc(per + 2, newTris ++ matches, per :: acc)
           else rightTriAcc(per + 2, matches, acc)
-        }
-      }
-    }
-    rightTriAcc(4, List(), List()).size.toString
-  }
-
-  def run2: String = {
-    // map from integers to their squares for all integers <= maxSideLength
-    // (maxSideLength is max plausible length of any one side in a triangle with perimeter <= maxSideLength * 2)
-    // def squares: Map[Long, Long] = (1L to maxSideLength).map(i => i -> i * i).toMap
-    // reverse map from squares of integers to those integers <= maxSideLength
-    // def squaresReverse: Map[Long, Long] = squares.map(s => s._2 -> s._1)
-    @tailrec def rightTriAcc(per: Int, matches: List[(Int, Int, Int)], acc: List[Int]): List[Int] = {
-      if (per % 100 == 0) println(per + "...")
-      if (per > perim) acc
-      else {
-        val mults = matches.count(l2 => per % (l2._1 + l2._2 + l2._3) == 0)
-        if (mults > 1) rightTriAcc(per + 2, matches, acc)
-        else {
-          val newTris = (for {
-            a <- 1 to per / 4
-            b <- (a + 1) to per / 2
-            if !matches.exists(m => a % m._1 == 0 && b % m._2 == 0 && a / m._1 == b / m._2)
-            c = per - a - b
-            if c * c == a * a + b * b
-          } yield (a, b, c)).toList
-          if (newTris.nonEmpty) println(s"$per :" + newTris)
-          if (mults + newTris.size == 1) rightTriAcc(per + 2, newTris ++ matches, per :: acc)
-          else rightTriAcc(per + 2, newTris ++ matches, acc)
         }
       }
     }
