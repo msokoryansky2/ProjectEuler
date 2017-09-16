@@ -115,6 +115,7 @@ class TestPythagorean extends FunSuite {
       (95, 168, 193), (28, 195, 197), (84, 187, 205), (133, 156, 205), (21, 220, 221), (140, 171, 221),
       (60, 221, 229), (105, 208, 233), (120, 209, 241), (32, 255, 257), (23, 264, 265), (96, 247, 265), (69, 260, 269),
       (115, 252, 277), (160, 231, 281), (161, 240, 289), (68, 285, 293)).toSet
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(900).flatMap(_._2).filter(_._3 <= 300).toSet === upToCOf300KnownNonTrivial)
+    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(900).flatMap(_._2).filter(_._3 <= 300).toSet ===
+            upToCOf300KnownNonTrivial)
   }
 }

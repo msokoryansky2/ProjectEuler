@@ -33,32 +33,6 @@ class P0075 extends EulerProblem {
   val perim = 900
 
   def run: String = Pythagorean.pythagoreanTriplesNonTrivial1ToN(perim).flatMap(pt => pt._2).toList.sortBy(t => t._3).toString
-
-  def run2: String = {
-    @tailrec def rightTriAcc(per: Long, matches: List[(Long, Long, Long)], acc: List[Long]): List[Long] = {
-      if (per % 10000 == 0) println(per + "...")
-      if (per > perim) acc
-      else {
-        val mults = matches.count(l2 => per % (l2._1 + l2._2 + l2._3) == 0)
-        if (mults > 1) rightTriAcc(per + 2, matches, acc)
-        else {
-          val newTris = (for {
-            a <- 1L to per / 4
-            bNum = per * per - 2 * per * a
-            bDenom = 2 * per - 2 * a
-            if bNum % bDenom == 0
-            b = bNum / bDenom
-            if !matches.exists(m => a % m._1 == 0 && b % m._2 == 0 && a / m._1 == b / m._2)
-            c = per - a - b
-            if c * c == a * a + b * b
-          } yield (a, b, c)).toList
-          if (mults + newTris.size == 1) rightTriAcc(per + 2, newTris ++ matches, per :: acc)
-          else rightTriAcc(per + 2, matches, acc)
-        }
-      }
-    }
-    rightTriAcc(4, List(), List()).size.toString
-  }
 }
 
 object P0075 extends App {
