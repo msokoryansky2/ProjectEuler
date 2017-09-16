@@ -13,8 +13,8 @@ object Pythagorean {
     * ...
     * b = (L*L - 2*L*a)/(2*L - 2*a)
     *
-    * If we assume that a is the shorter of two non-hypotenuse sides, we know it's no longer than L/4 because
-    * no side is longer than L/2 and we assumed that a is the shorter side.
+    * If we assume that a is the shorter of two non-hypotenuse sides, we know it's no longer than L/3 because
+    * we know it's the shortest of 3 sides and if it's >= L/3 then hypotenuse wouldn't be longer than two other sides.
     *
     * We also know that smallest triple has perim of 12 and perim of 3.
     *
@@ -31,10 +31,10 @@ object Pythagorean {
                          pABC: ((Long, Long, Long)) => Boolean = (_) => true): List[(Long, Long, Long)] =
     if (per < 12 || per % 2 == 1) List[(Long, Long, Long)]()
     else (for {
-      a <- 3L to per / 4
+      a <- 3L to per / 3
       if pA(a)
       b = pythagoreanB(a, per).getOrElse(0L)
-      if b > 0
+      if b > a
       c = per - a - b
       if pABC(a, b, c)
     } yield (a, b, c)).toList
@@ -52,8 +52,9 @@ object Pythagorean {
       if (per > n) acc
       else {
         val mults: Map[Long, List[(Long, Long, Long)]] = acc.filter(pt => per % pt._1 == 0)
-        val multsA: List[Long] = mults.flatMap(_._2).map(_._1).toList
-        val newTriples = pythagoreanTriples(per, a => !multsA.exists(ma => a % ma == 0))
+        val newTriples = pythagoreanTriples(per,
+          a => !mults.exists(mult => per % mult._1 == 0 &&
+                              mult._2.exists(t => a % t._1 == 0 && a / t._1 ==  per / mult._1)))
         pythagoreanTriplesNonTrivial1ToNAcc(per + 2, if (newTriples.nonEmpty) acc ++ Map(per -> newTriples) else acc)
       }
     }

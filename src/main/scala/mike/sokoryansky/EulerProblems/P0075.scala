@@ -30,9 +30,9 @@ can exactly one integer sided right angle triangle be formed?
  */
 
 class P0075 extends EulerProblem {
-  val perim = 15000
+  val perim = 900
 
-  def run: String = Pythagorean.pythagoreanTriplesNonTrivial1ToN(perim).toString
+  def run: String = Pythagorean.pythagoreanTriplesNonTrivial1ToN(perim).flatMap(pt => pt._2).toList.sortBy(t => t._3).toString
 
   def run2: String = {
     @tailrec def rightTriAcc(per: Long, matches: List[(Long, Long, Long)], acc: List[Long]): List[Long] = {
