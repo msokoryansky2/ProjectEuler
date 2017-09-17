@@ -120,8 +120,8 @@ class TestPythagorean extends FunSuite {
   }
 
   test("pythagoreanTriples1ToN returns either all or primitive Pythagorean triples for all perimeters upto n") {
-    val allTriples = Pythagorean.pythagoreanTriples1ToN(900)
-    (1 to 900).foreach(n => {
+    val allTriples = Pythagorean.pythagoreanTriples1ToN(10000)
+    (1 to 10000).foreach(n => {
       val nTriples = Pythagorean.pythagoreanTriples(n)
       assert((!allTriples.contains(n) && nTriples.isEmpty) || (allTriples(n).sorted === nTriples.sorted))
     })
