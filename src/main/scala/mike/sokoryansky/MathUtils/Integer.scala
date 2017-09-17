@@ -241,6 +241,34 @@ object Integer {
     else if (a % b == 0) b
     else gcd(b, a % b)
   }
+
+  /**
+    * Returns all unique sets of integers (1 or higher) such that sum of each set is equal to sum
+    */
+  def sums(sum: Long): Set[Map[Long, Long]] = {
+    require(sum >= 2, "Must specify sum of 2 or higher")
+    def sumsAcc(s: Long, acc: Set[Map[Long, Long]]): Set[Map[Long, Long]] = {
+      if (s == 1) Set(Map(1L -> 1L))
+      else (1L to (if (s % 2 == 0) s / 2 else (s - 1) / 2)).flatMap(n =>
+        sumsAcc(s - n, acc).map(m =>
+          if (m.contains(n)) m ++ Map(n -> (m(n) + 1)) else m ++ Map(n -> 1L))).toSet ++ Set(Map(s -> 1L))
+    }
+    sumsAcc(sum, Set[Map[Long, Long]]()).filter(_.values.sum > 1)
+  }
+
+  /**
+    * Returns number of possible sums from above without actually listing them out
+    *//*
+  def sumsCount(sum: Long): Long = {
+    require(sum >= 2, "Must specify sum of 2 or higher")
+    def sumsAcc(s: Long, acc: Set[Map[Long, Long]]): Set[Map[Long, Long]] = {
+      if (s == 1) Set(Map(1L -> 1L))
+      else (1L until (if (s % 2 == 0) s / 2 else (s - 1) / 2)).flatMap(n =>
+        sumsAcc(s - n, acc).map(m =>
+          if (m.contains(n)) m ++ Map(n -> (m(n) + 1)) else m ++ Map(n -> 1L))).toSet ++ Set(Map(s -> 1L))
+    }
+    sumsAcc(sum, Set[Map[Long, Long]]()).filter(_.values.sum > 1)
+  }*/
 }
 
 object IntegerOps {

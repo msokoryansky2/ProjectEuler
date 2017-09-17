@@ -50,7 +50,7 @@ class P0075 extends EulerProblem {
     //val ones = primitives1Keys.filterNot(p => primitives1Keys.exists(p2 => p > p2 && p % p2 == 0))
     //println("Perims with 1 primitive triple that are NOT multiple of other perims = " + ones.size)
 
-    candidates2.size.toString
+    "N/A"
   }
 }
 
