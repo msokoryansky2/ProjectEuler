@@ -115,7 +115,7 @@ object Pythagorean {
       c = nn + mm
       per = a + b + c
       if per <= perMax
-    } yield (per, (a, b, c))).toList
+    } yield (per, (Math.min(a, b), Math.max(a, b), c))).toList
     triples.groupBy(_._1).map(t => t._1 -> t._2.map(_._2))
   }
 }

@@ -122,7 +122,15 @@ class TestPythagorean extends FunSuite {
   }
 
   test("pythagoreanTriplesToN returns either all or primitive Pythagorean triples for all perimeters upto n") {
-    assert(Pythagorean.pythagoreanTriples1ToN(900, primitiveOnly = true).flatMap(_._2).filter(_._3 <= 300).toSet ===
-      upToCOf300KnownNonTrivial)
+    assert(Pythagorean.pythagoreanTriples1ToN(900, primitiveOnly = true).flatMap(_._2).filter(_._3 <= 300).toList.sorted ===
+      upToCOf300KnownNonTrivial.toList.sorted)
+
+    val allTriples = Pythagorean.pythagoreanTriples1ToN(900)
+    val allTriplesSlow = (1 to 900).map(n => n -> Pythagorean.pythagoreanTriples(n))
+    (1 to 900).foreach(n => {
+      println(n)
+      assert((!allTriples.contains(n) && allTriplesSlow(n)._2.isEmpty) ||
+              (allTriples(n) ===  allTriplesSlow(n)._2))
+    })
   }
 }
