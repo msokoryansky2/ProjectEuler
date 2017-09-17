@@ -3,6 +3,7 @@ package mike.sokoryansky.MathUtils
 import org.scalatest.FunSuite
 
 class TestPythagorean extends FunSuite {
+  // Know non-trivial pythagorean triples for C <= 300 from https://en.wikipedia.org/wiki/Pythagorean_triple
   private val upToCOf300KnownNonTrivial = Set[(Long, Long, Long)](
     (3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25), (20, 21, 29), (12, 35, 37), (9, 40, 41), (28, 45, 53),
     (11, 60, 61), (16, 63, 65), (33, 56, 65), (48, 55, 73), (13, 84, 85), (36, 77, 85), (39, 80, 89), (65, 72, 97),
@@ -76,11 +77,7 @@ class TestPythagorean extends FunSuite {
   }
 
   test("pythagoreanTriplesPrimitive1ToN returns all integer-sides right triangles for all perimeters upto n") {
-    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(-2) ===
-      Map())
-    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(0) ===
-      Map())
-    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(1) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(10) ===
       Map())
     assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(12) ===
       Map(12 -> List((3, 4, 5))))
@@ -115,22 +112,18 @@ class TestPythagorean extends FunSuite {
     assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(60) ===
       Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
 
-    // Know non-trivial pythagorean triples for C <= 300 from https://en.wikipedia.org/wiki/Pythagorean_triple
-
     assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(900).flatMap(_._2).filter(_._3 <= 300).toSet
+      === upToCOf300KnownNonTrivial)
+
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToNSlow(900).flatMap(_._2).filter(_._3 <= 300).toSet
       === upToCOf300KnownNonTrivial)
   }
 
-  test("pythagoreanTriplesToN returns either all or primitive Pythagorean triples for all perimeters upto n") {
-    assert(Pythagorean.pythagoreanTriples1ToN(900, primitiveOnly = true).flatMap(_._2).filter(_._3 <= 300).toList.sorted
-      === upToCOf300KnownNonTrivial.toList.sorted)
-
+  test("pythagoreanTriples1ToN returns either all or primitive Pythagorean triples for all perimeters upto n") {
     val allTriples = Pythagorean.pythagoreanTriples1ToN(900)
-    val allTriplesSlow = (1 to 900).map(n => n -> Pythagorean.pythagoreanTriples(n)).toMap
     (1 to 900).foreach(n => {
-      println(n)
-      assert((!allTriples.contains(n) && allTriplesSlow(n).isEmpty) ||
-              (allTriples(n) === allTriplesSlow(n)))
+      val nTriples = Pythagorean.pythagoreanTriples(n)
+      assert((!allTriples.contains(n) && nTriples.isEmpty) || (allTriples(n).sorted === nTriples.sorted))
     })
   }
 }

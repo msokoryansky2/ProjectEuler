@@ -61,7 +61,7 @@ object Pythagorean {
     * As explained in pythagoreanTriples comment, we know that all perimeters of pythagorean triangles are even, so we
     * start with 12 (smallest such triangle) and increment by 2
     */
-  def pythagoreanTriplesPrimitive1ToN(n: Long): Map[Long, List[(Long, Long, Long)]] = {
+  def pythagoreanTriplesPrimitive1ToNSlow(n: Long): Map[Long, List[(Long, Long, Long)]] = {
     def pythagoreanTriplesPrimitive1ToNAcc(per: Long,
                                   acc: Map[Long, List[(Long, Long, Long)]]): Map[Long, List[(Long, Long, Long)]] = {
       if (per > n) acc
@@ -93,18 +93,16 @@ object Pythagorean {
     *
     * Because a + b + c = 2n**2 + 2nm = perimeter, for any given perimeter, maximum n is sqrt(perim/2)
     */
-  def pythagoreanTriples1ToN(perMax: Long, primitiveOnly: Boolean = false): Map[Long, List[(Long, Long, Long)]] = {
+  def pythagoreanTriplesPrimitive1ToN(perMax: Long): Map[Long, List[(Long, Long, Long)]] = {
     val nMax = Math.sqrt(perMax / 2).toLong
     // We only need map of co-primes for primitive triples calc. For that scenario we also need to filter out
     // co-primes of n that have the same parity (evenness/oddness) as n, which effectively means that either n or its
     // co-primes have to be even.
     val coprimesThruNMax: Map[Long, Seq[Long]] =
-      if (primitiveOnly) Prime.relativePrimesThroughN(nMax).map(np =>
-        np._1 -> np._2.filter(p => np._1 % 2 == 0 || p% 2 == 0))
-      else Map[Long, Seq[Long]]()
+      Prime.relativePrimesThroughN(nMax).map(np => np._1 -> np._2.filter(p => np._1 % 2 == 0 || p% 2 == 0))
     // Map of possible N's to possible M's for each N
     val nm: Map[Long, Seq[Long]] =
-      (2L to nMax).map(n => n -> (if (primitiveOnly) coprimesThruNMax(n) else (1L until n).toList)).toMap
+      (2L to nMax).map(n => n -> coprimesThruNMax(n)).toMap
     val triples: List[(Long, (Long, Long, Long))] = (for {
       n <- nm.keys
       m <- nm(n)
@@ -117,5 +115,17 @@ object Pythagorean {
       if per <= perMax
     } yield (per, (Math.min(a, b), Math.max(a, b), c))).toList
     triples.groupBy(_._1).map(t => t._1 -> t._2.map(_._2))
+  }
+
+  /**
+    * Generates list of all pythagorean triples for perimeters from 1 to perMax, including both primitives and trivials
+    */
+  def pythagoreanTriples1ToN(perMax: Long): Map[Long, List[(Long, Long, Long)]] = {
+    val primitives = pythagoreanTriplesPrimitive1ToN(perMax)
+    (1L to perMax).map(n => n -> primitives.keys.toList.filter(p => n % p == 0)
+                                  .flatMap(p => {
+                                    val mult = n / p
+                                    primitives(p).map(t => (t._1 * mult, t._2 * mult, t._3 * mult))
+                                  })).toMap
   }
 }
