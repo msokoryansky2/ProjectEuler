@@ -104,7 +104,7 @@ object Pythagorean {
       else Map[Long, Seq[Long]]()
     // Map of possible N's to possible M's for each N
     val nm: Map[Long, Seq[Long]] =
-      (2L to nMax).map(n => n -> (if (primitiveOnly) coprimesThruNMax(n) else (1L to n).toList)).toMap
+      (2L to nMax).map(n => n -> (if (primitiveOnly) coprimesThruNMax(n) else (1L until n).toList)).toMap
     val triples: List[(Long, (Long, Long, Long))] = (for {
       n <- nm.keys
       m <- nm(n)
