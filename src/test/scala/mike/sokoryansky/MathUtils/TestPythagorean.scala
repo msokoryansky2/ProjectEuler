@@ -3,6 +3,15 @@ package mike.sokoryansky.MathUtils
 import org.scalatest.FunSuite
 
 class TestPythagorean extends FunSuite {
+  private val upToCOf300KnownNonTrivial = Set[(Long, Long, Long)](
+    (3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25), (20, 21, 29), (12, 35, 37), (9, 40, 41), (28, 45, 53),
+    (11, 60, 61), (16, 63, 65), (33, 56, 65), (48, 55, 73), (13, 84, 85), (36, 77, 85), (39, 80, 89), (65, 72, 97),
+    (20, 99, 101), (60, 91, 109), (15, 112, 113), (44, 117, 125), (88, 105, 137), (17, 144, 145), (24, 143, 145),
+    (51, 140, 149), (85, 132, 157), (119, 120, 169), (52, 165, 173), (19, 180, 181), (57, 176, 185), (104, 153, 185),
+    (95, 168, 193), (28, 195, 197), (84, 187, 205), (133, 156, 205), (21, 220, 221), (140, 171, 221),
+    (60, 221, 229), (105, 208, 233), (120, 209, 241), (32, 255, 257), (23, 264, 265), (96, 247, 265), (69, 260, 269),
+    (115, 252, 277), (160, 231, 281), (161, 240, 289), (68, 285, 293))
+
   test("rightTriangles returns all integer-sides right triangles for a given perimeter") {
     assert(Pythagorean.pythagoreanTriples(-2) === List())
     assert(Pythagorean.pythagoreanTriples(0) === List())
@@ -66,56 +75,54 @@ class TestPythagorean extends FunSuite {
     assert(Pythagorean.pythagoreanTriples(646) === List((68, 285, 293)))
   }
 
-  test("pythagoreanTriplesNonTrivial1ToN returns all integer-sides right triangles for all perimeters upto n") {
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(-2) ===
+  test("pythagoreanTriplesPrimitive1ToN returns all integer-sides right triangles for all perimeters upto n") {
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(-2) ===
       Map())
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(0) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(0) ===
       Map())
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(1) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(1) ===
       Map())
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(12) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(12) ===
       Map(12 -> List((3, 4, 5))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(23) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(23) ===
       Map(12 -> List((3, 4, 5))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(24) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(24) ===
       Map(12 -> List((3, 4, 5))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(25) ===
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(25) ===
       Map(12 -> List((3, 4, 5))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(30) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(31) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(36) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(39) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(40) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(45) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(50) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(52) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(55) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(56) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(58) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(60) ===
-      Map(12 ->  List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(30) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(31) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(36) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(39) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(40) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(45) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(50) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(52) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(55) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(56) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(58) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(60) ===
+      Map(12 -> List((3, 4, 5)), 30 -> List((5, 12, 13)), 40 -> List((8, 15, 17)), 56 -> List((7, 24, 25))))
 
     // Know non-trivial pythagorean triples for C <= 300 from https://en.wikipedia.org/wiki/Pythagorean_triple
-    val upToCOf300KnownNonTrivial = List(
-      (3, 4, 5), (5, 12, 13), (8, 15, 17), (7, 24, 25), (20, 21, 29), (12, 35, 37), (9, 40, 41), (28, 45, 53),
-      (11, 60, 61), (16, 63, 65), (33, 56, 65), (48, 55, 73), (13, 84, 85), (36, 77, 85), (39, 80, 89), (65, 72, 97),
-      (20, 99, 101), (60, 91, 109), (15, 112, 113), (44, 117, 125), (88, 105, 137), (17, 144, 145), (24, 143, 145),
-      (51, 140, 149), (85, 132, 157), (119, 120, 169), (52, 165, 173), (19, 180, 181), (57, 176, 185), (104, 153, 185),
-      (95, 168, 193), (28, 195, 197), (84, 187, 205), (133, 156, 205), (21, 220, 221), (140, 171, 221),
-      (60, 221, 229), (105, 208, 233), (120, 209, 241), (32, 255, 257), (23, 264, 265), (96, 247, 265), (69, 260, 269),
-      (115, 252, 277), (160, 231, 281), (161, 240, 289), (68, 285, 293)).toSet
-    assert(Pythagorean.pythagoreanTriplesNonTrivial1ToN(900).flatMap(_._2).filter(_._3 <= 300).toSet ===
-            upToCOf300KnownNonTrivial)
+
+    assert(Pythagorean.pythagoreanTriplesPrimitive1ToN(900).flatMap(_._2).filter(_._3 <= 300).toSet ===
+      upToCOf300KnownNonTrivial)
+  }
+
+  test("pythagoreanTriplesToN returns either all or primitive Pythagorean triples for all perimeters upto n") {
+    assert(Pythagorean.pythagoreanTriples1ToN(900, primitiveOnly = true).flatMap(_._2).filter(_._3 <= 300).toSet ===
+      upToCOf300KnownNonTrivial)
   }
 }

@@ -191,7 +191,7 @@ object Prime {
     */
   def relativePrimes(n: Long): Seq[Long] = {
     val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
-    relativePrimes(n, (2.toLong to n).map(i => i -> primeFactorsWithLookup(i, primesLookup)).toMap)
+    relativePrimes(n, (2L to n).map(i => i -> primeFactorsWithLookup(i, primesLookup)).toMap)
   }
   def relativePrimes(n: Long, factors: Map[Long, Map[Long, Long]]): Seq[Long] = {
     require(n > 1, "Can only find relative primes for integers larger than 1")
@@ -204,7 +204,7 @@ object Prime {
     */
   def relativePrimesThroughN(n: Long): Map[Long, Seq[Long]] = {
     val primesLookup = primes(1).takeWhile(_ <= Math.sqrt(n).ceil.toLong).toList.sorted
-    relativePrimesThroughN(n, (2.toLong to n).map(i => i -> primeFactorsWithLookup(i, primesLookup)).toMap)
+    relativePrimesThroughN(n, (2L to n).map(i => i -> primeFactorsWithLookup(i, primesLookup)).toMap)
   }
   def relativePrimesThroughN(n: Long, factors: Map[Long, Map[Long, Long]]): Map[Long, Seq[Long]] = {
     require(n > 1, "Can only find relative primes for integers larger than 1")

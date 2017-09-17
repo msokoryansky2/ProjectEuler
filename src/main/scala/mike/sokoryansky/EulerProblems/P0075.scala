@@ -32,7 +32,7 @@ can exactly one integer sided right angle triangle be formed?
 class P0075 extends EulerProblem {
   val perim = 900
 
-  def run: String = Pythagorean.pythagoreanTriplesNonTrivial1ToN(perim).flatMap(pt => pt._2).toList.sortBy(t => t._3).toString
+  def run: String = Pythagorean.pythagoreanTriplesPrimitive1ToN(perim).flatMap(pt => pt._2).toList.sortBy(t => t._3).toString
 }
 
 object P0075 extends App {
