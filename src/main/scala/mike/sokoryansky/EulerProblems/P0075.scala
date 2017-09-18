@@ -32,26 +32,7 @@ can exactly one integer sided right angle triangle be formed?
 class P0075 extends EulerProblem {
   val perim = 1500000
 
-  def run: String = {
-    val prims = Pythagorean.pythagoreanTriplesPrimitive1ToN(perim).map(t => t._1 -> t._2.size)
-    val (prims1, prims2) = prims.partition(_._2 == 1)
-    val prims1Keys: HashSet[Long] =  HashSet[Long]() ++ prims1.keySet
-    val prims2Keys: HashSet[Long] =  HashSet[Long]() ++ prims2.keySet
-    // Start with candidates being all even numbers
-    val candidates1: HashSet[Long] = HashSet[Long]() ++ (12L to perim by 2).toList.toSet
-    println("1st candidate list size = " + candidates1.size)
-    // Eliminate candidates for whom there're perimeters with multiple prims
-    val candidates2 = candidates1.diff(prims2Keys)
-    println("2nd candidate list size = " + candidates2.size)
-
-    //println("Perims with 1 primitive triple = " + prims1.size)
-    // List of all perimeters with one primitive Pyth triple AND not a multiple of another perim with Pyth triple
-    //val primitives1Keys = prims1.keys
-    //val ones = primitives1Keys.filterNot(p => primitives1Keys.exists(p2 => p > p2 && p % p2 == 0))
-    //println("Perims with 1 primitive triple that are NOT multiple of other perims = " + ones.size)
-
-    "N/A"
-  }
+  def run: String = Pythagorean.pythagoreanTriples1ToN(perim).count(pt => pt._2.size == 1).toString
 }
 
 object P0075 extends App {

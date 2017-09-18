@@ -121,11 +121,10 @@ object Pythagorean {
     * Generates list of all pythagorean triples for perimeters from 1 to perMax, including both primitives and trivials
     */
   def pythagoreanTriples1ToN(perMax: Long): Map[Long, List[(Long, Long, Long)]] = {
-    val primitives = pythagoreanTriplesPrimitive1ToN(perMax)
-    (1L to perMax).map(n => n -> primitives.keys.toList.filter(p => n % p == 0)
-                                  .flatMap(p => {
-                                    val mult = n / p
-                                    primitives(p).map(t => (t._1 * mult, t._2 * mult, t._3 * mult))
-                                  })).toMap
+    def mult(m: Long, pt: (Long, Long, Long)): (Long, Long, Long) = (m * pt._1, m * pt._2, m * pt._3)
+    val primitives = pythagoreanTriplesPrimitive1ToN(perMax).map(pt => (pt._1, pt._2)).toList
+    val allList =  primitives.flatMap(pts =>
+      pts._2.flatMap(pt => (1L to perMax / pts._1).map(m => (m * pts._1, mult(m, pt))).toList))
+    allList.groupBy(_._1).map(pts => pts._1 -> pts._2.map(_._2))
   }
 }

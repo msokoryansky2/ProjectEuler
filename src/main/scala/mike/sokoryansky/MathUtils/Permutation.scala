@@ -90,4 +90,13 @@ object SumsOfParts {
     }
     generateAcc(sum, 0, parts.zip(List.fill(parts.size)(0)).toMap, Set[Map[Int, Int]]())
   }
+
+  def count(sum: Int, parts: Set[Int]): Long = {
+    def countByMaxPart(s: Int, parts: Set[Int]): Long = {
+      if (s < 0 || parts.isEmpty) 0
+      else if (parts.size == 1 && s % parts.head == 0) 1
+      else parts.filter(_ < s).map(p => countByMaxPart(s - p, parts.filter(_ <= p))).sum
+    }
+    parts.filter(_ < sum).map(p => countByMaxPart(sum - p, parts.filter(_ <= p))).sum
+  }
 }

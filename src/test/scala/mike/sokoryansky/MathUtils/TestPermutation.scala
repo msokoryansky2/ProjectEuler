@@ -39,7 +39,7 @@ class TestPermutation extends FunSuite {
     assert(Permutation.lexicographicPermutation(Set('0', '1', '2', '3', '4'), 119) === "43210")
   }
 
-  test("SumsOfParts finds all ways to add multiples of various parts to equal to specified sum") {
+  test("generate finds all ways to add multiples of various parts to equal to specified sum") {
     assert(SumsOfParts.generate(3, Set(1, 3)) == Set(Map(1 -> 3, 3 -> 0), Map(1 -> 0, 3 -> 1)))
     assert(SumsOfParts.generate(3, Set(1, 2)) == Set(Map(1 -> 3, 2 -> 0), Map(1 -> 1, 2 -> 1)))
     assert(SumsOfParts.generate(5, Set(1, 3, 4, 7)) ==
@@ -52,6 +52,17 @@ class TestPermutation extends FunSuite {
           Map(2 -> 2, 3 -> 3, 5 -> 0),
           Map(2 -> 1, 3 -> 2, 5 -> 1),
           Map(2 -> 0, 3 -> 1, 5 -> 2)))
+  }
+
+  test("count counts all all ways to add multiples of various parts to equal to specified sum without listing them") {
+    //assert(SumsOfParts.count(3, Set(1, 2)) === 2)
+    //assert(SumsOfParts.count(3, Set(1, 2, 3)) === 2)
+    //assert(SumsOfParts.count(5, Set(1, 3, 4, 7)) === 3)
+    assert(SumsOfParts.count(13, Set(2, 3, 5)) === 5)
+    assert(SumsOfParts.count(5, Set(1, 2, 3, 4)) === 6)
+    assert(SumsOfParts.count(5, Set(1, 2, 3, 4, 5)) === 6)
+    assert(SumsOfParts.count(5, Set(1, 2, 3, 4, 5)) === 10)
+    assert(SumsOfParts.count(5, Set(1, 2, 3, 4, 5, 6)) === 10)
   }
 
   test("permutations returns all permutations of a set of chars") {
