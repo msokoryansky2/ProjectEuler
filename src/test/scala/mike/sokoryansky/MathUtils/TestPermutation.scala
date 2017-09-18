@@ -39,14 +39,14 @@ class TestPermutation extends FunSuite {
     assert(Permutation.lexicographicPermutation(Set('0', '1', '2', '3', '4'), 119) === "43210")
   }
 
-  test("SumOfParts finds all ways to add multiples of various parts to equal to specified sum") {
-    assert(SumOfParts.waysToAddUpParts(3, Set(1, 3)) == Set(Map(1 -> 3, 3 -> 0), Map(1 -> 0, 3 -> 1)))
-    assert(SumOfParts.waysToAddUpParts(3, Set(1, 2)) == Set(Map(1 -> 3, 2 -> 0), Map(1 -> 1, 2 -> 1)))
-    assert(SumOfParts.waysToAddUpParts(5, Set(1, 3, 4, 7)) ==
+  test("SumsOfParts finds all ways to add multiples of various parts to equal to specified sum") {
+    assert(SumsOfParts.sumsOfParts(3, Set(1, 3)) == Set(Map(1 -> 3, 3 -> 0), Map(1 -> 0, 3 -> 1)))
+    assert(SumsOfParts.sumsOfParts(3, Set(1, 2)) == Set(Map(1 -> 3, 2 -> 0), Map(1 -> 1, 2 -> 1)))
+    assert(SumsOfParts.sumsOfParts(5, Set(1, 3, 4, 7)) ==
       Set(Map(1 -> 5, 3 -> 0, 4 -> 0, 7 -> 0),
           Map(1 -> 2, 3 -> 1, 4 -> 0, 7 -> 0),
           Map(1 -> 1, 3 -> 0, 4 -> 1, 7 -> 0)))
-    assert(SumOfParts.waysToAddUpParts(13, Set(2, 3, 5)) ==
+    assert(SumsOfParts.sumsOfParts(13, Set(2, 3, 5)) ==
       Set(Map(2 -> 5, 3 -> 1, 5 -> 0),
           Map(2 -> 4, 3 -> 0, 5 -> 1),
           Map(2 -> 2, 3 -> 3, 5 -> 0),

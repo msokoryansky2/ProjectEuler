@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.SumOfParts
+import mike.sokoryansky.MathUtils.SumsOfParts
 
 /*
 
@@ -17,7 +17,7 @@ How many different ways can £2 be made using any number of coins?
  */
 
 class P0031 extends EulerProblem {
-  def run: String = SumOfParts.waysToAddUpParts(200, Set(1, 2, 5, 10, 20, 50, 100, 200)).size.toString
+  def run: String = SumsOfParts.sumsOfParts(200, Set(1, 2, 5, 10, 20, 50, 100, 200)).size.toString
 }
 
 object P0031 extends App {

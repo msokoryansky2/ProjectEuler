@@ -243,15 +243,4 @@ class TestInteger extends FunSuite {
       assert(lengths(i) === Integer.sumDigitsFactorialChainLength(i))
     })
   }
-
-  test("sums returns all unique ways to break an integer into sums of smaller integers") {
-    assert(Integer.sums(2) === Set(Map(1 -> 2)))
-    assert(Integer.sums(3) === Set(Map(1 -> 3), Map(2 -> 1, 1 -> 1)))
-    assert(Integer.sums(4) === Set(Map(1 -> 4), Map(2 -> 1, 1 -> 2), Map(2 -> 2), Map(3 -> 1, 1 -> 1)))
-    assert(Integer.sums(5) === Set(Map(1 -> 5), Map(2 -> 1, 1 -> 3), Map(2 -> 2, 1 -> 1),
-                                    Map(3 -> 1, 1 -> 2), Map(3 -> 1, 2 -> 1), Map(4 -> 1, 1 -> 1)))
-    assert(Integer.sums(6) === Set(Map(1 -> 6), Map(2 -> 1, 1 -> 4), Map(2 -> 2, 1 -> 2), Map(2 -> 3),
-                                    Map(3 -> 1, 1 -> 3), Map(3 -> 1, 2 -> 1, 1 -> 1), Map(3 -> 2),
-                                    Map(4 -> 1, 1 -> 2), Map(4 -> 1, 2 -> 1), Map(5 -> 1, 1 -> 1)))
-  }
 }

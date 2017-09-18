@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.Integer
+import mike.sokoryansky.MathUtils.SumsOfParts
 
 /*
 
@@ -18,7 +18,15 @@ How many different ways can one hundred be written as a sum of at least two posi
  */
 
 class P0076 extends EulerProblem {
-  def run: String = Integer.sums(100).size.toString
+  val sum = 100
+
+  /**
+    * Note that this is another take on SumsOfParts.sumsOfParts and one correct solution as trivial as it is
+    * hopelessly slow: SumsOfParts.sumsOfParts(sum, (1 until sum).toSet).size.toString
+    * Because the tree of possibilities grows exponentially, enumerating all possible sums is hopeless. A good
+    * solution will compute their number without enumerating them
+    */
+  def run: String = SumsOfParts.sumsOfParts(sum, (1 until sum).toSet).size.toString
 }
 
 object P0076 extends App {
