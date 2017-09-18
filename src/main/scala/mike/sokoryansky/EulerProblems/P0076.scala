@@ -21,12 +21,12 @@ class P0076 extends EulerProblem {
   val sum = 100
 
   /**
-    * Note that this is another take on SumsOfParts.sumsOfParts and one correct solution as trivial as it is
-    * hopelessly slow: SumsOfParts.sumsOfParts(sum, (1 until sum).toSet).size.toString
+    * Note that this is another take on SumsOfParts.generate and one correct solution as trivial as it is
+    * hopelessly slow: SumsOfParts.generate(sum, (1 until sum).toSet).size.toString
     * Because the tree of possibilities grows exponentially, enumerating all possible sums is hopeless. A good
     * solution will compute their number without enumerating them
     */
-  def run: String = SumsOfParts.sumsOfParts(sum, (1 until sum).toSet).size.toString
+  def run: String = SumsOfParts.generate(sum, (1 until sum).toSet).size.toString
 }
 
 object P0076 extends App {
