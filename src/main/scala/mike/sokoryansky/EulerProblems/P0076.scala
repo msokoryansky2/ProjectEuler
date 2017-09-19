@@ -18,7 +18,7 @@ How many different ways can one hundred be written as a sum of at least two posi
  */
 
 class P0076 extends EulerProblem {
-  val sum = 90
+  val sum = 100
 
   /**
     * Note that this is another take on SumsOfParts.generate and one correct solution as trivial as it is
