@@ -55,14 +55,14 @@ class TestPermutation extends FunSuite {
   }
 
   test("count counts all all ways to add multiples of various parts to equal to specified sum without listing them") {
-    //assert(SumsOfParts.count(3, Set(1, 2)) === 2)
-    //assert(SumsOfParts.count(3, Set(1, 2, 3)) === 2)
-    //assert(SumsOfParts.count(5, Set(1, 3, 4, 7)) === 3)
-    assert(SumsOfParts.count(13, Set(2, 3, 5)) === 5)
-    assert(SumsOfParts.count(5, Set(1, 2, 3, 4)) === 6)
-    assert(SumsOfParts.count(5, Set(1, 2, 3, 4, 5)) === 6)
-    assert(SumsOfParts.count(5, Set(1, 2, 3, 4, 5)) === 10)
-    assert(SumsOfParts.count(5, Set(1, 2, 3, 4, 5, 6)) === 10)
+    assert(SumsOfParts.count(3, Seq(1, 2)) === 2)
+    assert(SumsOfParts.count(3, Seq(1, 2, 3)) === 2)
+    assert(SumsOfParts.count(5, Seq(1, 3, 4, 7)) === 3)
+    assert(SumsOfParts.count(13, Seq(2, 3, 5)) === 5)
+    assert(SumsOfParts.count(5, Seq(1, 2, 3, 4)) === 6)
+    assert(SumsOfParts.count(5, Seq(1, 2, 3, 4, 5)) === 6)
+    assert(SumsOfParts.count(6, Seq(1, 2, 3, 4, 5)) === 10)
+    assert(SumsOfParts.count(6, Seq(1, 2, 3, 4, 5, 6)) === 10)
   }
 
   test("permutations returns all permutations of a set of chars") {

@@ -91,12 +91,15 @@ object SumsOfParts {
     generateAcc(sum, 0, parts.zip(List.fill(parts.size)(0)).toMap, Set[Map[Int, Int]]())
   }
 
-  def count(sum: Int, parts: Set[Int]): Long = {
-    def countByMaxPart(s: Int, parts: Set[Int]): Long = {
-      if (s < 0 || parts.isEmpty) 0
-      else if (parts.size == 1 && s % parts.head == 0) 1
-      else parts.filter(_ < s).map(p => countByMaxPart(s - p, parts.filter(_ <= p))).sum
+  def count(sum: Int, parts: Seq[Int]): Long = {
+    def countAcc(s: Int, ps: Seq[Int]): Long = {
+      if (s < 0 || ps.isEmpty) 0
+      else if (s == 0 || (ps.size == 1 && s % ps.head == 0)) 1
+      else {
+        val psResults = ps.filter(_ <= s).map(p => p -> countAcc(s - p, ps.filter(_ <= p))).toMap
+        psResults.values.sum
+      }
     }
-    parts.filter(_ < sum).map(p => countByMaxPart(sum - p, parts.filter(_ <= p))).sum
+    parts.filter(_ < sum).map(p => countAcc(sum - p, parts.filter(_ <= p))).sum
   }
 }
