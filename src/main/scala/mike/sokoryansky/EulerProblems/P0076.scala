@@ -19,14 +19,7 @@ How many different ways can one hundred be written as a sum of at least two posi
 
 class P0076 extends EulerProblem {
   val sum = 100
-
-  /**
-    * Note that this is another take on SumsOfParts.generate and one correct solution as trivial as it is
-    * hopelessly slow: SumsOfParts.generate(sum, (1 until sum).toSet).size.toString
-    * Because the tree of possibilities grows exponentially, enumerating all possible sums is hopeless. A good
-    * solution will compute their number without enumerating them
-    */
-  def run: String = SumsOfParts.count(sum, 1 until sum).toString
+  def run: String = SumsOfParts.count2(sum).toString
 }
 
 object P0076 extends App {

@@ -65,6 +65,12 @@ class TestPermutation extends FunSuite {
     assert(SumsOfParts.count(6, Seq(1, 2, 3, 4, 5, 6)) === 10)
   }
 
+  test("count2 is like count except parts are all positive integers less than sum, which allows for optimized code") {
+    assert(SumsOfParts.count(5, 1 until 5) === SumsOfParts.count2(5))
+    assert(SumsOfParts.count(10, 1 until 10) === SumsOfParts.count2(10))
+    assert(SumsOfParts.count(17, 1 until 17) === SumsOfParts.count2(17))
+  }
+
   test("permutations returns all permutations of a set of chars") {
     assert(Permutation.permutations(Set('A', 'B')).sortWith(_ < _) ===
       List("AB", "BA"))

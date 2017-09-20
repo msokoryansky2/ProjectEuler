@@ -95,11 +95,21 @@ object SumsOfParts {
     def countAcc(s: Int, ps: Seq[Int]): Long = {
       if (s < 0 || ps.isEmpty) 0
       else if (s == 0 || (ps.size == 1 && s % ps.head == 0)) 1
-      else {
-        val psResults = ps.filter(_ <= s).map(p => p -> countAcc(s - p, ps.filter(_ <= p))).toMap
-        psResults.values.sum
-      }
+      else ps.filter(_ <= s).map(p => p -> countAcc(s - p, ps.filter(_ <= p))).toMap.values.sum
     }
     parts.filter(_ < sum).map(p => countAcc(sum - p, parts.filter(_ <= p))).sum
+  }
+
+
+  /**
+    * Similar to count but parts are all integers from 1 until sum
+    */
+  def count2(sum: Int): Long = {
+    def count2Acc(s: Int, max: Int): Long = {
+      if (s < 0) 0
+      else if (s == 0 || max == 1) 1
+      else (1 to max).map(p => count2Acc(s - p, p)).sum
+    }
+    (1 until sum).map(p => count2Acc(sum - p, p)).sum
   }
 }
