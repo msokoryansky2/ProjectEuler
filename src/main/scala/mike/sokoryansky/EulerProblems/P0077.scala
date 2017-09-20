@@ -4,7 +4,7 @@ import mike.sokoryansky.MathUtils.Prime
 
 class P0077 extends EulerProblem {
   def run: String = {
-    "???"
+    "Hmmm???"
   }
 }
 
