@@ -1,6 +1,7 @@
 package mike.sokoryansky.MathUtils
 
 import scala.annotation.tailrec
+import util.Properties
 
 object Permutation {
   /**
@@ -90,6 +91,12 @@ object SumsOfParts {
     }
     generateAcc(sum, 0, parts.zip(List.fill(parts.size)(0)).toMap, Set[Map[Int, Int]]())
   }
+
+  def generateAsSumToString(r: Set[Map[Int, Int]]): String =
+    r.toList.map(m =>
+      m.filterNot(_._2 == 0).toList.sortBy(_._1).reverse.map(t =>
+        t._1.toString + ((" + " + t._1.toString) * (t._2 - 1))).mkString(" + "))
+      .sorted.reverse.mkString(Properties.lineSeparator)
 
   def count(sum: Int, parts: Seq[Int]): Long = {
     def countAcc(s: Int, ps: Seq[Int]): Long = {

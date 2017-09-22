@@ -54,6 +54,18 @@ class TestPermutation extends FunSuite {
           Map(2 -> 0, 3 -> 1, 5 -> 2)))
   }
 
+  test("generateAsSumToString pretty prints result of generate as a sum") {
+    val r = SumsOfParts.generate(13, Set(2, 3, 5))
+    assert(SumsOfParts.generateAsSumToString(r).trim ===
+        """
+          |5 + 5 + 3
+          |5 + 3 + 3 + 2
+          |5 + 2 + 2 + 2 + 2
+          |3 + 3 + 3 + 2 + 2
+          |3 + 2 + 2 + 2 + 2 + 2
+        """.stripMargin.trim)
+  }
+
   test("count counts all all ways to add multiples of various parts to equal to specified sum without listing them") {
     assert(SumsOfParts.count(3, Seq(1, 2)) === 2)
     assert(SumsOfParts.count(3, Seq(1, 2, 3)) === 2)
