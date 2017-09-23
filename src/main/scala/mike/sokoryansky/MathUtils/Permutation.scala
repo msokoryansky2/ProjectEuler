@@ -113,7 +113,8 @@ object SumsOfParts {
 
 
   /**
-    * Similar to count but parts are all integers from 1 until sum
+    * Similar to count but parts are all integers from 1 until sum.
+    * Use StarsAndBars for a much, much better implementation of this functionality.
     */
   def count2(sum: Int): Long = {
     def count2Acc(s: Int, max: Int): Long = {

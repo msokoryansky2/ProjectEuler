@@ -43,16 +43,15 @@ object StarsAndBars {
     * In this context distinct refers to the fact that "* * * | * * * *" is the same as "* * * * | * * *"  because
     * we are thinking in terms of sums of differents sets of integers and Set(3, 4) is the same as Set(4, 3)
     */
-  def countDistinctAllStarsAllBars(starsMax: Long, zeroBar: Boolean = true): Map[(Long, Long), Long] = {
+  def countsAllDistinct(starsMax: Long, zeroBar: Boolean = true): Map[(Long, Long), Long] = {
     val barsMin = if (zeroBar) 0 else 1
     require(starsMax >= barsMin + 1, "Max number of stars must be > min number of bars")
     def countAcc(stars: Long, bars: Long, acc: Map[(Long, Long), Long]): Map[(Long, Long), Long] = {
       if (stars > starsMax) acc
       else if (bars > stars - 1) countAcc(stars + 1, barsMin, acc)
-      else
-        countAcc(stars,
-                  bars + 1, 
-                  acc ++ Map((stars, bars) -> (1 to (stars - bars)).map(b => acc(stars - b, bars - 1)).sum))
+      else countAcc(stars,
+                    bars + 1,
+                    acc ++ Map((stars, bars) -> (1 to (stars - bars)).map(b => acc(stars - b, bars - 1)).sum))
     }
     if (zeroBar) countAcc(2, barsMin, Map((1L, 0L) -> 1L)) else countAcc(3, barsMin, Map((2L, 1L) -> 1L))
   }
