@@ -23,6 +23,7 @@ object StarsAndBars {
     * Reduces to simple (stars - 1) choose (bars)
     */
   def count(stars: Long, bars: Long): Long = {
+    require(stars > 0 && bars < stars && bars >= 0, "Stars must be positive; bars must be 0 or positive")
     import IntegerOps._
     // Spell out some trivial cases which may or may not speed things up
     if (bars == 0 || bars == (stars - 1)) 1
@@ -34,7 +35,7 @@ object StarsAndBars {
     * Count number of ways all posible bars from 0 (if zeroBar == true) or 1 to (stars - 1) can be placed between stars
     */
   def countAllBars(stars: Long, zeroBar: Boolean = true): Long =
-    ((if (zeroBar) 0 else 1) to stars - 1).map(bars => count(stars, bars)).sum
+    ((if (zeroBar) 0L else 1L) to stars - 1).map(bars => count(stars, bars)).sum
 
   /**
     * Create a map for all possible tuples of (stars from 1 to starsMax  and (bars from 0 (if zeroBar == true) or 1 to
@@ -43,7 +44,7 @@ object StarsAndBars {
     * In this context distinct refers to the fact that "* * * | * * * *" is the same as "* * * * | * * *"  because
     * we are thinking in terms of sums of differents sets of integers and Set(3, 4) is the same as Set(4, 3)
     */
-  def countsAllDistinct(starsMax: Long, zeroBar: Boolean = true): Map[(Long, Long), Long] = {
+  def countsDistinctAnyBars(starsMax: Long, zeroBar: Boolean = true): Map[(Long, Long), Long] = {
     val barsMin = if (zeroBar) 0 else 1
     require(starsMax >= barsMin + 1, "Max number of stars must be > min number of bars")
     def countAcc(stars: Long, bars: Long, acc: Map[(Long, Long), Long]): Map[(Long, Long), Long] = {
@@ -51,8 +52,24 @@ object StarsAndBars {
       else if (bars > stars - 1) countAcc(stars + 1, barsMin, acc)
       else countAcc(stars,
                     bars + 1,
-                    acc ++ Map((stars, bars) -> (1 to (stars - bars)).map(b => acc(stars - b, bars - 1)).sum))
+                    acc ++ Map((stars, bars) -> (1L to (stars - bars)).map(b =>
+                      if (bars == 1) 1 else acc(stars - b, bars - 1)).sum))
     }
     if (zeroBar) countAcc(2, barsMin, Map((1L, 0L) -> 1L)) else countAcc(3, barsMin, Map((2L, 1L) -> 1L))
+  }
+
+  /**
+    * Uses countDistinctAnyBars to compute a map from number of stars (from 1 to starsMax) to number of ways smaller
+    * numbers of stars can be added up to that number of stars. As usual, zeroBar set to true includes
+    * the trivial case of zero bars  (which will have count of 1 for any number of stars)
+    */
+  def countsDistinctAllBars(starsMax: Long, zeroBar: Boolean = true): Map[Long, Long] =
+    countsDistinctAnyBars(starsMax, zeroBar).groupBy(_._1._1).map(sm => sm._1 -> sm._2.values.sum)
+
+  /**
+    * Count of all possible ways smaller number of stars can add up to the
+    */
+  def countDistinctAllBars(stars: Long, zeroBar: Boolean = true): Long = {
+    countsDistinctAllBars(stars, zeroBar)(stars)
   }
 }

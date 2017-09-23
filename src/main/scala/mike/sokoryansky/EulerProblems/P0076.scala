@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.SumsOfParts
+import mike.sokoryansky.MathUtils.{SumsOfParts, StarsAndBars}
 
 /*
 
@@ -19,7 +19,8 @@ How many different ways can one hundred be written as a sum of at least two posi
 
 class P0076 extends EulerProblem {
   val sum = 100
-  def run: String = SumsOfParts.count2(sum).toString
+  //def run: String = SumsOfParts.count2(sum).toString
+  def run: String = StarsAndBars.countDistinctAllBars(sum, zeroBar = false).toString
 }
 
 object P0076 extends App {
