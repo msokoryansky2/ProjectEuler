@@ -32,11 +32,13 @@ object Integer {
     intsSumAcc(ints(i), 0)
   }
 
+  /*
   def factorial(i: Int): Long = {
     require(i >= 0, "Can only take factorials of positive integers")
     @tailrec def factorialAcc(i: Int, acc: Long): Long = if (i <= 1) acc else factorialAcc(i - 1, i * acc)
     factorialAcc(i, 1)
   }
+  */
 
   def sumDigitsFactorial(n: Long): Long = {
     require(n >= 0, "Must specify  integer >= zero")
@@ -141,7 +143,8 @@ object Integer {
   }
 
   def isSumDigitFactorials(number: Int): Boolean = {
-    number == number.toString.toList.map(_.asDigit).map(factorial).sum
+    import IntegerOps._
+    number == number.toString.toList.map(_.asDigit).map(_.factorial).sum
   }
 
   def circulars(number: Int): List[Int] = {
@@ -255,6 +258,13 @@ object IntegerOps {
             implicitly[Integral[A]].fromInt(10))))
       }
       sumDigitsAcc(n, implicitly[Integral[A]].fromInt(0))
+    }
+    def factorial: A = {
+      require(implicitly[Integral[A]].gteq(n, implicitly[Integral[A]].zero), "Factorial requires integer >= 0")
+      @tailrec def fAcc(i: A, acc: A): A =
+        if (implicitly[Integral[A]].lteq(i, implicitly[Integral[A]].one)) acc
+        else fAcc(implicitly[Integral[A]].minus(i, implicitly[Integral[A]].one), implicitly[Integral[A]].times(i, acc))
+      fAcc(n, implicitly[Integral[A]].one)
     }
   }
 }

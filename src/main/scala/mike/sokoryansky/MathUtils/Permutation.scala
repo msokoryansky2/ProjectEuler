@@ -11,6 +11,7 @@ object Permutation {
     * @return ith lexigraphic permutation
     */
   def lexicographicPermutation(s: Set[Char], i: Int): String = {
+    import IntegerOps._
     /*
     The general idea is to use the fact that we know that because the order of permutations is alphabetical,
     the first (N-1)! permutations will start with first (alphabetically) element. Next (N-1)! will start with
@@ -18,14 +19,14 @@ object Permutation {
      */
     @tailrec def lexicographicPermutationAcc(s: Set[Char], i: Int, acc: String): String = {
       require(i >= 0, "Can only return elements startign with number 0 in lexicographic sequence")
-      require(i < Integer.factorial(s.size), "Provided set has fewer permutations than the permutation number requested")
+      require(i < s.size.factorial, "Provided set has fewer permutations than the permutation number requested")
       s.size match {
         case 0 => acc
         case n =>
-          val partition = Integer.factorial(n - 1)
-          val headElementIndex = (i / partition).toInt
+          val partition = (n - 1).factorial
+          val headElementIndex = i / partition
           val headElement = s.toArray.sortWith(_ < _)(headElementIndex)
-          val tailIndex = (i % partition).toInt
+          val tailIndex = i % partition
           val tailSet = s.filter(_ != headElement)
           lexicographicPermutationAcc(tailSet, tailIndex, acc + headElement)
       }
@@ -73,6 +74,9 @@ object Permutation {
   }
 }
 
+/**
+  * Exploring how integers can be composed as a sum of a specific set of smaller integers
+  */
 object SumsOfParts {
   /**
     * Finds all ways that pre-defined parts can add up to sum.
@@ -118,5 +122,30 @@ object SumsOfParts {
       else (1 to max).map(p => count2Acc(s - p, p)).sum
     }
     (1 until sum).map(p => count2Acc(sum - p, p)).sum
+  }
+}
+
+
+/**
+  * Exploring how integers can be composed as a sum of ALL smaller integers.
+  *
+  * When thinking about these, we view an integer N as N stars and its parts as divider bars among those stars.
+  * E.g.
+  *
+  * 7 == * * * * * * *
+  * 7 as (3 + 4) == * * * | * * * *
+  * 7 as (4 + 3) == * * * * | * * *
+  *
+  * Note that in some instances we may consider sums (3 + 4) and (4 + 3) to be the same, and in others, different.
+  * In cases where (3 + 4) is different from (4 + 3), the total number of sums for any given number N using K  bars
+  * (K < N) is number of places those K bars can be placed into N - 1 possible slots between N stars. In other words,
+  * "(N - 1) choose K" which is: (N - 1)! / ((K!) * (N - 1 - K)!)
+  *
+  * See https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics) for insights and reason for Stars-and-Bars name
+  */
+object StarsAndBars {
+  def countStarBars(star: Long, bars: Long): Long = {
+    import IntegerOps._
+    0
   }
 }
