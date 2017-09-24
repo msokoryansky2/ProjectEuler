@@ -19,8 +19,13 @@ How many different ways can one hundred be written as a sum of at least two posi
 
 class P0076 extends EulerProblem {
   val sum = 100
-  //def run: String = SumsOfParts.count2(sum).toString
-  def run: String = StarsAndBars.countDistinctAllBars(sum, zeroBar = false).toString
+  def run: String = SumsOfParts.count2(sum).toString
+
+  //-----------------------------------------------------------------------------------------------------------------
+  // TODO: use the impl below once  StarsAndBars.countDistinctAllBars is working
+  //-----------------------------------------------------------------------------------------------------------------
+  //def run: String = StarsAndBars.countDistinctAllBars(sum, zeroBar = false).toString
+
 }
 
 object P0076 extends App {

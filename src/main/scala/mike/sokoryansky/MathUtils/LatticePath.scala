@@ -14,8 +14,9 @@ object LatticePath {
     * @return number of possible paths
     */
   def numPathsSlow(width: Int, height: Int): Long = {
-    require(width > 0 && height > 0, "Lattice must have positive width and height")
-    (width, height) match {
+    require(width >= 0 && height >= 0 && !(width == 0 && height == 0), "Lattice must have positive width and height")
+    if (width == 0 || height == 0) 1
+    else (width, height) match {
       case (x, y) if x > 1 && y > 1 => if (x == y) 2 * numPaths(x - 1, y) else numPaths(x - 1, y) + numPaths(x, y - 1)
       case (x, y) => Math.max(x, y) + 1
     }
@@ -24,6 +25,8 @@ object LatticePath {
   /**
     * Same as above but optimal impl that realizes that this is an instanace of n-choose-k problem.
     */
-  def numPaths(width: Int, height: Int): Long =
+  def numPaths(width: Int, height: Int): Long = {
+    require(width >= 0 && height >= 0 && !(width == 0 && height == 0), "Lattice must have positive width and height")
     ((BigInt(width) + BigInt(height)).factorial / (BigInt(width).factorial * BigInt(height).factorial)).toLong
+  }
 }
