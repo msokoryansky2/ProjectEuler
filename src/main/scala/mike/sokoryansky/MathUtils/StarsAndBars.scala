@@ -37,6 +37,19 @@ object StarsAndBars {
   def countAllBars(stars: Long, zeroBar: Boolean = true): Long =
     ((if (zeroBar) 0L else 1L) to stars - 1).map(bars => count(stars, bars)).sum
 
+
+  //-----------------------------------------------------------------------------------------------------------------
+  // Below is a faulty implementation of StarsAndBars for cases where the order of stars does not matter so that
+  // sum of (3 + 4) is considered same as (4 + 3). This means that the n-choose-k algo implemented above can
+  // no longer be used.
+  //
+  // The algo below was an attempt to use dynamic programming to build up the mappings from tuples of (stars, bars)
+  // to number of possible sums for that many bars in that many stars. Unfortunately it still runs in the problem
+  // of double-counting in some/many cases. It is wrong and needs to be fixed.
+  //
+  // TODO: fix the algos below.
+  //-----------------------------------------------------------------------------------------------------------------
+
   /**
     * Create a map for all possible tuples of (stars from 1 to starsMax  and (bars from 0 (if zeroBar == true) or 1 to
     * (star - 1) for each star) to the number of *distinct* ways those bars can be placed within those stars.
