@@ -138,4 +138,8 @@ class TestPartition extends FunSuite {
     assert(Partition.partitionsModulo(16, 10) === Map(0 -> 1, 1 -> 1, 2 -> 2, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 1, 7 -> 5, 8 -> 2,
       9 -> 0, 10 -> 2, 11 -> 6, 12 -> 7, 13 -> 1, 14 -> 5, 15 -> 6, 16 -> 1))
   }
+
+  test("partitionsModuloStream() returns a stream of partitionModulo() values starting for n = 0") {
+    assert(Partition.partitionsModuloStream(10).take(17).toList === List(1, 1, 2, 3, 5, 7, 1, 5, 2, 0, 2, 6, 7, 1, 5, 6, 1))
+  }
 }

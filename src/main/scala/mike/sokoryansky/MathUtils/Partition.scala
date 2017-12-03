@@ -99,4 +99,12 @@ object Partition {
     }
     partitionsAcc(0, Map())
   }
+
+  def partitionsModuloStream(mod: Long): Stream[Long] = {
+    def partitionsModuloStreamAcc(n: Long, acc: Map[Long, Long]): Stream[Long] = {
+      val pn = partitionModulo(n, mod, acc)
+      pn #:: partitionsModuloStreamAcc(n + 1, acc + (n -> pn))
+    }
+    partitionsModuloStreamAcc(0, Map())
+  }
 }
