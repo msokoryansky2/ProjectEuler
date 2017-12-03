@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.{SumsOfParts, StarsAndBars}
+import mike.sokoryansky.MathUtils.SumsOfParts
 
 /*
 
