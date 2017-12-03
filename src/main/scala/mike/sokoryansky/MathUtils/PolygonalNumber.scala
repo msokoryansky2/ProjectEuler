@@ -25,9 +25,22 @@ class PolygonalNumber private (a: Int, b: Int, c: Int, d: Int) {
   }
 
   /**
+    * Same as number(n) but allowing negative indices
+    */
+  def numberWithNegs(n: Long): Long = {
+    require(n != 0, "Only positive or negative indices are valid")
+    a * n * (b * n + c ) / d
+  }
+
+  /**
     * Stream of polygonal numbers
     */
   def numbers(n: Long): Stream[Long] = number(n) #:: numbers(n + 1)
+
+  /**
+    * Same as numbers(n) but including negative indices
+    */
+  def numbersWithNegs(n: Long): Stream[Long] = number(n) #:: numberWithNegs(0 - n) #:: numbersWithNegs(n + (if (n > 0) 1 else -1))
 
   /**
     * Check if number is a polygonal one

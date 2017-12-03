@@ -51,6 +51,17 @@ class TestPolygonalNumber extends FunSuite {
     assert(PolygonalNumber(8).numbers(1).tail.tail.head === 21)
     assert(PolygonalNumber(8).numbers(1).tail.tail.tail.head === 40)
     assert(PolygonalNumber(8).numbers(1).tail.tail.tail.tail.head === 65)
+
+    assert(PolygonalNumber(5).numbersWithNegs(1).head === 1)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.head === 2)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.head === 5)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.head === 7)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.tail.head === 12)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.tail.tail.head === 15)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.tail.tail.tail.head === 22)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.tail.tail.tail.tail.head === 26)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.tail.tail.tail.tail.tail.head === 35)
+    assert(PolygonalNumber(5).numbersWithNegs(1).tail.tail.tail.tail.tail.tail.tail.tail.tail.head === 40)
   }
 
   test("indexOf and indexOfFractional returns Option of a number's index in its polygona series") {
