@@ -52,4 +52,51 @@ object Partition {
     }
     partitionsAcc(0, Map())
   }
+
+  /**
+    * Instead of finding actual partition() value of an integer, find its modulo value.
+    * This allows us to use fast Long instead of slow BigInt as long as what we care about is the modulo value.
+    */
+  def partitionModulo(n: Long, mod: Long): Long = {
+    if (n < 0) 0
+    else if (n == 0) 1
+    else {
+      def partitionAcc(i: Long, pentagonals: List[Long], acc: Long): Long = {
+        if (pentagonals.isEmpty) acc
+        else partitionAcc(i + 1,
+                          pentagonals.tail,
+                          (acc + mod + partitionModulo(n - pentagonals.head, mod) * (if (i % 4 < 2) 1 else -1)) % mod)
+      }
+      partitionAcc(0, PolygonalNumber(5).numbersWithNegs(1).takeWhile(_ <= n).toList, 0)
+    }
+  }
+
+  /**
+    * Same as partitionModulo() but with a helper lookup
+    */
+  def partitionModulo(n: Long, mod: Long, ps: Map[Long, Long]): Long =
+    if (ps.contains(n)) ps(n)
+    else if (n < 0) 0
+    else if (n == 0) 1
+    else {
+      def partitionAcc(i: Long, pentagonals: List[Long], acc: Long): Long = {
+        if (pentagonals.isEmpty) acc
+        else {
+          val pm = if (ps.contains(n - pentagonals.head)) ps(n - pentagonals.head) else partitionModulo(n - pentagonals.head, mod)
+          partitionAcc(i + 1, pentagonals.tail, (acc + mod + pm * (if (i % 4 < 2) 1 else -1)) % mod)
+        }
+      }
+      partitionAcc(0, PolygonalNumber(5).numbersWithNegs(1).takeWhile(_ <= n).toList, 0)
+    }
+
+  /**
+    * Modulo of number of ways each of the integers from 0 to n can be partitioned
+    */
+  def partitionsModulo(n: Long, mod: Long): Map[Long, Long] = {
+    def partitionsAcc(m: Long, acc: Map[Long, Long]): Map[Long, Long] = {
+      if (m > n) acc
+      else partitionsAcc(m + 1, acc + (m -> partitionModulo(m, mod, acc)))
+    }
+    partitionsAcc(0, Map())
+  }
 }
