@@ -10,6 +10,9 @@ package mike.sokoryansky.MathUtils
   * The signs in the series follow the pattern: + + - - + + - - + + - - ...
   */
 object Partition {
+  /**
+    * Number of ways n can be partitioned as a sum of integers <= n
+    */
   def partition(n: Long): BigInt =
     if (n < 0) 0
     else if (n == 0) 1
@@ -20,4 +23,33 @@ object Partition {
       }
       partitionAcc(0, PolygonalNumber(5).numbersWithNegs(1).takeWhile(_ <= n).toList, 0)
     }
+
+  /**
+    * Same as partition() but with a helper lookup of already computed partitions (may or may not have any given value)
+    */
+  def partition(n: Long, ps: Map[Long, BigInt]): BigInt =
+    if (ps.contains(n)) ps(n)
+    else if (n < 0) 0
+    else if (n == 0) 1
+    else {
+      def partitionAcc(i: Long, pentagonals: List[Long], acc: BigInt): BigInt = {
+        if (pentagonals.isEmpty) acc
+        else {
+          val pm = if (ps.contains(n - pentagonals.head)) ps(n - pentagonals.head) else partition(n - pentagonals.head)
+          partitionAcc(i + 1, pentagonals.tail, acc + pm * (if (i % 4 < 2) 1 else -1))
+        }
+      }
+      partitionAcc(0, PolygonalNumber(5).numbersWithNegs(1).takeWhile(_ <= n).toList, 0)
+    }
+
+  /**
+    * Number of ways each of the integers from 0 to n can be partitioned
+    */
+  def partitions(n: Long): Map[Long, BigInt] = {
+    def partitionsAcc(m: Long, acc: Map[Long, BigInt]): Map[Long, BigInt] = {
+      if (m > n) acc
+      else partitionsAcc(m + 1, acc + (m -> partition(m, acc)))
+    }
+    partitionsAcc(0, Map())
+  }
 }
