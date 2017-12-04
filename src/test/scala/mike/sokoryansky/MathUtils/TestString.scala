@@ -37,4 +37,17 @@ class TestString extends FunSuite {
     assert(String.wordValue("Cab") === 6)
     assert(String.wordValue("zzZ") === 78)
   }
+
+  test("shortestWithScatterSequences() returns shortest string that encompasses specfied sequences in a scattered manner") {
+    assert(String.shortestWithScatterSequences(List()) === "")
+    assert(String.shortestWithScatterSequences(List("1")) === "1")
+    assert(String.shortestWithScatterSequences(List("123")) === "123")
+    assert(String.shortestWithScatterSequences(List("123", "234")) === "1234")
+    assert(String.shortestWithScatterSequences(List("123", "1234", "234", "13", "24", "124")) === "1234")
+    assert(String.shortestWithScatterSequences(List("123", "345", "567")) === "1234567")
+    assert(String.shortestWithScatterSequences(List("1", "123", "12", "1234", "345")) === "12345")
+    assert(String.shortestWithScatterSequences(List("123", "345", "567", "36", "17")) === "1234567")
+    assert(String.shortestWithScatterSequences(List("12", "21")) === "121" ||
+            String.shortestWithScatterSequences(List("12", "21")) === "212")
+  }
 }
