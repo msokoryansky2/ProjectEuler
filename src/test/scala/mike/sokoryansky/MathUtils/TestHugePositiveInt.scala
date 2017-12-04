@@ -149,4 +149,14 @@ class TestHugePositiveInt extends FunSuite {
     assert(HugePositiveInt(11).powersSameAsNumDigits ===
       List())
   }
+
+  test("sqrt() returns largest integer <= true sqrt of the number") {
+    assert(HugePositiveInt(0).sqrt === HugePositiveInt(0))
+    assert(HugePositiveInt(1).sqrt === HugePositiveInt(1))
+    (1 to 20000).foreach(i => assert(HugePositiveInt(i).sqrt === HugePositiveInt(Math.sqrt(i).toLong.toString), s" for $i"))
+    (0 to 1000000000 by 134807).foreach(i => assert(HugePositiveInt(i).sqrt === HugePositiveInt(Math.sqrt(i).toLong.toString), s" for $i"))
+
+    // Use the fact that sqrt(2) == 1.41421356237309504880... (with 20 decimal points specified)
+    assert(HugePositiveInt("20000000000000000000000000000000000000000").sqrt === HugePositiveInt("141421356237309504880"))
+  }
 }

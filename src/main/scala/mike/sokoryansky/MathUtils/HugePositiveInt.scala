@@ -91,6 +91,44 @@ class HugePositiveInt(stringNumber: String) extends Ordered[HugePositiveInt] {
   }
 
   /**
+    * Find square root of a HugePositiveInt as non-rounded HugePositiveInt. E.g.
+    * HugePositiveInt(122).sqrt === 11, HugePositiveInt(143).sqrt === 11 (of course, HugePositiveInt(144).sqrt === 12).
+    * Square root is computed using binary-ish search for each digit
+    */
+  def sqrt: HugePositiveInt = {
+    // Number of digits in the answer is always ceiling of number of digits in the original / 2.
+    // E.g. square roots of all 7- or 8-digit numbers are always 4 digits long.
+    val digits = (value.length + 1) / 2
+    def sqrtAcc(d: Long, lastGuess: Int, guessHistory: List[Int], acc: String): HugePositiveInt = {
+      if (d > digits) HugePositiveInt(acc)
+      else {
+        // Create full last guess number
+        val lastGuessValue = HugePositiveInt(acc + lastGuess.toString + "0" * (digits - acc.length - 1))
+        val lastGuessSqr = lastGuessValue ^ 2
+        lastGuessSqr.compare(this) match {
+          case 0 =>
+            // Exact match, we found our sqrt
+            lastGuessValue
+          case over if over > 0 =>
+            // Our sqrt is too big, will need to try with a lower guess -- but higher than next lowest existing guess
+            val highestLowerGuess = guessHistory.find(m => m < lastGuess && !guessHistory.exists(n => n > m && n < lastGuess)).getOrElse(0)
+            // if our highestLowerGuess is just 1 less than last guess, then that guess is the current digit and we move on
+            if (lastGuess - highestLowerGuess <= 1) sqrtAcc(d + 1, 5, List(), acc + highestLowerGuess)
+            else sqrtAcc(d, highestLowerGuess + (lastGuess - highestLowerGuess) / 2, lastGuess :: guessHistory, acc)
+          case under if under < 0 =>
+            // Our sqrt is too small, will need to try with a higher guess -- but lower than next highest existing guess
+            val lowestHigherGuess = guessHistory.find(m => m > lastGuess && !guessHistory.exists(n => n < m && n > lastGuess)).getOrElse(10)
+            // if our highestLowerGuess is just 1 less than last guess, then our last guess is the current digit and we move on
+            if (lowestHigherGuess - lastGuess <= 1) sqrtAcc(d + 1, 5, List(), acc + lastGuess)
+            else sqrtAcc(d, lastGuess + (lowestHigherGuess - lastGuess) / 2, lastGuess :: guessHistory, acc)
+        }
+      }
+    }
+    sqrtAcc(1, 5, List(), "")
+  }
+
+
+  /**
     * Returns specified number of last digits of performing n1 op n2.
     * Operation is performed by taking only last digits of n1 and n2 as HugePositiveInt, performing op on them,
     * and again taking last digits.
