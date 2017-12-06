@@ -136,8 +136,8 @@ class TestNumberField extends FunSuite {
       .withDirs(List(NFDir.U, NFDir.D, NFDir.R))
       .withValue(new NFPathSum)
       .withFitness(new NFMinPath)
-      .withStart(new NFPathStartLeftCol)
-      .withFinish(new NFPathFinishRightCol)
+      .withStart(new NFLocL)
+      .withFinish(new NFLocR)
 
     val path = field.bestPath
     assert(field.value.eval(field.els(path)) === 24)

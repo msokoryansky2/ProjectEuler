@@ -24,28 +24,34 @@ class NFMaxPath extends NFPathFitness {
   override def isMoreFit(a: Long, b: Long): Boolean = a > b
 }
 
-// Different ways to determine whether cell is start of the path
-abstract class NFPathStart {
-  def isStart(field: NumberField, x: Int, y: Int): Boolean
+// Different locations, used determine whether cell is a valid start or finish of the path
+abstract class NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean
 }
-class NFPathStartTopLeft extends NFPathStart {
-  def isStart(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == 0
+class NFLocU extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = x == 0
 }
-class NFPathStartLeftCol extends NFPathStart {
-  def isStart(field: NumberField, x: Int, y: Int): Boolean = x == 0
+class NFLocR extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = y == field.width - 1
 }
-
-// Different ways to determine whether cell is end of the path
-abstract class NFPathFinish {
-  def isFinish(field: NumberField, x: Int, y: Int): Boolean
+class NFLocD extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1
 }
-class NFPathFinishBottomRight extends NFPathFinish {
-  def isFinish(field: NumberField, x: Int, y: Int): Boolean = x == field.width - 1 && y == field.height - 1
+class NFLocL extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = y == 0
 }
-class NFPathFinishRightCol extends NFPathFinish {
-  def isFinish(field: NumberField, x: Int, y: Int): Boolean = x == field.width - 1
+class NFLocUL extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == 0
 }
-
+class NFLocUR extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == 0
+}
+class NFLocDR extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == field.width - 1
+}
+class NFLocDL extends NFLoc {
+  def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == field.width - 1
+}
 
 // Different directions that the path is allowed to turn within the field
 object NFDir extends Enumeration {
@@ -68,8 +74,8 @@ class NumberField (val field: Seq[Seq[Int]],
                    val dirs: List[NFDir.dir],
                    val value: NFPathValue,
                    val fitness: NFPathFitness,
-                   val start: NFPathStart,
-                   val finish: NFPathFinish) {
+                   val start: NFLoc,
+                   val finish: NFLoc) {
   require(NumberField.isValid(field), "Invalid number field specified")
   require(dirs.nonEmpty, "Must specify some allowed directions for the path to follow through the field")
   val height: Int = field.length
@@ -80,8 +86,8 @@ class NumberField (val field: Seq[Seq[Int]],
   def withDirs(newDirs: List[NFDir.dir]): NumberField = new NumberField(field, newDirs, value, fitness, start, finish)
   def withValue(newValue: NFPathValue): NumberField = new NumberField(field, dirs, newValue, fitness, start, finish)
   def withFitness(newFitness: NFPathFitness): NumberField = new NumberField(field, dirs, value, newFitness, start, finish)
-  def withStart(newStart: NFPathStart): NumberField = new NumberField(field, dirs, value, fitness, newStart, finish)
-  def withFinish(newFinish: NFPathFinish): NumberField = new NumberField(field, dirs, value, fitness, start, newFinish)
+  def withStart(newStart: NFLoc): NumberField = new NumberField(field, dirs, value, fitness, newStart, finish)
+  def withFinish(newFinish: NFLoc): NumberField = new NumberField(field, dirs, value, fitness, start, newFinish)
 
   /**
     * Check if given coordinates of an element are valid for this field
@@ -108,7 +114,7 @@ class NumberField (val field: Seq[Seq[Int]],
     val bestPathFromEachStartCell: Seq[List[(Int, Int)]] = for {
       x <- 0 until width
       y <- 0 until height
-      if start.isStart(this, x, y)
+      if start.is(this, x, y)
     } yield allBestPaths(x, y)
     // For each of valid best paths, find its value and then sort them by fitness (off that value), and return top one
     bestPathFromEachStartCell
@@ -133,7 +139,7 @@ class NumberField (val field: Seq[Seq[Int]],
                         acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] = {
       if (acc.contains((x, y))) acc
       else (x, y) match {
-        case (pathFinished) if finish.isFinish(this, x, y) => acc ++ Map((x, y) -> List((x, y)))
+        case (pathFinished) if finish.is(this, x, y) => acc + ((x, y) -> List((x, y)))
         case _ =>
           // Calculate best paths for all allowed directions, making sure we re-use already calculated values
           var accNext = acc           // a var is really convenient here, sorry :(
@@ -143,15 +149,22 @@ class NumberField (val field: Seq[Seq[Int]],
             if (isEl(x2, y2) && !visited.isDefinedAt(x2, y2))
               accNext = allBestPathsAcc(x2, y2, visited + ((x, y) -> true), accNext)
           }
+
+         // print(s"At ($x, $y) accNext is $accNext")
+
           // Compute path values in all valid directions using acc4 (illegal directions will be filtered out)
-          val pathValues: List[(NFDir.Value, Long)] = List(NFDir.U, NFDir.R, NFDir.D, NFDir.L)
-              .filter(d => dirs.contains(d))                        // Only consider allowed directions
-              .filter(d => isEl(NFDir.dX(x, d), NFDir.dY(y, d)))    // Only consider a direction if it doesn't fall off the field
-              .map(d => (d, value.eval(els(accNext(NFDir.dX(x, d), NFDir.dY(y, d))))))
+          val pathValues: List[(NFDir.Value, Long)] =
+                List(NFDir.U, NFDir.R, NFDir.D, NFDir.L)
+                  .filter(d => dirs.contains(d))                        // Only consider allowed directions
+                  .filter(d => isEl(NFDir.dX(x, d), NFDir.dY(y, d)))    // Only consider a direction if it doesn't fall off the field
+                  .map(d => (d, value.eval(els(accNext(NFDir.dX(x, d), NFDir.dY(y, d))))))
           // Pick direction with most fit path value
           val bestDir: NFDir.Value = pathValues.sortWith((pv1, pv2) => fitness.isMoreFit(pv1._2, pv2._2)).head._1
           // Return path using best direction
-          accNext ++ Map((x, y) -> ((x, y) :: accNext(NFDir.dX(x, bestDir), NFDir.dY(y, bestDir))))
+
+         // println(s" and best direction is $bestDir")
+
+          accNext + ((x, y) -> ((x, y) :: accNext(NFDir.dX(x, bestDir), NFDir.dY(y, bestDir))))
       }
     }
     allBestPathsAcc(0, 0, Map(), Map())
@@ -192,8 +205,8 @@ object NumberField {
                     List(NFDir.D, NFDir.R),
                     new NFPathSum,
                     new NFMinPath,
-                    new NFPathStartTopLeft,
-                    new NFPathFinishBottomRight)
+                    new NFLocUL,
+                    new NFLocDR)
 
   /**
     * Create NumberField from its string representation with default eval params
@@ -203,8 +216,8 @@ object NumberField {
                     List(NFDir.D, NFDir.R),
                     new NFPathSum,
                     new NFMinPath,
-                    new NFPathStartTopLeft,
-                    new NFPathFinishBottomRight)
+                    new NFLocUL,
+                    new NFLocDR)
 
   /**
     * Create a random x by y NumberField using specified set of numbers for values and default eval params
@@ -216,8 +229,8 @@ object NumberField {
                     List(NFDir.D, NFDir.R),
                     new NFPathSum,
                     new NFMinPath,
-                    new NFPathStartTopLeft,
-                    new NFPathFinishBottomRight)
+                    new NFLocUL,
+                    new NFLocDR)
   }
 
   /**

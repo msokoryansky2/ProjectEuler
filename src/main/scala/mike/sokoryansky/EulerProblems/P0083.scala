@@ -22,8 +22,8 @@ class P0083 extends EulerProblem {
     .withDirs(List(NFDir.U, NFDir.R, NFDir.D, NFDir.L))
     .withValue(new NFPathSum)
     .withFitness(new NFMinPath)
-    .withStart(new NFPathStartTopLeft)
-    .withFinish(new NFPathFinishBottomRight)
+    .withStart(new NFLocUL)
+    .withFinish(new NFLocDR)
   def run: String = field.value.eval(field.els(field.bestPath)).toString
 }
 
