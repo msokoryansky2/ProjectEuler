@@ -36,35 +36,6 @@ class TestNumberField extends FunSuite {
     assert(field.el(1, 2) === 232)
   }
 
-  test("allPathsBruteForce enumerates all possible paths") {
-    val field = NumberField(
-      """
-        |123  0145
-        |56   0232
-      """.stripMargin)
-
-    val allPaths = field.allPathsBruteForce.toSet
-    assert(allPaths === Set(
-      List((0, 0), (0, 1), (1, 1)),
-      List((0, 0), (1, 0), (1, 1))))
-
-    val field2 = NumberField(
-      """
-        |123  0145 355
-        |1236 63662 -36
-        |56   0232 35
-      """.stripMargin)
-
-    val allPaths2 = field2.allPathsBruteForce.toSet
-    assert(allPaths2 === Set(
-      List((0, 0), (0, 1), (0, 2), (1, 2), (2, 2)),
-      List((0, 0), (0, 1), (1, 1), (1, 2), (2, 2)),
-      List((0, 0), (0, 1), (1, 1), (2, 1), (2, 2)),
-      List((0, 0), (1, 0), (1, 1), (1, 2), (2, 2)),
-      List((0, 0), (1, 0), (1, 1), (2, 1), (2, 2)),
-      List((0, 0), (1, 0), (2, 0), (2, 1), (2, 2))))
-  }
-
   private val field = NumberField(
     """
       |001 002 003 004
@@ -72,10 +43,8 @@ class TestNumberField extends FunSuite {
       |010 011 012 013
       |001 002 003 004
     """.stripMargin)
-  private val path = field.bestPath()
-  private val pathMin = field.bestPathMin()
-  private val pathSlow = field.bestPathSlow()
-  private val pathBrute = field.bestPathBruteForce
+  private val path = field.withFitness(new NFMaxPath).bestPath
+  private val pathMin = field.withFitness(new NFMinPath).bestPath
 
   private val field2 = NumberField(
     """
@@ -84,9 +53,7 @@ class TestNumberField extends FunSuite {
       |010, -11, 12, -013
       |001, 02, 003, 0004
     """.stripMargin)
-  private val path2: List[(Int, Int)] = field2.bestPath()
-  private val pathSlow2 = field2.bestPathSlow()
-  private val pathBrute2 = field2.bestPathBruteForce
+  private val path2: List[(Int, Int)] = field2.withFitness(new NFMaxPath).bestPath
 
   private val field3 = NumberField(
     """
@@ -95,9 +62,7 @@ class TestNumberField extends FunSuite {
       |-10 -11 -12 -13
       |001 002 003 004
     """.stripMargin)
-  private val path3: List[(Int, Int)] = field3.bestPath()
-  private val pathSlow3 = field3.bestPathSlow()
-  private val pathBrute3 = field3.bestPathBruteForce
+  private val path3: List[(Int, Int)] = field3.withFitness(new NFMaxPath).bestPath
 
   test("toString creates a visual representation of the field") {
     assert(field3.toString ===
@@ -117,26 +82,11 @@ class TestNumberField extends FunSuite {
     assert(pathMin === List((0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 3)))
   }
 
-  test("bestPathSlow should be same as bestPath") {
-    assert(path === pathSlow)
-    assert(path2 === pathSlow2)
-    assert(path3 === pathSlow3)
-  }
-
-  test("bestPathBruteForce should be same as bestPath") {
-    assert(path === pathBrute)
-    assert(path2 === pathBrute2)
-    assert(path3 === pathBrute3)
-  }
-
-  test("evalPath evaluates path value") {
-    assert(field.evalPath(path) === 56)
-    assert(field2.evalPath(path2) === 38)
-    assert(field3.evalPath(path3) === 29)
-
-    assert(field.evalPath(path) === 56)
-    assert(field2.evalPath(path2) === 38)
-    assert(field3.evalPath(path3) === 29)
+  test("NFPathValue subclasses evaluate path value") {
+    assert((new NFPathSum).eval(field.els(path)) === 56)
+    assert((new NFPathSum).eval(field.els(pathMin)) === 26)
+    assert((new NFPathSum).eval(field2.els(path2)) === 38)
+    assert((new NFPathSum).eval(field3.els(path3)) === 29)
   }
 
   test("pathToString creates a visual representation of a path") {
@@ -161,18 +111,35 @@ class TestNumberField extends FunSuite {
 
   test("NumberField can be randomly generated too") {
     val field = NumberField(40, 40, (5 to 8).toSet)
-    val path = field.bestPath()
+    val path = field.bestPath
     assert(path.size === 79)
-    assert(field.evalPath(path) >= 395)
+    assert((new NFPathSum).eval(field.els(path)) >= 395)
 
     val field2 = NumberField(40, 25, (10 to 20).toSet)
-    val path2 = field2.bestPath()
+    val path2 = field2.bestPath
     assert(path2.size === 64)
-    assert(field2.evalPath(path2) >= 640)
+    assert((new NFPathSum).eval(field2.els(path2)) >= 640)
 
     val field3 = NumberField(25, 40, (10 to 20).toSet)
-    val path3 = field3.bestPath()
+    val path3 = field3.bestPath
     assert(path3.size === 64)
-    assert(field3.evalPath(path3) >= 640)
+    assert((new NFPathSum).eval(field3.els(path3)) >= 640)
+  }
+
+  test("NumberField supports a column-to-column path") {
+    val field = NumberField(
+      """
+        |001 022 003
+        |015 006 007
+        |010 001 012
+      """.stripMargin)
+      .withDirs(List(NFDir.U, NFDir.D, NFDir.R))
+      .withValue(new NFPathSum)
+      .withFitness(new NFMinPath)
+      .withStart(new NFPathStartLeftCol)
+      .withFinish(new NFPathFinishRightCol)
+
+    val path = field.bestPath
+    assert(field.value.eval(field.els(path)) === 24)
   }
 }

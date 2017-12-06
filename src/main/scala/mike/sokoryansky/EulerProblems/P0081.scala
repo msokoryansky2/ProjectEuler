@@ -1,6 +1,6 @@
 package mike.sokoryansky.EulerProblems
 
-import mike.sokoryansky.MathUtils.NumberField
+import mike.sokoryansky.MathUtils._
 
 import scala.io.Source
 import scala.util.Properties
@@ -18,8 +18,13 @@ a 31K text file containing a 80 by 80 matrix, from the top left to the bottom ri
  */
 
 class P0081 extends EulerProblem {
-  val field = NumberField(Source.fromResource("p081_matrix.txt").getLines.mkString(Properties.lineSeparator))
-  def run: String = field.evalPath(field.bestPathMin()).toString
+  val field: NumberField = NumberField(Source.fromResource("p081_matrix.txt").getLines.mkString(Properties.lineSeparator))
+                            .withDirs(List(NFDir.D, NFDir.R))
+                            .withValue(new NFPathSum)
+                            .withFitness(new NFMinPath)
+                            .withStart(new NFPathStartTopLeft)
+                            .withFinish(new NFPathFinishBottomRight)
+  def run: String = field.value.eval(field.els(field.bestPath)).toString
 }
 
 object P0081 extends App {
