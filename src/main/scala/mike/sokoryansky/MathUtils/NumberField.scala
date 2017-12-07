@@ -3,55 +3,25 @@ package mike.sokoryansky.MathUtils
 import scala.util.{Properties, Random}
 
 // Different ways to evaluate path value (to a single Long) number
-abstract class NFPathValue {
-  def eval(path: List[Long]): Long
-}
-class NFPathSum extends NFPathValue {
-  def eval(path: List[Long]): Long = path.sum
-}
-class NFPathProduct extends NFPathValue {
-  def eval(path: List[Long]): Long = path.product
-}
+abstract class NFPathValue { def eval(path: List[Long]): Long }
+class NFPathSum extends NFPathValue { def eval(path: List[Long]): Long = path.sum }
+class NFPathProduct extends NFPathValue { def eval(path: List[Long]): Long = path.product }
 
 // Different ways to compare which path (represented by a single Long value) is more fit
-abstract class NFPathFitness {
-  def isMoreFit(a: Long, b: Long): Boolean
-}
-class NFMinPath extends NFPathFitness {
-  override def isMoreFit(a: Long, b: Long): Boolean = a < b
-}
-class NFMaxPath extends NFPathFitness {
-  override def isMoreFit(a: Long, b: Long): Boolean = a > b
-}
+abstract class NFPathFitness { def isMoreFit(a: Long, b: Long): Boolean }
+class NFMinPath extends NFPathFitness { override def isMoreFit(a: Long, b: Long): Boolean = a < b }
+class NFMaxPath extends NFPathFitness { override def isMoreFit(a: Long, b: Long): Boolean = a > b }
 
 // Different locations, used determine whether cell is a valid start or finish of the path
-abstract class NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean
-}
-class NFLocU extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = x == 0
-}
-class NFLocR extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = y == field.width - 1
-}
-class NFLocD extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1
-}
-class NFLocL extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = y == 0
-}
-class NFLocUL extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == 0
-}
-class NFLocUR extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == 0
-}
-class NFLocDR extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == field.width - 1
-}
-class NFLocDL extends NFLoc {
-  def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == field.width - 1
-}
+abstract class NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean }
+class NFLocU extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 }
+class NFLocUR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == 0 }
+class NFLocR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = y == field.width - 1 }
+class NFLocDR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == field.width - 1 }
+class NFLocD extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 }
+class NFLocDL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == field.width - 1 }
+class NFLocL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = y == 0 }
+class NFLocUL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == 0 }
 
 // Different directions that the path is allowed to turn within the field
 object NFDir extends Enumeration {
@@ -107,6 +77,8 @@ class NumberField (val field: Seq[Seq[Int]],
     */
   def els(path: List[(Int, Int)]): List[Long] = path.map(cell => el(cell._1, cell._2).toLong)
 
+  def all: Seq[(Int, Int)] = (0 until width).flatMap(x => (0 until height).map(y => (x, y)))
+
   /**
     * Best path overall which is best path from any of the starting cells
     */
@@ -132,7 +104,7 @@ class NumberField (val field: Seq[Seq[Int]],
   /**
     * All best paths from any point (x, y) to lower right corner. Lazily evaluated
     */
-  lazy val allBestPaths: Map[(Int, Int), List[(Int, Int)]] = {
+  lazy val allBestPaths2: Map[(Int, Int), List[(Int, Int)]] = {
     def allBestPathsAcc(x: Int,
                         y: Int,
                         visited: Map[(Int, Int), Boolean],
@@ -150,24 +122,74 @@ class NumberField (val field: Seq[Seq[Int]],
               accNext = allBestPathsAcc(x2, y2, visited + ((x, y) -> true), accNext)
           }
 
-         // print(s"At ($x, $y) accNext is $accNext")
+          print(s"At ($x, $y) accNext is $accNext")
 
           // Compute path values in all valid directions using acc4 (illegal directions will be filtered out)
           val pathValues: List[(NFDir.Value, Long)] =
                 List(NFDir.U, NFDir.R, NFDir.D, NFDir.L)
                   .filter(d => dirs.contains(d))                        // Only consider allowed directions
                   .filter(d => isEl(NFDir.dX(x, d), NFDir.dY(y, d)))    // Only consider a direction if it doesn't fall off the field
+                  .filterNot(d => start.is(this, NFDir.dX(x, d), NFDir.dY(y, d)))     // Exclude other starting cells
                   .map(d => (d, value.eval(els(accNext(NFDir.dX(x, d), NFDir.dY(y, d))))))
           // Pick direction with most fit path value
           val bestDir: NFDir.Value = pathValues.sortWith((pv1, pv2) => fitness.isMoreFit(pv1._2, pv2._2)).head._1
           // Return path using best direction
 
-         // println(s" and best direction is $bestDir")
+          println(s" and best direction is $bestDir")
 
           accNext + ((x, y) -> ((x, y) :: accNext(NFDir.dX(x, bestDir), NFDir.dY(y, bestDir))))
       }
     }
-    allBestPathsAcc(0, 0, Map(), Map())
+
+    // Can't just default to (0, 0) starting point because we may not be allowed to go Down (or Right)
+    val (xStart: Int, yStart: Int) = all.find(p => start.is(this, p._1, p._2)).get
+    allBestPathsAcc(xStart, yStart, Map((xStart, yStart) -> true), Map())
+  }
+
+  lazy val allBestPaths: Map[(Int, Int), List[(Int, Int)]] = {
+    // Trivial paths are finish cells containing paths to themselves
+    val finishPaths: Map[(Int, Int), List[(Int, Int)]] =
+      all.filter(p => finish.is(this, p._1, p._2)).map(p => p -> List(p)).toMap
+
+    def allBestPathsAcc(x: Int,
+                        y: Int,
+                        visited: Map[(Int, Int), Boolean],
+                        acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] = {
+      if (acc.contains((x, y))) acc
+      else (x, y) match {
+        case (pathFinished) if finish.is(this, x, y) => acc + ((x, y) -> List((x, y)))
+        case _ =>
+          // Calculate best paths for all allowed directions, making sure we re-use already calculated values
+          var accNext = acc // a var is really convenient here, sorry :(
+          NFDir.values.filter(dirs.contains(_)).foreach { d =>
+            val x2 = NFDir.dX(x, d)
+            val y2 = NFDir.dY(y, d)
+            if (isEl(x2, y2) && !visited.isDefinedAt(x2, y2))
+              accNext = allBestPathsAcc(x2, y2, visited + ((x, y) -> true), accNext)
+          }
+
+          //print(s"At ($x, $y) accNext is $accNext")
+
+          // Compute path values in all valid directions using acc4 (illegal directions will be filtered out)
+          val pathValues: List[(NFDir.Value, Long)] =
+            List(NFDir.U, NFDir.R, NFDir.D, NFDir.L)
+              .filter(d => dirs.contains(d)) // Only consider allowed directions
+              .filter(d => isEl(NFDir.dX(x, d), NFDir.dY(y, d))) // Only consider a direction if it doesn't fall off the field
+              .filterNot(d => start.is(this, NFDir.dX(x, d), NFDir.dY(y, d))) // Exclude other starting cells
+              .map(d => (d, value.eval(els(accNext(NFDir.dX(x, d), NFDir.dY(y, d))))))
+          // Pick direction with most fit path value
+          val bestDir: NFDir.Value = pathValues.sortWith((pv1, pv2) => fitness.isMoreFit(pv1._2, pv2._2)).head._1
+          // Return path using best direction
+
+          //println(s" and best direction is $bestDir")
+
+          accNext + ((x, y) -> ((x, y) :: accNext(NFDir.dX(x, bestDir), NFDir.dY(y, bestDir))))
+      }
+    }
+
+    // Can't just default to (0, 0) starting point because we may not be allowed to go Down (or Right)
+    val (xStart: Int, yStart: Int) = all.find(p => start.is(this, p._1, p._2)).get
+    allBestPathsAcc(xStart, yStart, Map((xStart, yStart) -> true), finishPaths)
   }
 
   /**
