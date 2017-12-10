@@ -155,6 +155,9 @@ class NumberField (val field: Seq[Seq[Int]],
       // If this is a finish cell, then its path to the finish is itself.
       // Otherwise we need to figure out best paths to finish from all of its neighbors
       // and pick the path to the fittest neighbor
+
+      println(s"At ($x, $y) with acc: $acc")
+
       if (finish.is(this, x, y)) acc + ((x, y) -> List((x, y)))
       else {
         // Determine valid directions/neighbors that are available for visit
@@ -163,6 +166,8 @@ class NumberField (val field: Seq[Seq[Int]],
             .map(d => (d, (NFDir.dX(x, d), NFDir.dY(y, d))))
             .filter(n => isEl(n._2._1, n._2._2) && !start.is(this, n._2._1, n._2._2) && !visited.contains(n._2))
             .toMap
+
+        println(s"Neighbors of ($x, $y): $neighbors")
 
         // Determine which of the valid neighbors don't yet have their best path known
         val neighborsUnknown: Map[NFDir.Value, (Int, Int)] = neighbors.filter(n => !acc.contains(n._2))
