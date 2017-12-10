@@ -151,35 +151,35 @@ class NumberField (val field: Seq[Seq[Int]],
     def allBestPathsAcc(x: Int,
                         y: Int,
                         visited: HashSet[(Int, Int)],
-                        acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] =
-      if (finish.is(this, x, y)) {
-        // If this is a finish cell, then its path to the finish is itself.
-        acc + ((x, y) -> List((x, y)))
-      } else {
-        // If this is not a finish cell, then we need to figure out best paths to finish from all of its neighbors
-        // and pick the best path from among the neighbors.
-
+                        acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] = {
+      // If this is a finish cell, then its path to the finish is itself.
+      // Otherwise we need to figure out best paths to finish from all of its neighbors
+      // and pick the path to the fittest neighbor
+      if (finish.is(this, x, y)) acc + ((x, y) -> List((x, y)))
+      else {
         // Determine valid directions/neighbors that are available for visit
         val neighbors: Map[NFDir.Value, (Int, Int)] =
           dirs
             .map(d => (d, (NFDir.dX(x, d), NFDir.dY(y, d))))
-            .filter(n => isEl(n._2._1, n._2._2) && !start.is(this, n._2._1, n._2._2) && !visited.contains(n._2._1, n._2._2))
+            .filter(n => isEl(n._2._1, n._2._2) && !start.is(this, n._2._1, n._2._2) && !visited.contains(n._2))
             .toMap
 
         // Determine which of the valid neighbors don't yet have their best path known
-        val neighborsUnknown = neighbors.filter(n => !acc.contains(n._2))
+        val neighborsUnknown: Map[NFDir.Value, (Int, Int)] = neighbors.filter(n => !acc.contains(n._2))
 
         if (neighborsUnknown.isEmpty) {
           // If all neighbors are known, find the one with fittest path and route our path through it
-          val bestNeighbor = neighbors.map(n => (n, value.eval(els(acc(n._2._1, n._2._2))))).toList
-            .reduceLeft((n1, n2) => if (fitness.isMoreFit(n1._2, n2._2)) n1 else n2)
-          acc + ((x, y) -> ((x, y) :: acc(bestNeighbor._1._2._1, bestNeighbor._1._2._2)))
+          val bestNeighbor: ((NFDir.Value, (Int, Int)), Long) =
+            neighbors.map(n => (n, value.eval(els(acc(n._2._1, n._2._2)))))
+              .toList.reduceLeft((n1, n2) => if (fitness.isMoreFit(n1._2, n2._2)) n1 else n2)
+          acc + ((x, y) -> ((x, y) :: acc(bestNeighbor._1._2)))
         } else {
           // If there are unknown neighbors, then we need to do them first.
-          val n = neighbors.head
+          val n = neighborsUnknown.head
           allBestPathsAcc(n._2._1, n._2._2, visited ++ HashSet((x, y)), acc)
         }
       }
+    }
     // Can't just default to (0, 0) starting point because we may not be allowed to go Down (or Right)
     val (xStart: Int, yStart: Int) = all.find(p => start.is(this, p._1, p._2)).get
     allBestPathsAcc(xStart, yStart, HashSet((xStart, yStart)), Map())
