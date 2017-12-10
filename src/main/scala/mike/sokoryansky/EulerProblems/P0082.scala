@@ -19,7 +19,7 @@ a 31K text file containing a 80 by 80 matrix, from the left column to the right 
 
 class P0082 extends EulerProblem {
   val field: NumberField = NumberField(Source.fromResource("p082_mike.txt").getLines.mkString(Properties.lineSeparator))
-    .withDirs(List(NFDir.U, NFDir.R, NFDir.D, NFDir.L))
+    .withDirs(List(NFDir.D, NFDir.R))
     .withValue(new NFPathSum)
     .withFitness(new NFMinPath)
     .withStart(new NFLocL)

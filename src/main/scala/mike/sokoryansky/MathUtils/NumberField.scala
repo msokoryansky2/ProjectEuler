@@ -1,5 +1,6 @@
 package mike.sokoryansky.MathUtils
 
+import scala.collection.immutable.HashSet
 import scala.util.{Properties, Random}
 
 // Different ways to evaluate path value (to a single Long) number
@@ -14,13 +15,13 @@ class NFMaxPath extends NFPathFitness { override def isMoreFit(a: Long, b: Long)
 
 // Different locations, used determine whether cell is a valid start or finish of the path
 abstract class NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean }
-class NFLocU extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 }
-class NFLocUR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == 0 }
-class NFLocR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = y == field.width - 1 }
-class NFLocDR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 && y == field.width - 1 }
-class NFLocD extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.height - 1 }
-class NFLocDL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == field.width - 1 }
-class NFLocL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = y == 0 }
+class NFLocU extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = y == 0 }
+class NFLocUR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.width - 1 && y == 0 }
+class NFLocR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.width - 1 }
+class NFLocDR extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == field.width - 1 && y == field.height - 1 }
+class NFLocD extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = y == field.height - 1 }
+class NFLocDL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == field.height - 1 }
+class NFLocL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 }
 class NFLocUL extends NFLoc { def is(field: NumberField, x: Int, y: Int): Boolean = x == 0 && y == 0 }
 
 // Different directions that the path is allowed to turn within the field
@@ -104,7 +105,7 @@ class NumberField (val field: Seq[Seq[Int]],
   /**
     * All best paths from any point (x, y) to lower right corner. Lazily evaluated
     */
-  lazy val allBestPaths2: Map[(Int, Int), List[(Int, Int)]] = {
+  lazy val allBestPathsDownAndRight: Map[(Int, Int), List[(Int, Int)]] = {
     def allBestPathsAcc(x: Int,
                         y: Int,
                         visited: Map[(Int, Int), Boolean],
@@ -147,49 +148,41 @@ class NumberField (val field: Seq[Seq[Int]],
   }
 
   lazy val allBestPaths: Map[(Int, Int), List[(Int, Int)]] = {
-    // Trivial paths are finish cells containing paths to themselves
-    val finishPaths: Map[(Int, Int), List[(Int, Int)]] =
-      all.filter(p => finish.is(this, p._1, p._2)).map(p => p -> List(p)).toMap
-
     def allBestPathsAcc(x: Int,
                         y: Int,
-                        visited: Map[(Int, Int), Boolean],
-                        acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] = {
-      if (acc.contains((x, y))) acc
-      else (x, y) match {
-        case (pathFinished) if finish.is(this, x, y) => acc + ((x, y) -> List((x, y)))
-        case _ =>
-          // Calculate best paths for all allowed directions, making sure we re-use already calculated values
-          var accNext = acc // a var is really convenient here, sorry :(
-          NFDir.values.filter(dirs.contains(_)).foreach { d =>
-            val x2 = NFDir.dX(x, d)
-            val y2 = NFDir.dY(y, d)
-            if (isEl(x2, y2) && !visited.isDefinedAt(x2, y2))
-              accNext = allBestPathsAcc(x2, y2, visited + ((x, y) -> true), accNext)
-          }
+                        visited: HashSet[(Int, Int)],
+                        acc: Map[(Int, Int), List[(Int, Int)]]): Map[(Int, Int), List[(Int, Int)]] =
+      if (finish.is(this, x, y)) {
+        // If this is a finish cell, then its path to the finish is itself.
+        acc + ((x, y) -> List((x, y)))
+      } else {
+        // If this is not a finish cell, then we need to figure out best paths to finish from all of its neighbors
+        // and pick the best path from among the neighbors.
 
-          //print(s"At ($x, $y) accNext is $accNext")
+        // Determine valid directions/neighbors that are available for visit
+        val neighbors: Map[NFDir.Value, (Int, Int)] =
+          dirs
+            .map(d => (d, (NFDir.dX(x, d), NFDir.dY(y, d))))
+            .filter(n => isEl(n._2._1, n._2._2) && !start.is(this, n._2._1, n._2._2) && !visited.contains(n._2._1, n._2._2))
+            .toMap
 
-          // Compute path values in all valid directions using acc4 (illegal directions will be filtered out)
-          val pathValues: List[(NFDir.Value, Long)] =
-            List(NFDir.U, NFDir.R, NFDir.D, NFDir.L)
-              .filter(d => dirs.contains(d)) // Only consider allowed directions
-              .filter(d => isEl(NFDir.dX(x, d), NFDir.dY(y, d))) // Only consider a direction if it doesn't fall off the field
-              .filterNot(d => start.is(this, NFDir.dX(x, d), NFDir.dY(y, d))) // Exclude other starting cells
-              .map(d => (d, value.eval(els(accNext(NFDir.dX(x, d), NFDir.dY(y, d))))))
-          // Pick direction with most fit path value
-          val bestDir: NFDir.Value = pathValues.sortWith((pv1, pv2) => fitness.isMoreFit(pv1._2, pv2._2)).head._1
-          // Return path using best direction
+        // Determine which of the valid neighbors don't yet have their best path known
+        val neighborsUnknown = neighbors.filter(n => !acc.contains(n._2))
 
-          //println(s" and best direction is $bestDir")
-
-          accNext + ((x, y) -> ((x, y) :: accNext(NFDir.dX(x, bestDir), NFDir.dY(y, bestDir))))
+        if (neighborsUnknown.isEmpty) {
+          // If all neighbors are known, find the one with fittest path and route our path through it
+          val bestNeighbor = neighbors.map(n => (n, value.eval(els(acc(n._2._1, n._2._2))))).toList
+            .reduceLeft((n1, n2) => if (fitness.isMoreFit(n1._2, n2._2)) n1 else n2)
+          acc + ((x, y) -> ((x, y) :: acc(bestNeighbor._1._2._1, bestNeighbor._1._2._2)))
+        } else {
+          // If there are unknown neighbors, then we need to do them first.
+          val n = neighbors.head
+          allBestPathsAcc(n._2._1, n._2._2, visited ++ HashSet((x, y)), acc)
+        }
       }
-    }
-
     // Can't just default to (0, 0) starting point because we may not be allowed to go Down (or Right)
     val (xStart: Int, yStart: Int) = all.find(p => start.is(this, p._1, p._2)).get
-    allBestPathsAcc(xStart, yStart, Map((xStart, yStart) -> true), finishPaths)
+    allBestPathsAcc(xStart, yStart, HashSet((xStart, yStart)), Map())
   }
 
   /**
