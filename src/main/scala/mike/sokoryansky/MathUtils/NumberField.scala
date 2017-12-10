@@ -158,8 +158,9 @@ class NumberField (val field: Seq[Seq[Int]],
 
       // Mark this cell as visited
       visited ++= HashSet((x, y))
+      println(s"\nAt ($x, $y), acc is $acc, visited is $visited")
 
-      if (finish.is(this, x, y))  acc + ((x, y) -> List((x, y)))
+      if (finish.is(this, x, y)) acc + ((x, y) -> List((x, y)))
       else {
         // Determine valid directions/neighbors.
         // Some of these may have been visited already or are not valid for visit (such as starts)
@@ -169,8 +170,12 @@ class NumberField (val field: Seq[Seq[Int]],
             .filter(n => isEl(n._2._1, n._2._2))
             .toMap
 
+        println(s"... All neighbors: $neighbors")
+
         // Determine which of the neighbors don't yet have their best path known
         val neighborsUnknown: Map[NFDir.Value, (Int, Int)] = neighbors.filterNot(n => visited.contains(n._2) || acc.contains(n._2))
+
+        println(s"... Unknown neighbors: $neighborsUnknown")
 
         // Find best paths for all unknown neighbors
         var acc2 = acc
